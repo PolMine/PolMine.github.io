@@ -3,7 +3,7 @@ layout: post
 title:  "polmineR-package at CRAN"
 date:   2016-06-22
 author: Andreas Blätte
-categories: posts
+categories: Posts
 tags: release
 ---
 
