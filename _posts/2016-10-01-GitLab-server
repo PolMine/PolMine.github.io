@@ -1,1 +1,15 @@
-adfa
+---
+layout: post
+title:  "GitLab server"
+date:   2016-10-01
+author: Andreas Blätte
+categories: Posts
+tags: poster
+---
+
+To prepare the registration of the PolMine Project as a CLARIN centre, we have set up a GitLab server that we 
+will use to host resources emanating from the PolMine project. The focus of the project is on parliamentary protocols,
+the first resource we make available was developed in the project "Plenarprotokolle als öffentliche Sprachressource
+der Demokratie" (funded by the BMBF). The data are accessible via git repositories for registered academic users - please
+get in touch to get access. The advantage of the choice for a git repository with the data is, as we see it, the ability 
+to version the data, and to use the issue tracker of GitLab for quality ensurance.
