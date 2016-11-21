@@ -3,7 +3,6 @@ layout: post
 title:  "Computational Social Science Winter Symposium"
 date:   2015-12-06
 author: Andreas Blätte
-categories: outreach
 tags: poster
 ---
 
