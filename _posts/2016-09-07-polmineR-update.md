@@ -3,7 +3,7 @@ layout: post
 title:  "polmineR update - version 0.6.2"
 date:   2016-09-07
 author: Andreas Blätte
-categories: posts
+categories: Posts
 tags: release
 ---
 
