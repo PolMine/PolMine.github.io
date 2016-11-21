@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "PolMine Project - Registration as CLARIN centre (category C)"
+title:  "PolMine Project - Registration as CLARIN Centre"
 date:   2016-10-10
 author: Andreas Blätte
 categories: Posts
