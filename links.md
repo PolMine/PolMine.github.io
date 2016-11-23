@@ -10,6 +10,7 @@ permalink: /links/
 
 ### R and R-related Websites
 * [The R Project for Statistical Computing](https://www.r-project.org)
+* [polmineR-package at CRAN](https://cran.r-project.org/web/packages/polmineR/index.html)
 * [RStudio](https://www.rstudio.com)
 * [R bloggers](http://www.r-bloggers.com/)
 
