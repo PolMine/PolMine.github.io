@@ -4,6 +4,8 @@ title: Corpora
 permalink: /corpora/
 ---
 
+The PolMine Project developed out of the conviction that developing the capacities of text mining in the social sciences requires us to move beyond hacky solutions that inhibit reproducible findings and progress. The four ideas are at the heart of the project. 
+
 **Public data:** The focus of PolMine is on the texts published by public institutions. Corpora of parliamentary protocols have been, and remain at the heart of the project.
 
 **Sustainability:** To facilitate the growth of sustainable corpora, the project's concern is to develop a sustainable codebase that will ensure the reproducible preparation of corpora, and make updating the data as efficient as possible.
