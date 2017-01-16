@@ -11,9 +11,9 @@ tags: news
 
 Publishing blog entries here has been a plan for a while. The intention is to share findings we may gain from large-scale corpora. Most of the time, I will elaborate on a some scenario that the polmineR package may be useful for.
 
-It does not require text mining to say that politics in Germany has been dominated by the debate on refugees in 2015 and 2016. But what is the long-term trend? What happened a decade or more ago may evade our memory. Here, I will a very basic technique to gain a first quick impression of developments: Quick and dirty word counts, i.e. the dispersion of terms across time.
+It does not require text mining to say that politics in Germany has been dominated by the debate on refugees in 2015 and 2016. But what is the long-term trend? What happened a decade or more ago may evade our memory. Here, I will use a very basic technique to gain a first quick impression of developments: Word counts, the quick and dirty dispersion of terms across time.
 
-Methodologically, analysing word counts is trivial. Yet I think combining polmineR for retrieving a dispersion quickly, and the zoo package for handling and visualising a time series is very handy. The following lines of code will use the query "Fl.cht.*', i.e. a regular expression syntax that can be handled by CQP (the Corpus Query Processor), the backend of polmineR. The corpus I use are all plenary protocols starting from the 13th legislative period until the end of 2016 (corpus name: "PLPRBT", a beta corpus).
+Methodologically, analysing word counts is trivial. Yet combining polmineR for retrieving a dispersion quickly, and the zoo package for handling and visualising a time series go hand in hand smoothly. The following lines of code will use the query "Fl.cht.*', i.e. a regular expression syntax that can be handled by CQP (the Corpus Query Processor), the backend of polmineR. The corpus I use are all plenary protocols starting from the 13th legislative period until the end of 2016 (corpus name: "PLPRBT", a beta corpus).
 
 Let's move to the code. After loading the polmineR package, I tell R to use the PLPRBT corpus that is included in the 'plprbt'-package, a data package I have prepared (for myself, beta version). 
 
@@ -46,7 +46,7 @@ We now have a zoo times series object with the counts. Of course, we might proce
 
 
 {% highlight r %}
-plot(zoo_aggr, ylab = "count")
+plot(zoo_aggr, ylab = "count", xlab = "year")
 {% endhighlight %}
 
 ![plot of chunk unnamed-chunk-2](/assets/2017-01-16-Dispersion-of-Terms/unnamed-chunk-2-1.png)
