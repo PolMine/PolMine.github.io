@@ -1,15 +1,6 @@
 library(knitr)
 
-
-markdown <- "kramdown"  
-
-if (markdown == 'kramdown') {
-    knitr::render_jekyll()
-} else {
-  knitr::render_markdown()
-}
-
-
+knitr::render_jekyll()
 
 # input/output filenames are passed as two additional arguments to Rscript
 a = commandArgs(TRUE)
@@ -26,8 +17,8 @@ knitr::opts_chunk$set(
 if (Sys.getenv('USER') == 'blaette') {
   knitr::opts_chunk$set(fig.path = sprintf('%s/', gsub('^.+/', '', d)))
   knitr::opts_knit$set(
-    base.dir = '~/Dropbox/Public/jekyll/',
-    base.url = 'http://db.yihui.name/jekyll/'
+    base.dir = '~/Lab/github/PolMine.github.io/assets/',
+    base.url = '/assets/'
   )
 }
 knitr::opts_knit$set(width = 70)

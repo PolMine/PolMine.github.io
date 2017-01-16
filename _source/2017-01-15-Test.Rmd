@@ -1,0 +1,25 @@
+---
+layout: post
+title:  "Initial test to combine Rmarkdwon, jekyll and GitHub pages"
+date:   2017-01-16
+author: Andreas Blätte
+categories: Posts
+tags: news
+---
+
+
+## What you really need
+
+You must have installed the packages **servr** (>= 0.2) and **knitr** (>= 1.8).
+
+
+```{R, eval = FALSE}
+cat("Hello World")
+message("This is text.")
+```
+
+
+```{r}
+plot(c(1,2,3,5,6,7,8,9))
+```
+
