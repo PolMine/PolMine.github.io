@@ -51,4 +51,4 @@ plot(zoo_aggr, ylab = "count", xlab = "year")
 
 ![plot of chunk unnamed-chunk-2](/assets/2017-01-16-Dispersion-of-Terms/unnamed-chunk-2-1.png)
 
-A clear peak in 2015 far beyond anything before. As it seems: In a long-term perspective, 2015 hast really been the peak of attention for debating refugees for more than two decades.
+A clear peak in 2015 far beyond anything before. As it seems: In a long-term perspective, 2015 has been the peak of attention for debating refugee migration. For more than two decades.

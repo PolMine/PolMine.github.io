@@ -50,4 +50,4 @@ We now have a zoo times series object with the counts. Of course, we might proce
 plot(zoo_aggr, ylab = "count", xlab = "year")
 ```
 
-A clear peak in 2015 far beyond anything before. As it seems: In a long-term perspective, 2015 hast really been the peak of attention for debating refugees for more than two decades.
+A clear peak in 2015 far beyond anything before. As it seems: In a long-term perspective, 2015 has been the peak of attention for debating refugee migration. For more than two decades.
