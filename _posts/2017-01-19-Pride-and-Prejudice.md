@@ -1,13 +1,13 @@
 ---
 layout: post
-title:  "Pride and Prejudice: Finding Westerwelle's speech about 'Stolz'"
+title:  "Pride and Prejudice: Finding Westerwelle's speech"
 date:   2017-01-19
 author: Andreas Blätte
 categories: Posts
 tags: news
 ---
 
-## Pride and Prejudice: Finding Westerwelle's speech about 'Stolz'
+## Pride and Prejudice: Finding Westerwelle's speech
 
 In a seminar on policy responsiveness I am teaching with my colleague Susanne Pickel, we explore the relationship between the political supply of policies, and the substance of policies citizens demand for. Before proceeding to a quantitative analysis, we wanted to do a qualitative content analysis of speeches in the German Bundestag. So we were looking for speeches that were particularly important and interesting.
 
