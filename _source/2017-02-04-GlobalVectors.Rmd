@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Using Global Vectors for Getting Semantic Fields"
-date:   2017-01-19
+date:   2017-02-06
 author: Andreas Blätte
 categories: Posts
 tags: news
@@ -14,8 +14,8 @@ These algorithms generate a vector representation of words based on term cooccur
 The corpus I use is the most recent beta version of the corpus of plenary protocols (1994-2016, 105 M words). Unsurprisingly, I use the polmineR package to access the corpus. I will then continue with the GloVe implementation included in the text2vec package, a package I have come to admire. Using text2vec would be an attractive, fast alternative - but I was interested in a pure R take on word vectors. The examples I finally use to explore semantic fields are taken from my substantive field of interest, migration and diversity in German politics.
 
 
-Preliminary I: Getting started
-------------------------------
+Getting started
+---------------
 
 To get started, I load the polmineR package, and the data.table package which I will use later on.
 
@@ -33,8 +33,8 @@ use("plprbt")
 ```
 
 
-Preliminary II: The vocabulary of interest
-------------------------------------------
+The vocabulary of interest
+--------------------------
 
 Very rare words will not be interesting. We perform a word count for the corpus (PLPRBT), and discard all words that to not occur at least 10 times.
 

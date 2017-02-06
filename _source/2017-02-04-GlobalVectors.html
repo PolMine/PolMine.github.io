@@ -86,9 +86,6 @@ PLPRBT$count(pAttribute = &quot;word&quot;)
 vocabulary &lt;- PLPRBT$stat[count &gt;= 10][[&quot;word&quot;]]</code></pre>
 <p>I have really spent a lot of time cleaning my corpus of parliamentary debates. It is still necessary to get rid of noise.</p>
 <pre class="r"><code>vocabulary &lt;- vocabulary[-which(vocabulary %in% unlist(noise(vocabulary)))]</code></pre>
-<pre><code>## ... stopwords</code></pre>
-<pre><code>## ... specialCharsRegex</code></pre>
-<pre><code>## ... numbers</code></pre>
 <p>The resulting vocabulary includes 112462 tokens. Being more conservative and applying a higher minimum word occurrence threshold would have been possible. Yet I want to suffer. To test performance, I did not want to keep object sizes minimal here.</p>
 </div>
 <div id="generating-the-term-cooccurrence-matrix" class="section level2">
