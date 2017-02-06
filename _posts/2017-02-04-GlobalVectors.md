@@ -57,6 +57,9 @@ Generating the term cooccurrence matrix
 The GloVe algorithm will require a term cooccurrence matrix as input. I am somewhat proud in that respect: In the most recent version of the polmineR package (dev branch on GitHub), I have introduced a cooccurrences method for character class objects that will generate the term cooccurrence matrix for a whole corpus in a somewhat optimized manner. 
 
 
+{% highlight r %}
+PLPRBT_tcm_slam <- cooccurrences("PLPRBT", keep = vocabulary, window = 10)
+{% endhighlight %}
 
 On my laptop (a Macbook Pro, 256 GB SSD, 2,6 GHz i5), getting the term cooccurrence matrix for the 105 M corpus takes 10 minutes. No doubt, an optimized C implementation will be much faster. For me, at this stage, I can take waiting 10 minutes.
 
