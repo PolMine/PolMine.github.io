@@ -46,7 +46,7 @@ vocabulary <- PLPRBT$stat[count >= 10][["word"]]
 
 I have really spent a lot of time cleaning my corpus of parliamentary debates. It is still necessary to get rid of noise.
 
-```{r}
+```{r denoise_vocabulary, eval = TRUE, message = FALSE}
 vocabulary <- vocabulary[-which(vocabulary %in% unlist(noise(vocabulary)))]
 ```
 

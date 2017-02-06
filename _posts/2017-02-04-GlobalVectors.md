@@ -48,24 +48,6 @@ I have really spent a lot of time cleaning my corpus of parliamentary debates. I
 vocabulary <- vocabulary[-which(vocabulary %in% unlist(noise(vocabulary)))]
 {% endhighlight %}
 
-
-
-{% highlight text %}
-## ... stopwords
-{% endhighlight %}
-
-
-
-{% highlight text %}
-## ... specialCharsRegex
-{% endhighlight %}
-
-
-
-{% highlight text %}
-## ... numbers
-{% endhighlight %}
-
 The resulting vocabulary includes 112462 tokens. Being more conservative and applying a higher minimum word occurrence threshold would have been possible. Yet I want to suffer. To test performance, I did not want to keep object sizes minimal here.
 
 
