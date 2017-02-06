@@ -60,9 +60,13 @@ The GloVe algorithm will require a term cooccurrence matrix as input. I am somew
 
 On my laptop (a Macbook Pro, 256 GB SSD, 2,6 GHz i5), getting the term cooccurrence matrix for the 105 M corpus takes 10 minutes. No doubt, an optimized C implementation will be much faster. For me, at this stage, I can take waiting 10 minutes.
 
-At this stage, there is a technical detail to take care of. The cooccurrences method returns a sparse matrix (of class 'simple triplet matrix'). The GloVe class requires a 'dgTMatrix' as an input, one of the classes defined in the Matrix package (a compressed, sparse, column-oriented format). The as.sparseMatrix method in the polmineR package will generate a 'dgCMatrix'. From that point, a coerce method defined in the Matrix package can be used.
+There is a technical detail to take care of. The cooccurrences method returns a sparse matrix (of class 'simple triplet matrix'). The GloVe class requires a 'dgTMatrix' as an input, one of the classes defined in the Matrix package (a compressed, sparse, column-oriented format). The as.sparseMatrix method in the polmineR package will generate a 'dgCMatrix'. From that point, a coerce method defined in the Matrix package can be used.
 
 
+{% highlight r %}
+PLPRBT_tcm_dgCMatrix <- as.sparseMatrix(PLPRBT_tcm_slam)
+PLPRBT_tcm_dgTMatrix <- as(PLPRBT_tcm_dgCMatrix, "dgTMatrix")
+{% endhighlight %}
 
 Now, we a few big and bulky objects in memory. When working on this post, I was not very cautious at all times and I ran out of memory (16 GB) several times. Objects that are not needed any longer can be removed, to avoid that.
 
@@ -72,13 +76,21 @@ rm(PLPRBT_tcm_slam, PLPRBT_tcm_dgCMatrix)
 {% endhighlight %}
 
 
-Running the GloVe algorithm
----------------------------
+Running GloVe
+-------------
 
-The text2vec package claims to be particularly fast at generating anything you need for bag-of-words-operations. It is not that part of the functionality I really need. Yet I was really happy to discover that the text2vec package includes an implementation of the GloVe algorithm. After initializing the class, we can run the global vectors algorithm.
+The text2vec package strives to be particularly fast at generating anything you need for bag-of-words-operations text files. It is not that part of the functionality I really need. Yet I was really happy to discover that the text2vec package includes an implementation of the GloVe algorithm. After initializing the class, we can run the global vectors algorithm.
 
 
 
+{% highlight r %}
+library(text2vec)
+GV <- GloVe$new(
+  word_vectors_size = 50, vocabulary = rownames(PLPRBT_tcm_dgTMatrix),
+  x_max = 10, learning_rate = .1
+  ) # in example learning_rate .25
+GV$fit(x = PLPRBT_tcm_dgTMatrix, n_iter = 25)
+{% endhighlight %}
 
 Potentially, I guess I am running more iterations than necessary. Getting the word vectors as described takes 10 minutes. Having run the fitting algorithm, I can get the matrix with word vectors - the object of desire!
 
@@ -99,7 +111,7 @@ Dictionaries and semantic fields: A first take
 
 Word vectors can be used to find similar words to a query by calculating the cosine similarity of the vector for the query with the vectors of all other words. The result may be considered as the vocabulary of a semantic field.
 
-To assist running that operation more often than once, let us prepare a small convenience function that will calculate the cosine similarity, put the result in a data.table, merge in word counts, order the result based on cosine similarity and return just the top n words.
+To assist running that operation not just once, let us prepare a small convenience function that will calculate the cosine similarity, put the result in a data.table, merge in word counts, order the result based on cosine similarity, and return just the top n words.
 
 
 
@@ -172,6 +184,6 @@ dotchart(
 Discussion
 ----------
 
-Admittedly, non-German speakers are out of the game to assess the results of this exercise. But it's true! The result is very intuitive. Among the words similar to 'Asyl' (asylum), we find two terms referring to nuclear energy as hits. It might be caused by a word neighbourhood indicating a similar degree of controversy - but this is a speculation, so far. Still, we have very good reasons, and may seriously consider vector representations of words to generate semantic fields.
+Admittedly, non-German speakers are out of the game to assess the results of this exercise. (I wanted to use Google's translation API to get English translations, but I could not get my key work.) But it's true! The result is very intuitive. Among the words similar to 'Asyl' (asylum), we find two terms referring to nuclear energy as hits. It might be caused by a word neighbourhood indicating a similar degree of controversy - but this is a speculation, so far. Still, we have very good reasons to seriously consider vector representations of words to generate semantic fields.
 
-Applications of word vectors go beyond that. At this stage, I am satisfied to dip into the usefulness of this analytical technique, and to demonstrate that there is a smooth way from a CWB corpus accessed with the polmineR package to the term cooccurrence matrix to be processed with the GloVe class in the text2vec package.
+There is much more that can be done with word vectors. As of today, I am satisfied with what I got, to convey a sense of the usefulness of this analytical technique, and to demonstrate that there is a smooth way from a CWB corpus accessed with the polmineR package to a term cooccurrence matrix that can be processed with the GloVe class in the text2vec package. 
