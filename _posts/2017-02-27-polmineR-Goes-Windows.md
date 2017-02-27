@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Finally: Using polmineR on Windows"
+title:  "Finally: polmineR available for Windows"
 date:   2017-02-27
 author: Andreas Blätte
 categories: Posts
