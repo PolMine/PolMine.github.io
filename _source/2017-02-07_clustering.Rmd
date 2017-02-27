@@ -1,0 +1,22 @@
+library(polmineR)
+
+PLPRBT <- Corpus$new("PLPRBT")
+PLPRBT$count(pAttribute = "word")
+vocabulary <- PLPRBT$stat[count >= 100][["word"]]
+
+```{r}
+glove_min <- glove_word_vectors[vocabulary[which(vocabulary %in% rownames(glove_word_vectors))],]
+foo <- kmeans(glove_min, centers = 1000, iter.max = 25)
+get_group <- function(x, query){
+  x$cluster[which(x$cluster == x$cluster[names(x$cluster) == query])]
+}
+
+```{r}
+foo <- cosine_similarity(glove_min, tool = "coop")
+foo2 <- hclust(foo, method = "ward.D")
+bmp(file = "~/Lab/tmp/hist.bmp", width = 5000, height = 5000)
+plot(as.dendrogram(foo2), horiz = T, cex = 0.0001)
+dev.off()
+
+foo3 <- cutree(foo2, h = 0.2)
+foo3[which(foo3 == 4)]

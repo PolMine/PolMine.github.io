@@ -1,0 +1,58 @@
+---
+layout: post
+title:  "Target Groups in Migration Policy"
+date:   2017-01-16
+author: Andreas Blätte
+categories: Posts
+tags: news
+---
+
+## The peak of refugees: Dispersion of terms across time
+
+# Loading packages
+
+```{r}
+library(polmineR)
+library(data.table)
+library(ggplot2)
+use("plprbt")
+```
+
+
+# What to get: Queries
+
+```{r}
+cqp_query <- c(
+  "Flüchtling" = '"Flüchtling(|e|en)"',
+  "Asyl" = '"Asyl.*"',
+  "Ein-/Zuwanderer" = '"(Ein|Zu)wanderer.*"',
+  "Ausländer" = '"Ausländer(|n)"',
+  "MMH" = '"mit" "(Migrationshintergrund|Zuwanderungsgeschichte)"'
+  )
+```
+
+
+# Retrieving hits
+
+```{r}
+my.hits <- hits(
+  "PLPRBT", query = cqp_query, cqp = TRUE, sAttribute = "speaker_date",
+  progress = FALSE
+)
+```
+
+
+# Preparing the data for plotting
+
+```{r}
+df <- as.data.frame(my.hits@dt)
+df$speaker_date <- as.Date(df$speaker_date)
+df <- subset(df, !is.na(speaker_date))
+```
+
+
+# Do it.
+
+```{r}
+ggplot(df, aes(x = speaker_date, y = count, colour = query)) + geom_smooth()
+```

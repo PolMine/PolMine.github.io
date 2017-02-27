@@ -22,6 +22,5 @@ if (Sys.getenv('USER') == 'blaette') {
   )
 }
 knitr::opts_knit$set(width = 70)
-print("hello")
 
 knitr::knit(a[1], a[2], quiet = TRUE, encoding = 'UTF-8', envir = .GlobalEnv)
