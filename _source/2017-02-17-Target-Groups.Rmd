@@ -1,13 +1,13 @@
 ---
 layout: post
 title:  "Target Groups in Migration Policy"
-date:   2017-01-16
+date:   2017-03-02
 author: Andreas Blätte
 categories: Posts
 tags: news
 ---
 
-## The peak of refugees: Dispersion of terms across time
+## Initialisation
 
 # Loading packages
 
@@ -15,6 +15,8 @@ tags: news
 library(polmineR)
 library(data.table)
 library(ggplot2)
+library(pbapply)
+library(gridExtra)
 use("plprbt")
 ```
 
@@ -22,11 +24,12 @@ use("plprbt")
 # What to get: Queries
 
 ```{r}
-cqp_query <- c(
+cqp_queries <- c(
   "Flüchtling" = '"Flüchtling(|e|en)"',
   "Asyl" = '"Asyl.*"',
-  "Ein-/Zuwanderer" = '"(Ein|Zu)wanderer.*"',
-  "Ausländer" = '"Ausländer(|n)"',
+  "Einwanderer" = '"Ein(ge|)wander.*"',
+  "Zuwanderer" = '"Zu(ge|)wander.*"',
+  "Ausländer" = '"Ausländer(|n)"', 
   "MMH" = '"mit" "(Migrationshintergrund|Zuwanderungsgeschichte)"'
   )
 ```
@@ -36,23 +39,289 @@ cqp_query <- c(
 
 ```{r}
 my.hits <- hits(
-  "PLPRBT", query = cqp_query, cqp = TRUE, sAttribute = "speaker_date",
-  progress = FALSE
-)
+  "PLPRBT", query = cqp_queries, cqp = TRUE,
+  sAttribute = "speaker_date", progress = FALSE, freq = TRUE
+  )
 ```
 
-
-# Preparing the data for plotting
+# Data preparation for plotting
 
 ```{r}
 df <- as.data.frame(my.hits@dt)
 df$speaker_date <- as.Date(df$speaker_date)
 df <- subset(df, !is.na(speaker_date))
+df$Zielgruppe <- df[["query"]]
+```
+
+# Plotting
+
+```{r}
+# Flüchtling/Asyl
+jpeg(
+  filename = "~/ownCloud/Org/termine/2017-03-01_semtracks/fluechtling_asyl_frequenz.jpg",
+  width = 1250, height = 750
+  )
+ggplot(
+  subset(df, query %in% c("Flüchtling", "Asyl")),
+  aes(x = speaker_date, y = freq, colour = Zielgruppe)) +
+  geom_smooth(level = 0.2) + xlab("Date") + ylab("Frequency") +
+  xlab("Jahr") + ylab("Frequenz")
+dev.off()
+
+# Einwanderer/Zuwanderer
+jpeg(
+  filename = "~/ownCloud/Org/termine/2017-03-01_semtracks/einwanderer_zuwanderer_frequenz.jpg",
+  width = 1250, height = 750
+  )
+ggplot(
+  subset(df, query %in% c("Einwanderer", "Zuwanderer")),
+  aes(x = speaker_date, y = freq, colour = Zielgruppe)) +
+  geom_smooth(level = 0.2) + xlab("Date") +  ylab("Frequency") +
+  xlab("Jahr") + ylab("Frequenz")
+dev.off()
+
+# Ausländer / MMH
+jpeg(
+  filename = "~/ownCloud/Org/termine/2017-03-01_semtracks/auslaender_mmh_frequenz.jpg",
+  width = 1250, height = 750
+  )
+ggplot(
+  subset(df, query %in% c("Ausländer", "MMH")),
+  aes(x = speaker_date, y = freq, colour = Zielgruppe)) +
+  geom_smooth(level = 0.2) + xlab("Datum") +  ylab("Frequenz")
+dev.off()
+
 ```
 
 
-# Do it.
+## Distinguishing parties
+
+# Parties
 
 ```{r}
-ggplot(df, aes(x = speaker_date, y = count, colour = query)) + geom_smooth()
+parties <- list(
+  CDU = "CDU",
+  CSU = "CSU",
+  FDP = "FDP",
+  SPD = "SPD",
+  LINKE = c("LINKE", "DIE LINKE", "PDS"),
+  GRÜNE = c("BÜNDNIS 90/DIE GRÜNEN", "GRÜNE", "GRUENE")
+)
+
+parties_colors <- c(
+  SPD = "brown3",
+  CDU = "black",
+  CSU = "blue",
+  FDP = "gold",
+  GRÜNE = "chartreuse3",
+  LINKE = "DarkMagenta"
+  )
+```
+
+
+```{r}
+# takes 40s with 3 cores on i5, 2,6 GHz
+hit_results <- pblapply(
+  names(parties),
+  function(party_name){
+    P <- partition(
+      "PLPRBT", speaker_party = parties[[party_name]],
+      regex = FALSE, verbose = FALSE
+      )
+    H <- hits(
+      P, query = cqp_queries, cqp = TRUE, sAttribute = "speaker_date",
+      progress = FALSE, freq = TRUE
+      )
+    H@dt[, party := party_name]
+    H
+  },
+  cl = 3
+)
+DT <- rbindlist(lapply(hit_results, function(x) x@dt))
+DT[,freq := freq * 100000]
+DT[,Partei := party]
+```
+
+```{r}
+plots <- lapply(
+  setNames(names(cqp_queries), names(cqp_queries)),
+  function(Q){
+    df <- as.data.frame(subset(DT, query == Q))
+    df$speaker_date <- as.Date(df$speaker_date)
+    df <- subset(df, !is.na(speaker_date))
+    ggplot(df, aes(x = speaker_date, y = freq, colour = Partei)) +
+      geom_smooth(level = 0.25) +
+      ggtitle(Q) + 
+      scale_color_manual(values = parties_colors) +
+      # theme(legend.position = "none") + 
+      xlab("Jahr") + 
+      ylab("Frequenz (normalisiert, Häufigkeit pro 100.000 Worte)")
+  }
+)
+```
+
+```{r}
+jpeg(
+  filename = "~/ownCloud/Org/termine/2017-03-01_semtracks/asyl_fluechtling_parteien.jpg",
+  width = 1250, height = 750
+  )
+grid.arrange(plots[["Asyl"]], plots[["Flüchtling"]], ncol = 2)
+dev.off()
+
+jpeg(
+  filename = "~/ownCloud/Org/termine/2017-03-01_semtracks/einwanderer_zuwanderer_parteien.jpg",
+  width = 1250, height = 750
+  )
+grid.arrange(plots[["Einwanderer"]], plots[["Zuwanderer"]], ncol = 2)
+dev.off()
+
+jpeg(
+  filename = "~/ownCloud/Org/termine/2017-03-01_semtracks/auslaender_mmh_parteien.jpg",
+  width = 1250, height = 750
+  )
+grid.arrange(plots[["Ausländer"]], plots[["MMH"]], ncol = 2)
+dev.off()
+```
+
+
+## Sentiment-Analyse
+
+**Einlesen**
+
+```{r}
+sentiWS <- getSentiWS()
+setkeyv(sentiWS, cols = c("word", "pos"))
+```
+
+
+
+```{r}
+party_partitions <- pblapply(
+  names(parties),
+  function(party_name){
+    P <- partition(
+      "PLPRBT", speaker_party = parties[[party_name]],
+      regex = FALSE, verbose = FALSE
+      )
+  },
+  cl = 3
+)
+names(party_partitions) <- names(parties)
+```
+
+
+```{r}
+# dates_plain <- as.character(
+#   seq.Date(from = as.Date("1994-10-01"), to = as.Date("2016-12-01"), by = "month")
+#   )
+# dates <- gsub("^(\\d{4}-\\d{2})-\\d{2}$", "\\1-.*", yearmons)
+# names(dates_plain) <- dates
+
+sAttr <- "speaker_year"
+regex_logical <- FALSE
+dates <- as.character(1994:2016)
+names(dates) <- dates
+
+weight_list <- lapply(
+  names(cqp_queries),
+  function(query_name){
+    print(query_name)
+    party_lists <- lapply(
+      names(parties),
+      function(party){
+        DT <- getContextSentiments(
+          x = party_partitions[[party]], sAttribute = sAttr,
+          values = dates, regex = regex_logical, query = cqp_queries[[query_name]], cqp = TRUE, 
+          left = 25, right = 25, sentiWS = sentiWS, mc = 3, verbose = TRUE
+        )
+        DT[, query := NULL][, query := query_name][, party := party]
+        
+      }
+    )
+    rbindlist(party_lists)
+  }
+)
+weights <- rbindlist(weight_list)
+
+
+weights[, date := as.Date(paste(subset, "-01-01", sep = ""))]
+```
+
+
+# CDU und CSU im Vergleich
+
+** negativ **
+
+```{r}
+theme_set(theme_gray(base_size = 18))
+w2 <- weights[direction == "negative"][party == "CSU"][date >= as.Date("1995-01-01")][, Zielgruppe := query]
+csu <- ggplot(w2, aes(x = date, y = score_normalized, colour = Zielgruppe)) + 
+  geom_smooth(aes(color = query), level = 0.2) + ggtitle("CSU (negative Sentiment-Scores)") +
+  xlab("Jahr") + ylab("Sentiment-Score (normalisiert)")
+#  + scale_y_continuous(limits = c(-0.006, 0.2))
+w2 <- weights[direction == "negative"][party == "CDU"][date >= as.Date("1995-01-01")][, Zielgruppe := query]
+cdu <- ggplot(w2, aes(x = date, y = score_normalized, colour = Zielgruppe)) + 
+  geom_smooth(aes(color = query), level = 0.2) + ggtitle("CDU (negative Sentiment-Scores)") +
+  xlab("Jahr") + ylab("Sentiment-Score (normalisiert)") +
+  scale_y_continuous(limits = c(-0.006, 0.0))
+
+jpeg(
+  filename = "~/ownCloud/Org/termine/2017-03-01_semtracks/cdu_csu_negative.jpg",
+  width = 1250, height = 800
+  )
+grid.arrange(cdu, csu, ncol = 1)
+dev.off()
+```
+
+
+** positiv **
+
+```{r}
+theme_set(theme_gray(base_size = 18))
+w2 <- weights[direction == "positive"][party == "CSU"][date >= as.Date("1995-01-01")][, Zielgruppe := query]
+csu <- ggplot(w2, aes(x = date, y = score_normalized, colour = Zielgruppe)) + 
+  geom_smooth(aes(color = query), level = 0.2) + ggtitle("CSU (positive Sentiment-Scores)") +
+  xlab("Jahr") + ylab("Sentiment-Score (normalisiert)")
+  # + scale_y_continuous(limits = c(0.0, 0.0025))
+w2 <- weights[direction == "positive"][party == "CDU"][date >= as.Date("1995-01-01")][, Zielgruppe := query]
+cdu <- ggplot(w2, aes(x = date, y = score_normalized, colour = Zielgruppe)) + 
+  geom_smooth(aes(color = query), level = 0.2) + ggtitle("CDU (positive Sentiment-Scores)") +
+  xlab("Jahr")  + ylab("Sentiment-Score (normalisiert)")
+  # + scale_y_continuous(limits = c(0.0, 0.0025))
+
+jpeg(
+  filename = "~/ownCloud/Org/termine/2017-03-01_semtracks/cdu_csu_positive.jpg",
+  width = 1250, height = 800
+  )
+grid.arrange(cdu, csu, ncol = 1)
+dev.off()
+
+```
+
+
+# Schlüsselbegriffe im Vergleich
+
+```{r}
+query_to_get <- "Flüchtling"
+
+w2 <- weights[direction == "positive"][query == query_to_get][date >= as.Date("1995-01-01")][, Partei := party]
+positive <- ggplot(w2, aes(x = date, y = score_normalized, colour = Partei)) + 
+  geom_smooth(aes(color = Partei), level = 0.2) + 
+  scale_color_manual(values = parties_colors) + 
+  ggtitle(paste(query_to_get, "(positiv)", sep = " ")) +
+  xlab("Jahr") + ylab("Sentiment-Score (normalisiert")
+
+w2 <- weights[direction == "negative"][query == query_to_get][date >= as.Date("1995-01-01")][, Partei := party]
+negative <- ggplot(w2, aes(x = date, y = score_normalized, colour = Partei)) + 
+  geom_smooth(aes(color = Partei), level = 0.2) + 
+  scale_color_manual(values = parties_colors) +
+  ggtitle(paste(query_to_get, "(negativ)", sep = " ")) +
+  xlab("Jahr") + ylab("Sentiment-Score (normalisiert")
+
+jpeg(
+  filename = "~/ownCloud/Org/termine/2017-03-01_semtracks/fluechtling_sentiment.jpg",
+  width = 1250, height = 750
+  )
+grid.arrange(positive, negative, ncol = 2)
+dev.off()
 ```

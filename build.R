@@ -1,3 +1,5 @@
+# Source: https://github.com/vasiliosz/jekyll-rstudio-demo/blob/master/build.R
+
 library(knitr)
 
 knitr::render_jekyll()
