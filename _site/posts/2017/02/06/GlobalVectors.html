@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Using Global Vectors for Getting Semantic Fields</title>
+  <meta name="description" content="Vector representations for words are becoming popular in text mining. In particular, the text2vec algorithm (by Tomáš Mikolov) and the GloVe algorithm (by Je...">
+  
+  <meta name="author" content="Andreas Blaette">
+  <meta name="copyright" content="&copy; Andreas Blaette 2017">
+  
+
+  <!-- External libraries -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/monokai_sublime.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
+
+  <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
+  <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/assets/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <!-- Facebook OGP cards -->
+  <meta property="og:description" content="Vector representations for words are becoming popular in text mining. In particular, the text2vec algorithm (by Tomáš Mikolov) and the GloVe algorithm (by Je..." />
+  <meta property="og:url" content="http://polmine.github.io" />
+  <meta property="og:site_name" content="PolMine Project" />
+  <meta property="og:title" content="Using Global Vectors for Getting Semantic Fields" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="http://polmine.github.io/assets/logo.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="612" />
+  <meta property="og:image:height" content="605" />
+  
+
+  
+  <!-- Twitter: card tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Using Global Vectors for Getting Semantic Fields">
+  <meta name="twitter:description" content="Vector representations for words are becoming popular in text mining. In particular, the text2vec algorithm (by Tomáš Mikolov) and the GloVe algorithm (by Je...">
+  <meta name="twitter:image" content="http://polmine.github.io/assets/logo.png">
+  <meta name="twitter:url" content="http://polmine.github.io">
+  
+
+  
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://polmine.github.io/posts/2017/02/06/GlobalVectors.html">
+  <link rel="alternate" type="application/rss+xml" title="PolMine Project" href="http://polmine.github.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="navigation" role="banner">
+  <div class="navigation-wrapper">
+    <a href="/" class="logo">
+      
+      <img src="/assets/logo.png" alt="PolMine Project">
+      
+    </a>
+    <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <nav role="navigation">
+      <ul id="js-navigation-menu" class="navigation-menu show">
+        <li class="nav-link"><a href="/">Home</a>
+        
+          
+          <li class="nav-link"><a href="/about/">About</a>
+          
+        
+          
+          <li class="nav-link"><a href="/code/">Code</a>
+          
+        
+          
+          <li class="nav-link"><a href="/corpora/">Corpora</a>
+          
+        
+          
+        
+          
+        
+          
+          <li class="nav-link"><a href="/links/">Links</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <div class="page-content">
+        <div class="post">
+
+<div class="post-header-container " >
+  <div class="scrim ">
+    <header class="post-header">
+      <p class="info">by <strong>Andreas Blätte</strong></p>
+    </header>
+  </div>
+</div>
+
+<div class="wrapper">
+
+ <span class="page-divider">
+  <span class="one"></span>
+  <span class="two"></span>
+</span>
+ 
+
+<section class="post-meta">
+  <div class="post-date">February 6, 2017</div>
+  <div class="post-categories">
+  in 
+    
+    <a href="/category/Posts">Posts</a>
+    
+  
+  </div>
+</section>
+
+<article class="post-content">
+  <p>Vector representations for words are becoming popular in text mining. In particular, the text2vec algorithm (by Tomáš Mikolov) and the GloVe algorithm (by Jeffrey Pennington, Richard Socher and Christopher D. Manning) have attracted considerable attention - including mine.</p>
+
+<p>These algorithms generate a vector representation of words based on term cooccurrence matrices. Word vectors capture the semantics of a word based on its neighborhood in a low-dimensional fashion. This is an appealing intuition. There is a wealth of use cases that go beyond the relatively basic scenario I explore here: Are vector representations for words useful for getting the vocabulary of a semantic field?</p>
+
+<p>The corpus I use is the most recent beta version of the corpus of plenary protocols (1994-2016, 105 M words). Unsurprisingly, I use the polmineR package to access the corpus. I will then continue with the GloVe implementation included in the text2vec package, a package I have come to admire. Using text2vec would be an attractive, fast alternative - but I was interested in a pure R take on word vectors. The examples I finally use to explore semantic fields are taken from my substantive field of interest, migration and diversity in German politics.</p>
+
+<h2 id="getting-started">Getting started</h2>
+
+<p>To get started, I load the polmineR package, and the data.table package which I will use later on.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">polmineR</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">data.table</span><span class="p">)</span><span class="w">
+</span><span class="n">use</span><span class="p">(</span><span class="s2">"plprbt"</span><span class="p">)</span></code></pre></figure>
+
+<h2 id="the-vocabulary-of-interest">The vocabulary of interest</h2>
+
+<p>Very rare words will not be interesting. We perform a word count for the corpus (PLPRBT), and discard all words that to not occur at least 10 times.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">PLPRBT</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">Corpus</span><span class="o">$</span><span class="n">new</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">)</span><span class="w">
+</span><span class="n">PLPRBT</span><span class="o">$</span><span class="n">count</span><span class="p">(</span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">)</span><span class="w">
+</span><span class="n">vocabulary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">PLPRBT</span><span class="o">$</span><span class="n">stat</span><span class="p">[</span><span class="n">count</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">10</span><span class="p">][[</span><span class="s2">"word"</span><span class="p">]]</span></code></pre></figure>
+
+<p>Lately, I have really spent a lot of time cleaning my corpus of parliamentary debates. It is however still necessary to get rid of noise.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">vocabulary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">vocabulary</span><span class="p">[</span><span class="o">-</span><span class="n">which</span><span class="p">(</span><span class="n">vocabulary</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">unlist</span><span class="p">(</span><span class="n">noise</span><span class="p">(</span><span class="n">vocabulary</span><span class="p">)))]</span></code></pre></figure>
+
+<p>The resulting vocabulary includes 112462 tokens. Being more conservative and applying a higher minimum word occurrence threshold would have been possible. Yet I want to suffer. To test performance, I did not want to keep object sizes minimal here.</p>
+
+<h2 id="generating-the-term-cooccurrence-matrix">Generating the term cooccurrence matrix</h2>
+
+<p>The GloVe algorithm will require a term cooccurrence matrix as input. I am somewhat proud in that respect: In the most recent version of the polmineR package (dev branch on GitHub), I have introduced a cooccurrences method for character class objects that will generate the term cooccurrence matrix for a whole corpus in a somewhat optimized manner.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">PLPRBT_tcm_slam</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cooccurrences</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">keep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vocabulary</span><span class="p">,</span><span class="w"> </span><span class="n">window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span></code></pre></figure>
+
+<p>On my laptop (a Macbook Pro, 256 GB SSD, 2,6 GHz i5), getting the term cooccurrence matrix for the 105 M corpus takes 10 minutes. No doubt, an optimized C implementation will be much faster. For me, at this stage, I do not mind waiting 10 minutes.</p>
+
+<p>There is a technical detail to take care of. The cooccurrences method returns a sparse matrix (of class ‘simple triplet matrix’). The GloVe class requires a ‘dgTMatrix’ as an input, one of the classes defined in the Matrix package (a compressed, sparse, column-oriented format). The as.sparseMatrix method in the polmineR package will generate a ‘dgCMatrix’. From that point, a coerce method defined in the Matrix package can be used.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">PLPRBT_tcm_dgCMatrix</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.sparseMatrix</span><span class="p">(</span><span class="n">PLPRBT_tcm_slam</span><span class="p">)</span><span class="w">
+</span><span class="n">PLPRBT_tcm_dgTMatrix</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as</span><span class="p">(</span><span class="n">PLPRBT_tcm_dgCMatrix</span><span class="p">,</span><span class="w"> </span><span class="s2">"dgTMatrix"</span><span class="p">)</span></code></pre></figure>
+
+<p>Now, we a few big and bulky objects in memory. When working on this post, I was not always very cautious and I ran out of memory (16 GB) several times. To avoid this, objects that are no longer needed can be removed.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">rm</span><span class="p">(</span><span class="n">PLPRBT_tcm_slam</span><span class="p">,</span><span class="w"> </span><span class="n">PLPRBT_tcm_dgCMatrix</span><span class="p">)</span></code></pre></figure>
+
+<h2 id="running-glove">Running GloVe</h2>
+
+<p>The text2vec package strives to be particularly fast at generating anything you need for bag-of-words-operations text files. It is not that part of the functionality I really need. Yet I was really happy to discover that the text2vec package includes an implementation of the GloVe algorithm. After initializing the class, we can run the global vectors algorithm.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">text2vec</span><span class="p">)</span><span class="w">
+</span><span class="n">GV</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GloVe</span><span class="o">$</span><span class="n">new</span><span class="p">(</span><span class="w">
+  </span><span class="n">word_vectors_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span><span class="p">,</span><span class="w"> </span><span class="n">vocabulary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">PLPRBT_tcm_dgTMatrix</span><span class="p">),</span><span class="w">
+  </span><span class="n">x_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">learning_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="w">
+  </span><span class="p">)</span><span class="w"> </span><span class="c1"># in example learning_rate .25
+</span><span class="n">GV</span><span class="o">$</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PLPRBT_tcm_dgTMatrix</span><span class="p">,</span><span class="w"> </span><span class="n">n_iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">)</span></code></pre></figure>
+
+<p>I may be running more iterations than necessary. Getting the word vectors as described takes 10 minutes. Having run the fitting algorithm, I can get the matrix with word vectors - the object of desire!</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">glove_word_vectors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GV</span><span class="o">$</span><span class="n">get_word_vectors</span><span class="p">()</span></code></pre></figure>
+
+<p>There are many useful things you can do with word vectors. For instance, I have played with word vectors for calculating sentence similarity. Here, I wish to keep it simple by working with word similarity.</p>
+
+<h2 id="dictionaries-and-semantic-fields-a-first-take">Dictionaries and semantic fields: A first take</h2>
+
+<p>Word vectors can be used to find similar words to a query by calculating the cosine similarity of the vector for the query with the vectors of all other words. The result may be considered the vocabulary of a semantic field.</p>
+
+<p>To assist running that operation not just once, let us prepare a small convenience function that will calculate the cosine similarity, put the result in a data.table, merge in word counts, order the result based on cosine similarity, and return just the top n words.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">get_semantic_field</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PLPRBT</span><span class="o">$</span><span class="n">stat</span><span class="p">){</span><span class="w">
+  </span><span class="n">query_vector</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">matrix</span><span class="p">(</span><span class="n">glove_word_vectors</span><span class="p">[</span><span class="n">query</span><span class="p">,],</span><span class="w"> </span><span class="n">nrow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">
+  </span><span class="n">similarities</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">proxy</span><span class="o">::</span><span class="n">simil</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glove_word_vectors</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query_vector</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cosine"</span><span class="p">)</span><span class="w">
+  </span><span class="n">similarities_dt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.table</span><span class="p">(</span><span class="n">word</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">similarities</span><span class="p">),</span><span class="w"> </span><span class="n">cosine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similarities</span><span class="p">[,</span><span class="m">1</span><span class="p">])</span><span class="w">
+  </span><span class="n">setkeyv</span><span class="p">(</span><span class="n">similarities_dt</span><span class="p">,</span><span class="w"> </span><span class="n">cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">)</span><span class="w">
+  </span><span class="n">similarities_dt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">count</span><span class="p">[</span><span class="n">similarities_dt</span><span class="p">]</span><span class="w">
+  </span><span class="n">setorderv</span><span class="p">(</span><span class="n">similarities_dt</span><span class="p">,</span><span class="w"> </span><span class="n">cols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cosine"</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="p">)</span><span class="w">
+  </span><span class="n">similarities_dt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">similarities_dt</span><span class="p">[</span><span class="m">2</span><span class="o">:</span><span class="n">nrow</span><span class="p">(</span><span class="n">similarities_dt</span><span class="p">),]</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">n</span><span class="p">))</span><span class="w"> </span><span class="n">similarities_dt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">head</span><span class="p">(</span><span class="n">similarities_dt</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w">
+  </span><span class="n">similarities_dt</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<h2 id="results">Results</h2>
+
+<p>So, we are ready to get results for three keywords in Germany’s debates on migration and integration (“Zuwanderung”, “Asyl”, “Islam”). Although word clouds are always very illustrative, I prefer Cleveland dot plots as a simlple visualisation, as they convey information in a very intuitive manner.</p>
+
+<p><strong>Zuwanderung</strong></p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">zuwanderung</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">get_semantic_field</span><span class="p">(</span><span class="s2">"Zuwanderung"</span><span class="p">,</span><span class="w"> </span><span class="m">25</span><span class="p">)</span><span class="w">
+</span><span class="n">dotchart</span><span class="p">(</span><span class="w">
+  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rev</span><span class="p">(</span><span class="n">zuwanderung</span><span class="p">[[</span><span class="s2">"cosine"</span><span class="p">]]),</span><span class="w">
+  </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rev</span><span class="p">(</span><span class="n">zuwanderung</span><span class="p">[[</span><span class="s2">"word"</span><span class="p">]]),</span><span class="w">
+  </span><span class="n">pch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">cex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.8</span><span class="p">),</span><span class="w">
+  </span><span class="n">xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cosine similarity"</span><span class="w">
+  </span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/assets/2017-02-04-GlobalVectors/get_semantic_field-1.png" alt="plot of chunk get_semantic_field" /></p>
+
+<p><strong>Asyl</strong></p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">asyl</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">get_semantic_field</span><span class="p">(</span><span class="s2">"Asyl"</span><span class="p">,</span><span class="w"> </span><span class="m">25</span><span class="p">)</span><span class="w">
+</span><span class="n">dotchart</span><span class="p">(</span><span class="w">
+  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rev</span><span class="p">(</span><span class="n">asyl</span><span class="p">[[</span><span class="s2">"cosine"</span><span class="p">]]),</span><span class="w">
+  </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rev</span><span class="p">(</span><span class="n">asyl</span><span class="p">[[</span><span class="s2">"word"</span><span class="p">]]),</span><span class="w">
+  </span><span class="n">pch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">cex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.8</span><span class="p">),</span><span class="w">
+  </span><span class="n">xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cosine similarity"</span><span class="w">
+  </span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/assets/2017-02-04-GlobalVectors/asyl-1.png" alt="plot of chunk asyl" /></p>
+
+<p><strong>Islam</strong></p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">islam</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">get_semantic_field</span><span class="p">(</span><span class="s2">"Islam"</span><span class="p">,</span><span class="w"> </span><span class="m">25</span><span class="p">)</span><span class="w">
+</span><span class="n">dotchart</span><span class="p">(</span><span class="w">
+  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rev</span><span class="p">(</span><span class="n">islam</span><span class="p">[[</span><span class="s2">"cosine"</span><span class="p">]]),</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rev</span><span class="p">(</span><span class="n">islam</span><span class="p">[[</span><span class="s2">"word"</span><span class="p">]]),</span><span class="w">
+  </span><span class="n">pch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="n">cex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.8</span><span class="p">),</span><span class="w">
+  </span><span class="n">xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"cosine similarity"</span><span class="w">
+  </span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/assets/2017-02-04-GlobalVectors/islam-1.png" alt="plot of chunk islam" /></p>
+
+<h2 id="discussion">Discussion</h2>
+
+<p>Admittedly, non-German speakers will not be able to assess the results of this exercise. (I wanted to use Google’s translation API to get English translations, but I could not get my key work.) But it’s true! The result is very intuitive. Among the words similar to ‘Asyl’ (asylum), we find two terms referring to nuclear energy as hits. It might be caused by a word neighbourhood indicating a similar degree of controversy - but this is a speculation, so far. Still, we have very good reasons to seriously consider vector representations of words to generate semantic fields.</p>
+
+<p>There is much more that can be done with word vectors. As of today, I am satisfied with the results, which convey the usefulness of this analytical technique. Importantly, it also demonstrates that there is a smooth path from a CWB corpus accessed with the polmineR package to a term cooccurrence matrix that can be processed with the GloVe class in the text2vec package.</p>
+
+<p><em>This is an updated version of the original post. Thanks to Christopher Smith for his useful feedback!</em></p>
+
+</article>
+
+
+
+<section class="tags">
+  <strong>Tags:</strong> <a href="/tag/news">news</a>
+</section>
+
+
+
+<section class="rss">
+  <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+</section>
+
+<section class="share">
+  <span>Share: </span>
+  
+    
+    
+      <a href="//twitter.com/share?text=Using+Global+Vectors+for+Getting+Semantic+Fields&url=http%3A%2F%2Fpolmine.github.io%2Fposts%2F2017%2F02%2F06%2FGlobalVectors.html&via=ablaette"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+        <i class="fa fa-twitter-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+  
+</section>
+
+
+
+
+</div>
+</div>
+
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h3 class="footer-heading">PolMine Project</h3>
+
+    <div class="site-navigation">
+
+      <p><strong>Site Map</strong></p>
+      <ul class="pages">
+        
+        
+          <li class="nav-link"><a href="/about/">About</a>
+        
+        
+        
+          <li class="nav-link"><a href="/code/">Code</a>
+        
+        
+        
+          <li class="nav-link"><a href="/corpora/">Corpora</a>
+        
+        
+        
+        
+        
+        
+        
+          <li class="nav-link"><a href="/links/">Links</a>
+        
+        
+        
+        
+        
+        
+        
+        
+      </ul>
+    </div>
+
+    <div class="site-contact">
+
+      <p><strong>Contact</strong></p>
+      <ul class="social-media-list">
+        <li>
+          <a href="mailto:andreas.blaette@uni-due.de">
+            <i class="fa fa-envelope-o"></i>
+            <span class="username">andreas.blaette@uni-due.de</span>
+          </a>
+        </li>
+
+        
+          
+          <li>
+            <a href="https://twitter.com/ablaette" title="Follow me on Twitter">
+              <i class="fa fa-twitter"></i>
+              <span class="username">ablaette</span>
+            </a>
+          </li>
+          
+        
+          
+          <li>
+            <a href="https://github.com/PolMine" title="Fork me on GitHub">
+              <i class="fa fa-github"></i>
+              <span class="username">polmine</span>
+            </a>
+          </li>
+          
+        
+          
+        
+
+      </ul>
+    </div>
+
+    <div class="site-contact">
+      <p><strong>Affiliation</strong></p>
+      <ul>
+        <li><a href="http://www.nrwschool.de">NRW School of Governance</a></li>
+        <li><a href="https://www.uni-due.de/politik">Institute of Political Science</a></li>
+        <li><a href="https://www.uni-due.de/gesellschaftswissenschaften/">Department of the Social Sciences</a></li>
+        <li><a href="http://www.uni-due.de">University of Duisburg-Essen</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // Default syntax highlighting
+  hljs.initHighlightingOnLoad();
+
+  // Header
+  var menuToggle = $('#js-mobile-menu').unbind();
+  $('#js-navigation-menu').removeClass("show");
+  menuToggle.on('click', function(e) {
+    e.preventDefault();
+    $('#js-navigation-menu').slideToggle(function(){
+      if($('#js-navigation-menu').is(':hidden')) {
+        $('#js-navigation-menu').removeAttr('style');
+      }
+    });
+  });
+});
+
+</script>
+
+
+
+
+
+
+  </body>
+
+</html>

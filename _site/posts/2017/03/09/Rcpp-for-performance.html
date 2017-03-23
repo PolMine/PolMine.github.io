@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Improving performance: polmineR.Rcpp</title>
+  <meta name="description" content="The polmineR package uses the rcqp package to access CWB indexed corpora. The core of the rcqp package are R-style C functions wrapping functions of the ‘cor...">
+  
+  <meta name="author" content="Andreas Blaette">
+  <meta name="copyright" content="&copy; Andreas Blaette 2017">
+  
+
+  <!-- External libraries -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/monokai_sublime.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
+
+  <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
+  <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/assets/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <!-- Facebook OGP cards -->
+  <meta property="og:description" content="The polmineR package uses the rcqp package to access CWB indexed corpora. The core of the rcqp package are R-style C functions wrapping functions of the ‘cor..." />
+  <meta property="og:url" content="http://polmine.github.io" />
+  <meta property="og:site_name" content="PolMine Project" />
+  <meta property="og:title" content="Improving performance: polmineR.Rcpp" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="http://polmine.github.io/assets/logo.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="612" />
+  <meta property="og:image:height" content="605" />
+  
+
+  
+  <!-- Twitter: card tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Improving performance: polmineR.Rcpp">
+  <meta name="twitter:description" content="The polmineR package uses the rcqp package to access CWB indexed corpora. The core of the rcqp package are R-style C functions wrapping functions of the ‘cor...">
+  <meta name="twitter:image" content="http://polmine.github.io/assets/logo.png">
+  <meta name="twitter:url" content="http://polmine.github.io">
+  
+
+  
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://polmine.github.io/posts/2017/03/09/Rcpp-for-performance.html">
+  <link rel="alternate" type="application/rss+xml" title="PolMine Project" href="http://polmine.github.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="navigation" role="banner">
+  <div class="navigation-wrapper">
+    <a href="/" class="logo">
+      
+      <img src="/assets/logo.png" alt="PolMine Project">
+      
+    </a>
+    <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <nav role="navigation">
+      <ul id="js-navigation-menu" class="navigation-menu show">
+        <li class="nav-link"><a href="/">Home</a>
+        
+          
+          <li class="nav-link"><a href="/about/">About</a>
+          
+        
+          
+          <li class="nav-link"><a href="/code/">Code</a>
+          
+        
+          
+          <li class="nav-link"><a href="/corpora/">Corpora</a>
+          
+        
+          
+        
+          
+        
+          
+          <li class="nav-link"><a href="/links/">Links</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <div class="page-content">
+        <div class="post">
+
+<div class="post-header-container " >
+  <div class="scrim ">
+    <header class="post-header">
+      <p class="info">by <strong>Andreas Blätte</strong></p>
+    </header>
+  </div>
+</div>
+
+<div class="wrapper">
+
+ <span class="page-divider">
+  <span class="one"></span>
+  <span class="two"></span>
+</span>
+ 
+
+<section class="post-meta">
+  <div class="post-date">March 9, 2017</div>
+  <div class="post-categories">
+  in 
+    
+    <a href="/category/Posts">Posts</a>
+    
+  
+  </div>
+</section>
+
+<article class="post-content">
+  <p>The polmineR package uses the <a href="https://cran.r-project.org/web/packages/rcqp/index.html">rcqp</a> package to access <a href="http://cwb.sourceforge.net">CWB</a> indexed corpora. The core of the rcqp package are R-style C functions wrapping functions of the ‘corpus library’ (CL), a core C library of the CWB. This provides speed. Still, in my feverish dreams, I wondered whether I could access the corpus library directly. As I have installed the CWB, that C library is on my system anyway. Wouldn’t it be nice to be able write my own C routines to call functions of the corpus library?</p>
+
+<p>It does not make sense at all to reimplement the well-developed functionality of the rcqp package. But there are some core bottlenecks in the polmineR package slowing things down. At times, I need to get back and forth between R and the C functions of the corpus library as exposed by rcqp. For these bottlenecks, I have finally managed to implement that old idea of accessing the corpus library directly. In other words, I have written a set of C++ functions for performance critial tasks.</p>
+
+<h2 id="getting-and-loading-packages">Getting and loading packages</h2>
+
+<p>The new C++ code is included in a package I call ‘polmineR.Rcpp’. You may have a look at the package <a href="http://polmine.sowi.uni-due.de/PolMine/polmineR.Rcpp">at GitHub</a> and install it from there using devtools. If you want to reproduce things, make sure that you have the latest development version of the polmineR package.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">devtools</span><span class="o">::</span><span class="n">install_github</span><span class="p">(</span><span class="s2">"PolMine/polmineR.Rcpp"</span><span class="p">)</span><span class="w">
+</span><span class="n">devtools</span><span class="o">::</span><span class="n">install_github</span><span class="p">(</span><span class="s2">"PolMine/polmineR"</span><span class="p">,</span><span class="w"> </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dev"</span><span class="p">)</span><span class="w"> </span><span class="err">#</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">get</span><span class="w"> </span><span class="n">things</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">development</span><span class="w"> </span><span class="n">branch</span></code></pre></figure>
+
+<p>We load these two packages, and ggplot2 for visualisation.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">library</span><span class="p">(</span><span class="n">polmineR</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">polmineR.Rcpp</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span></code></pre></figure>
+
+<h1 id="sufficiently-large-data">Sufficiently large data</h1>
+
+<p>Unsurprisingly, the corpus I use to run some tests is a corpus of protocols of the German Bundestag (“PLPRBT”). A release and an explanation how to use the corpus is planned to supplement the publication of an article I co-authored with Andreas Wüst.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">size</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## [1] 100917249</code></pre></figure>
+
+<p>It is a 100M corpus. That may be sufficiently large to learn something about performance.</p>
+
+<h1 id="counting-the-number-of-tokens-in-a-corpus">Counting the number of tokens in a corpus</h1>
+
+<p>Let us begin with a first standard task, counting the number of tokens in the overall corpus. There are three ways to get there:</p>
+<ul>
+  <li>decoding all tokens and counting that;</li>
+  <li>obtaining counts from calling the ‘cwb-s-decode’ utility of the CWB, and</li>
+  <li>accessing a C function of the corpus library called cqi_id2freq that is not exposed through rcqp but that I can access using Rcpp.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.Rcpp"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">Rcpp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">system.time</span><span class="p">(</span><span class="n">Corpus</span><span class="o">$</span><span class="n">new</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">)</span><span class="o">$</span><span class="n">count</span><span class="p">(</span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">))[</span><span class="s2">"elapsed"</span><span class="p">]</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## ... using polmineR.Rcpp for fast counting</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.Rcpp"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
+</span><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.cwb-lexdecode"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">lexdecode</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">system.time</span><span class="p">(</span><span class="n">Corpus</span><span class="o">$</span><span class="n">new</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">)</span><span class="o">$</span><span class="n">count</span><span class="p">(</span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">))[</span><span class="s2">"elapsed"</span><span class="p">]</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## ... using cwb-lexdecode for counting</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.cwb-lexdecode"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
+</span><span class="n">base</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">system.time</span><span class="p">(</span><span class="n">Corpus</span><span class="o">$</span><span class="n">new</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">)</span><span class="o">$</span><span class="n">count</span><span class="p">(</span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">))[</span><span class="s2">"elapsed"</span><span class="p">]</span></code></pre></figure>
+
+<p>So let us put things together and look at it.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="w">
+  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"base"</span><span class="p">,</span><span class="w"> </span><span class="s2">"cwb-lexdecode"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Rcpp"</span><span class="p">),</span><span class="w">
+  </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">base</span><span class="p">,</span><span class="w"> </span><span class="n">lexdecode</span><span class="p">,</span><span class="w"> </span><span class="n">Rcpp</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span><span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">method</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dodge"</span><span class="p">,</span><span class="w"> </span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Counts for entire corpora"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">ylab</span><span class="p">(</span><span class="s2">"time (in seconds)"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/assets/2017-03-09-Rcpp-for-performance/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /></p>
+
+<p>It is fair to say that the cwb-lexdecode utility essentially does the same as the Rcpp function I have written. Time is lost because R will catch the output from the system call and needs to parse it a again into a data.table. Be that as it may. My Rcpp function is the winner.</p>
+
+<h1 id="a-helper-function">A helper function</h1>
+
+<p>Before I proceed, I introduce a small helper function. To keep the code presented here readable, I decided to work with a wrapper that will execute all functions contained in a list of functions and return the number of seconds it has taken to do that.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">getElapsedTime</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">functions</span><span class="p">){</span><span class="w">
+  </span><span class="n">sapply</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">functions</span><span class="p">),</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="n">unname</span><span class="p">(</span><span class="n">system.time</span><span class="p">(</span><span class="n">functions</span><span class="p">[[</span><span class="n">x</span><span class="p">]]())[</span><span class="s2">"elapsed"</span><span class="p">]))</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<h2 id="counting-tokens-in-partitions">Counting tokens in partitions</h2>
+
+<p>The next test concern counts for partitions (i.e. subcorpora) rather than entire corpora. Results will depend on the size of the partition, and I want to compare affairs for corpora of three different kinds: A corpus for one individual speaker (Angela Merkel), for speeches given in one year, and all speeches given in one legislative period. At first, I generate these partitions.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">speakerPartition</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">speaker_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Angela Merkel"</span><span class="p">)</span><span class="w">
+</span><span class="n">yearPartition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">speaker_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2010"</span><span class="p">)</span><span class="w">
+</span><span class="n">lpPartition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">speaker_lp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"13"</span><span class="p">)</span></code></pre></figure>
+
+<p>Let is look at the sizes of these partitions.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">size</span><span class="p">(</span><span class="n">speakerPartition</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## [1] 711414</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">size</span><span class="p">(</span><span class="n">yearPartition</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## [1] 5910105</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">size</span><span class="p">(</span><span class="n">lpPartition</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## [1] 17278234</code></pre></figure>
+
+<p>So these partitions are as different in size as I wanted them to be. These are the functions that will perform counts for these partitions.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">count_functions</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+  </span><span class="n">speaker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="n">speakerPartition</span><span class="p">,</span><span class="w"> </span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">),</span><span class="w">
+  </span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="n">yearPartition</span><span class="p">,</span><span class="w"> </span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">),</span><span class="w">
+  </span><span class="n">lp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="n">count</span><span class="p">(</span><span class="n">lpPartition</span><span class="p">,</span><span class="w"> </span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span></code></pre></figure>
+
+<p>Now, let us run these functions, get the results, doing that with and without Rcpp.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.Rcpp"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
+</span><span class="n">noRcpp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">getElapsedTime</span><span class="p">(</span><span class="n">count_functions</span><span class="p">)</span><span class="w">
+
+</span><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.Rcpp"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">withRcpp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">getElapsedTime</span><span class="p">(</span><span class="n">count_functions</span><span class="p">)</span><span class="w">
+
+</span><span class="n">stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rbind</span><span class="p">(</span><span class="w">
+  </span><span class="n">data.frame</span><span class="p">(</span><span class="n">Rcpp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">noRcpp</span><span class="p">),</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">noRcpp</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">),</span><span class="w">
+  </span><span class="n">data.frame</span><span class="p">(</span><span class="n">Rcpp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">withRcpp</span><span class="p">),</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">withRcpp</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">stats</span><span class="o">$</span><span class="n">kind</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">factor</span><span class="p">(</span><span class="n">stats</span><span class="o">$</span><span class="n">kind</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"speaker"</span><span class="p">,</span><span class="w"> </span><span class="s2">"year"</span><span class="p">,</span><span class="w"> </span><span class="s2">"lp"</span><span class="p">))</span></code></pre></figure>
+
+<p>The following bar chart visualises the results.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggplot</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rcpp</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dodge"</span><span class="p">,</span><span class="w"> </span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Counting tokens in partitions"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/assets/2017-03-09-Rcpp-for-performance/plotting_counts-1.png" alt="plot of chunk plotting_counts" /></p>
+
+<p>Admittedly, the Rcpp implementation is somewhat faster, but it is not a huge difference.</p>
+
+<h2 id="creating-partitions-without-count">Creating partitions (without count)</h2>
+
+<p>The next scenario is to create a partition, without counts included at first. We do not always need counts. Here are the functions …</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">partition_without_count</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+  </span><span class="n">speaker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">speaker_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Angela Merkel"</span><span class="p">),</span><span class="w">
+  </span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">speaker_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2010"</span><span class="p">),</span><span class="w">
+  </span><span class="n">lp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">speaker_lp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"13"</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span></code></pre></figure>
+
+<p>Let us execute the functions (with and without Rcpp functions).</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.Rcpp"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
+</span><span class="n">noRcpp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">getElapsedTime</span><span class="p">(</span><span class="n">partition_without_count</span><span class="p">)</span><span class="w">
+
+</span><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.Rcpp"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">withRcpp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">getElapsedTime</span><span class="p">(</span><span class="n">partition_without_count</span><span class="p">)</span><span class="w">
+
+</span><span class="n">stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rbind</span><span class="p">(</span><span class="w">
+  </span><span class="n">data.frame</span><span class="p">(</span><span class="n">Rcpp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">noRcpp</span><span class="p">),</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">noRcpp</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">),</span><span class="w">
+  </span><span class="n">data.frame</span><span class="p">(</span><span class="n">Rcpp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">withRcpp</span><span class="p">),</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">withRcpp</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">stats</span><span class="o">$</span><span class="n">kind</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">factor</span><span class="p">(</span><span class="n">stats</span><span class="o">$</span><span class="n">kind</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"speaker"</span><span class="p">,</span><span class="w"> </span><span class="s2">"year"</span><span class="p">,</span><span class="w"> </span><span class="s2">"lp"</span><span class="p">))</span></code></pre></figure>
+
+<p>And here is the bar chart.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggplot</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rcpp</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dodge"</span><span class="p">,</span><span class="w"> </span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Time consumed for creating partitions"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/assets/2017-03-09-Rcpp-for-performance/plotting-1.png" alt="plot of chunk plotting" /></p>
+
+<p>So creating partitions (without counts) is much, much faster.</p>
+
+<h2 id="faster-creation-of-partitions-with-counts">Faster creation of partitions with counts</h2>
+
+<p>The final scenario is the creation of partitions that will include counts. That will be triggered by providing the parameter ‘pAttribute’. We start again with the list of functions…</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">partition_with_count</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="w">
+  </span><span class="n">speaker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">speaker_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Angela Merkel"</span><span class="p">,</span><span class="w"> </span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">),</span><span class="w">
+  </span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">speaker_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"2010"</span><span class="p">,</span><span class="w"> </span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">),</span><span class="w">
+  </span><span class="n">lp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="n">partition</span><span class="p">(</span><span class="s2">"PLPRBT"</span><span class="p">,</span><span class="w"> </span><span class="n">speaker_lp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"13"</span><span class="p">,</span><span class="w"> </span><span class="n">pAttribute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"word"</span><span class="p">)</span><span class="w">
+  </span><span class="p">)</span></code></pre></figure>
+
+<p>… run the tests …</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.Rcpp"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
+</span><span class="n">noRcpp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">getElapsedTime</span><span class="p">(</span><span class="n">partition_with_count</span><span class="p">)</span><span class="w">
+
+</span><span class="n">options</span><span class="p">(</span><span class="s2">"polmineR.Rcpp"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">withRcpp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">getElapsedTime</span><span class="p">(</span><span class="n">partition_with_count</span><span class="p">)</span><span class="w">
+
+</span><span class="n">stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rbind</span><span class="p">(</span><span class="w">
+  </span><span class="n">data.frame</span><span class="p">(</span><span class="n">Rcpp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">noRcpp</span><span class="p">),</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">noRcpp</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">),</span><span class="w">
+  </span><span class="n">data.frame</span><span class="p">(</span><span class="n">Rcpp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">withRcpp</span><span class="p">),</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">withRcpp</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">stats</span><span class="o">$</span><span class="n">kind</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">factor</span><span class="p">(</span><span class="n">stats</span><span class="o">$</span><span class="n">kind</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"speaker"</span><span class="p">,</span><span class="w"> </span><span class="s2">"year"</span><span class="p">,</span><span class="w"> </span><span class="s2">"lp"</span><span class="p">))</span></code></pre></figure>
+
+<p>And we plot the results.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">ggplot</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span><span class="w"> </span><span class="n">aes</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rcpp</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_bar</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dodge"</span><span class="p">,</span><span class="w"> </span><span class="n">stat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"identity"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Time consumed for creating partitions (with counts)"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/assets/2017-03-09-Rcpp-for-performance/print_p_with_count-1.png" alt="plot of chunk print_p_with_count" /></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I assume the results are straight forward and do not really need further discussion. There is a lot of talk about the performance gains that can be achieved using Rcpp. Here is the evidence for the polmineR package. Some core functions will run considerably faster.</p>
+
+<p>However, these successes will not induce me to rewrite everything. There are a few other performance boosters in the package. Using the the data.table package has made a huge difference. Still, I am really happy that I managed to write some Rcpp routines that speed up performance critical tasks considerably. It should make using the package more enjoyable!</p>
+
+</article>
+
+
+
+<section class="tags">
+  <strong>Tags:</strong> <a href="/tag/news">news</a>
+</section>
+
+
+
+<section class="rss">
+  <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+</section>
+
+<section class="share">
+  <span>Share: </span>
+  
+    
+    
+      <a href="//twitter.com/share?text=Improving+performance%3A+polmineR.Rcpp&url=http%3A%2F%2Fpolmine.github.io%2Fposts%2F2017%2F03%2F09%2FRcpp-for-performance.html&via=ablaette"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+        <i class="fa fa-twitter-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+  
+</section>
+
+
+
+
+</div>
+</div>
+
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h3 class="footer-heading">PolMine Project</h3>
+
+    <div class="site-navigation">
+
+      <p><strong>Site Map</strong></p>
+      <ul class="pages">
+        
+        
+          <li class="nav-link"><a href="/about/">About</a>
+        
+        
+        
+          <li class="nav-link"><a href="/code/">Code</a>
+        
+        
+        
+          <li class="nav-link"><a href="/corpora/">Corpora</a>
+        
+        
+        
+        
+        
+        
+        
+          <li class="nav-link"><a href="/links/">Links</a>
+        
+        
+        
+        
+        
+        
+        
+        
+      </ul>
+    </div>
+
+    <div class="site-contact">
+
+      <p><strong>Contact</strong></p>
+      <ul class="social-media-list">
+        <li>
+          <a href="mailto:andreas.blaette@uni-due.de">
+            <i class="fa fa-envelope-o"></i>
+            <span class="username">andreas.blaette@uni-due.de</span>
+          </a>
+        </li>
+
+        
+          
+          <li>
+            <a href="https://twitter.com/ablaette" title="Follow me on Twitter">
+              <i class="fa fa-twitter"></i>
+              <span class="username">ablaette</span>
+            </a>
+          </li>
+          
+        
+          
+          <li>
+            <a href="https://github.com/PolMine" title="Fork me on GitHub">
+              <i class="fa fa-github"></i>
+              <span class="username">polmine</span>
+            </a>
+          </li>
+          
+        
+          
+        
+
+      </ul>
+    </div>
+
+    <div class="site-contact">
+      <p><strong>Affiliation</strong></p>
+      <ul>
+        <li><a href="http://www.nrwschool.de">NRW School of Governance</a></li>
+        <li><a href="https://www.uni-due.de/politik">Institute of Political Science</a></li>
+        <li><a href="https://www.uni-due.de/gesellschaftswissenschaften/">Department of the Social Sciences</a></li>
+        <li><a href="http://www.uni-due.de">University of Duisburg-Essen</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // Default syntax highlighting
+  hljs.initHighlightingOnLoad();
+
+  // Header
+  var menuToggle = $('#js-mobile-menu').unbind();
+  $('#js-navigation-menu').removeClass("show");
+  menuToggle.on('click', function(e) {
+    e.preventDefault();
+    $('#js-navigation-menu').slideToggle(function(){
+      if($('#js-navigation-menu').is(':hidden')) {
+        $('#js-navigation-menu').removeAttr('style');
+      }
+    });
+  });
+});
+
+</script>
+
+
+
+
+
+
+  </body>
+
+</html>
