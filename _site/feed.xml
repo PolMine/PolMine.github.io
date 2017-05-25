@@ -5,13 +5,15 @@
     <description>Website of the PolMine Project</description>
     <link>http://polmine.github.io/</link>
     <atom:link href="http://polmine.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 25 May 2017 11:27:08 +0200</pubDate>
-    <lastBuildDate>Thu, 25 May 2017 11:27:08 +0200</lastBuildDate>
+    <pubDate>Thu, 25 May 2017 11:40:38 +0200</pubDate>
+    <lastBuildDate>Thu, 25 May 2017 11:40:38 +0200</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
         <title>polmineR version 0.7.3 at CRAN</title>
-        <description>&lt;p&gt;A new version of polmineR is available at CRAN. It is the first version that is compatible with Windows. Documentation for many functions/methods has been improved, the package vignette provides an introduction to the package. With improved portability and documentation, I hope that more users will find the package useful.&lt;/p&gt;
+        <description>&lt;h1 id=&quot;new-polminer-version-v073-at-cran&quot;&gt;New polmineR version (v0.7.3) at CRAN!&lt;/h1&gt;
+
+&lt;p&gt;The new release of the package has seen quite a bit of refactoring. It is the first version that is compatible with Windows. Documentation for many functions/methods has been improved, the package vignette provides an extended introduction to the package. With improved portability and documentation, I hope that more users will find the package useful.&lt;/p&gt;
 
 &lt;h2 id=&quot;getting-polminer-v073&quot;&gt;Getting polmineR v0.7.3&lt;/h2&gt;
 
@@ -184,7 +186,7 @@
 
 &lt;ul&gt;
   &lt;li&gt;
-    &lt;p&gt;The way you can index objects inheriting from the textstat class is more consistent than previously, and mimicks that style you can index data.tables. See &lt;em&gt;?&lt;code class=&quot;highlighter-rouge&quot;&gt;textstat-class&lt;/code&gt;&lt;/em&gt; to learn more.&lt;/p&gt;
+    &lt;p&gt;The way you can index objects inheriting from the textstat class is more consistent than previously, and mimicks that style you can index data.tables. See &lt;code class=&quot;highlighter-rouge&quot;&gt;?&quot;textstat-class&quot;&lt;/code&gt; to learn more.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Managing encodings has been reworked to achieve Windows compatibility. Two new functions (as.corpusEnc and as.nativeEnc) have been introduced for encoding conversion.&lt;/p&gt;
@@ -193,21 +195,29 @@
     &lt;p&gt;The count-method for a whole corpus (as provided by a character vector) will now work when more than pAttribute is provided.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;There are some speed improvements for generating the html that is prepared by the read-method. A previously hidden highlight-method is now exported. It faster and more robust than before, as the xml2 package is used to parse and enhance html.&lt;/p&gt;
+    &lt;p&gt;There are some speed improvements for generating the html that is prepared by the read-method. A previously hidden highlight-method is now exported. It is faster and definitely more robust than before, as the xml2 package is used to parse and enhance html.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;My old implementation of progress bars for multicore operations has never been stable. polmineR now relies on the pbapply package that is specialized on that task.&lt;/p&gt;
+    &lt;p&gt;My old implementation of progress bars for multicore operations has never been stable in a satisfactory fashion. polmineR now relies on the pbapply package that is specialized on that task.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;To make the package as reliable as possible, I have started to use the testthat package to include unit tests. We want to discover unintended errors.&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;perspectives&quot;&gt;Perspectives&lt;/h2&gt;
+&lt;h1 id=&quot;an-easter-egg-an-integrated-shiny-app&quot;&gt;An easter egg: An integrated shiny app!&lt;/h1&gt;
+
+&lt;p&gt;Before I forget that… There is an experimental shiny app included in the package! It offers GUI access to core methods of the polmineR package (count, cooccurrences, features, dispersion). In fact, the app is meant to serve as a tutorial to the functionality of polmineR. It is experimental, but to check it out type:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;polmineR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Many of the changes that package has seen serve the purpose of providing a consistent backend for the shiny app. There will be more development in that respect.&lt;/p&gt;
+
+&lt;h1 id=&quot;further-perspectives&quot;&gt;Further perspectives&lt;/h1&gt;
 
 &lt;p&gt;There has been a lot of refactoring behind the scences to ensure that the package is portable and to improve performance. Documentation should be much better than before. Feedback on advice is highly welcome, and we certainly plan to offer more tutorials, examples and advice.&lt;/p&gt;
 
-&lt;p&gt;A consequence of the refactoring of the context/cooccurrences method has been that some functionality was not immediatly re-implemennted. That’s planned for v0.7.4.&lt;/p&gt;
+&lt;p&gt;A consequence of the refactoring of the context/cooccurrences method has been that some functionality was not immediatly re-implemented. That’s planned for v0.7.4.&lt;/p&gt;
 
 &lt;p&gt;I am happy that there is a growing community of users. I am looking forward to your advice, and to making this an increasingly useful package.&lt;/p&gt;
 </description>
