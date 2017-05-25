@@ -1,0 +1,137 @@
+---
+layout: post
+title:  "polmineR version 0.7.3 at CRAN"
+date:   2017-05-25
+author: Andreas Blätte
+categories: Posts
+tags: news
+---
+
+A new version of polmineR is available at CRAN. It is the first version that is compatible with Windows. Documentation for many functions/methods has been improved, the package vignette provides an introduction to the package. With improved portability and documentation, I hope that more users will find the package useful. 
+
+
+## Getting polmineR v0.7.3
+
+The new version of polmineR is available at CRAN and can be installed using the *install.packages* mechanism.
+
+```{r installation, eval = FALSE}
+install.packages("polmineR")
+```
+
+Previous versions of polmineR were Linux/MacOS-only packages. It took some effort to learn the techniques necessary to make the package work on Windows (cross-compilation, compiling against an external C library), but I am really happy that things worked at last. The [package vignette](https://cran.r-project.org/web/packages/polmineR/vignettes/vignette.html) includes detailed instructions how to install polmineR on Windows systems.
+
+Of course, v0.7.3 is not the end of history. The development version of the package that will include bug fixes and new features will be available at [GitHub](https://github.com/PolMine/polmineR). The most recent development version can be installed from GitHub using the devtools package.
+
+```{r install_github, eval = FALSE}
+devtools::install_github("PolMine/polmineR")
+```
+
+Feedback I receive how the installation instructions can be improved will find their way into the vignette. The most recent version of the vignette will be available at the [development branch of polmineR at GitHub](https://github.com/PolMine/polmineR/blob/dev/vignettes/vignette.Rmd).
+
+If nothing went wrong, the package can be loaded.
+
+```{r load_polmineR, eval = TRUE}
+library(polmineR)
+```
+
+
+## Installing packaged corpora
+
+The last version of polmineR introduced an installation mechanism for corpora indexed using the Corpus Workbench (CWB) in R data packages. See *?install.corpus* to learn more. In the following examples, I will use a corpus of parliamentary debates that can be installed from a repository hosted at the project server of the PolMine project.
+
+```{r install_corpus, eval = FALSE}
+install.corpus("plprbt.pvs2017", repo = "http://polmine.sowi.uni-due.de/packages")
+```
+
+The new polmineR version offers a more robust *install.corpus* mechanism, and a function to learn about the packaged corpora installed at your system.
+
+```{r}
+packaged.corpora()
+```
+
+To access a packaged corpus, the CORPUS_REGISTRY environment variable needs to be reset. That's achieved calling use.
+
+```{r  use, message=FALSE}
+use("plprbt.pvs2017")
+corpus()
+```
+
+## Cooccurrences and cooccurrences
+
+The new polmineR version has seen considerable refactoring to make the naming of methods more consistent, and to make the code more maintainable. The biggest intervention is to clearly distinguish between getting the co-occurrences for one query, and getting all cooccurrences in a corpus, or partition.
+
+Cooccurrences for one query are now obtained using the cooccurrences method.
+
+```{r cooccurrencs, eval = TRUE, message = FALSE}
+C <- cooccurrences("PLPRBT", query = "Finanzkrise")
+
+bt2008 <- partition("PLPRBT", text_year = "2008")
+C <- cooccurrences(bt2008, query = "Finanzkrise")
+```
+
+Note that the output in RStudio now makes use of labels for the columns that somewhat explain the statistical results.
+
+The 'old' cooccurrences method to get all cooccurrences in a corpus has been removed from the polmineR package. Don't worry - it is not gone. It is included in an extension package 'polmineR.graph' that is [available a GitHub](https://github.com/PolMine/polmineR.graph). The big change that has happened for calculating all cooccurrences is that I now use a [reference classes](http://adv-r.had.co.nz/OO-essentials.html#rc)  to handle the data for all cooccurrences, which can be quite bulky in memory. The huge advantage of reference classes is that objects are not copied, reducing memory consumption. As working with all coccurrences is more advanced anyway, and I did not want to mix the S4 class system and reference classes in a confusing fashion, the Coccurrences class had to emigrate.
+
+Please note that the old context method is not gone, but it is now a worker for the cooccurrences and the kwic method. The reworked context class maintains data on word contexts in data.tables. Very good for speedy operations! 
+
+
+## New uses for the size method
+
+The uses of the *size*-method have been extended. A new *sAttribute* parameter has been introduced that will give you information how a corpus is spread over the s-attribute specified.
+
+```{r size, eval = TRUE, message = FALSE}
+size("PLPRBT")
+size("PLPRBT", sAttribute = "text_year")
+```
+
+An immediate scenario may be to gain a quick understanding of the data you work with.
+
+```{r size_scenario, eval = TRUE, message = FALSE}
+s <- size("PLPRBT", sAttribute = "text_year")
+barplot(height = s[["size"]], names.arg = s[["text_year"]], las = 2)
+```
+
+The parameter sAttribute will also swallow a character vector of length 2. The return value of the size method is a data.table (melted format). For our scenario, the dcast will turn it into a useful format.
+
+```{r size2, message = FALSE}
+s2 <- size("PLPRBT", sAttribute = c("text_year", "text_party"))
+
+library(data.table)
+dcast(s2, text_year ~ text_party, value.var = "size")
+```
+
+
+## An enhanced sAttributes method
+
+I would not guess that anybody apart from myself might have discovered the old *meta*-method to learn about the metadata of regions of text. It has always been a worker. Now it is gone, and the functionality has been integrated into the sAttributes method. The sAttribute parameter is not limited to length 1 character vectors any more. If more than one string is provided, you get a data.table with the combinations that are available in the corpus.
+
+```{r sAttributes, message = FALSE}
+y <- sAttributes("PLPRBT", sAttribute = c("text_date", "text_name"))
+y2 <- y[text_name == "Dr. Angela Merkel"]
+y2[1:5]
+```
+
+
+## Further changes, features and improvements
+
+* The way you can index objects inheriting from the textstat class is more consistent than previously, and mimicks that style you can index data.tables. See *?`textstat-class`* to learn more.
+
+* Managing encodings has been reworked to achieve Windows compatibility. Two new functions (as.corpusEnc and as.nativeEnc) have been introduced for encoding conversion.
+
+* The count-method for a whole corpus (as provided by a character vector) will now work when more than pAttribute is provided.
+
+* There are some speed improvements for generating the html that is prepared by the read-method. A previously hidden highlight-method is now exported. It faster and more robust than before, as the xml2 package is used to parse and enhance html.
+
+* My old implementation of progress bars for multicore operations has never been stable. polmineR now relies on the pbapply package that is specialized on that task.
+
+* To make the package as reliable as possible, I have started to use the testthat package to include unit tests. We want to discover unintended errors.
+
+
+## Perspectives
+
+There has been a lot of refactoring behind the scences to ensure that the package is portable and to improve performance. Documentation should be much better than before. Feedback on advice is highly welcome, and we certainly plan to offer more tutorials, examples and advice. 
+
+A consequence of the refactoring of the context/cooccurrences method has been that some functionality was not immediatly re-implemennted. That's planned for v0.7.4. 
+
+I am happy that there is a growing community of users. I am looking forward to your advice, and to making this an increasingly useful package.

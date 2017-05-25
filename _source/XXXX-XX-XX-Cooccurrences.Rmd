@@ -1,0 +1,81 @@
+---
+title: "Untitled"
+author: "Andreas Blaette"
+date: "15 März 2017"
+output: html_document
+---
+
+
+# Loading required libraries
+
+```{r}
+library(polmineR)
+library(data.table)
+library(polmineR.graph)
+library(igraph)
+library(RColorBrewer)
+library(three)
+```
+
+
+# Configuration
+
+```{r}
+setwd("~/Lab/tmp/ungleichheit")
+corpus <- "PLPRBT"
+pAttribute <- "word"
+threshold <- 10.84
+years <- as.character(1998:2015)
+
+svg.width <- 800
+svg.height <- 650
+svg.margin <- 100
+svg.fontSize <- 13
+svg.edgeColor <- "lightgrey"
+```
+
+
+# helper function
+
+```{r}
+makeSVG <- function(year){
+  
+  # create partition
+  P <- partition(corpus, speaker_year = year, speaker_type = "speech", pAttribute = pAttr)
+  
+  # create Cooccurrences object
+  termsToDrop <- c(polmineR::punctuation, unlist(noise(pAttributes(P, pAttribute = pAttr))))
+  Cooc <- Cooccurrences$new(partition = P, pAttribute = pAttr, window = 10L, drop = termsToDrop)
+  Cooc$count()
+  Cooc$trim(action = "drop", by.id = TRUE)
+  Cooc$maths()
+  
+  # minimize by applying statistical threshold, reduction to token neighborhood
+  CoocMin <- copy(Cooc)
+  CoocMin$dt <- CoocMin$dt[ll > threshold]
+  G <- CoocMin$as.igraph(as.undirected = TRUE)
+  Gmin <- polmineR.graph:::tokenNeighborhood(G, order = 1, token = "Ungleichheit")
+  Gmin <- addCommunities(Gmin)
+  Gmin <- addCoordinates(Gmin, layout = "kamada.kawai", dim = 2)
+  
+  
+  # turn into SVG
+  S <- SVG$new(Gmin)
+  S$width = svg.width
+  S$height = svg.height
+  S$margin = svg.margin
+  S$fontSize = svg.fontSize
+  S$edgeColor = svg.edgeColor
+  S$make()
+  outfile <- S$store(filename = file.path(getwd(), paste(year, ".html", sep = "")))
+  print(outfile)
+
+}
+```
+
+
+# doing it
+
+```{r}
+for (year in years) makeSVG(year)
+```
