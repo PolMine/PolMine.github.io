@@ -1,13 +1,13 @@
 ---
 layout: post
-title:  "polmineR version 0.7.3 at CRAN"
+title:  "polmineR version 0.7.9 at CRAN"
 date:   2018-07-16
 author: Andreas Blätte
 categories: Posts
 tags: news
 ---
 
-# New polmineR versio v0.7.9 ("Jeanne d'Arc")!
+# New polmineR version v0.7.9 ("Jeanne d'Arc")!
 
 ## Major changes:
 
