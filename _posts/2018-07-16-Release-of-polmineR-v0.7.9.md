@@ -1,17 +1,17 @@
 ---
 layout: post
-title:  "polmineR version 0.7.9 at CRAN"
-date:   2017-05-25
+title:  "polmineR version 0.7.3 at CRAN"
+date:   2018-07-16
 author: Andreas Blätte
 categories: Posts
 tags: news
 ---
 
-# New polmineR version v0.7.9 ("Jeanne d'Arc")
+# New polmineR versio v0.7.9 ("Jeanne d'Arc")!
 
-## Major changes
+## Major changes:
 
-The most visible change of polmineR v0.7.9 may be that the packages moves to a snake_case coding style. This is increasingly the state-of-the-art, and feels much more intuitive when working with the arguments 's_attributes' and 'p_attributes' (rather than pAttributes, and sAttributes). Functions/methods are fully backwards compatible, so old code should not break.
+The most visible change of polmineR v0.7.9 may be that the package moves to a snake_case coding style. This is increasingly the state-of-the-art of newly developed R packages, and feels much more intuitive when working with the arguments 's_attributes' and 'p_attributes' (rather than pAttributes, and sAttributes). Functions/methods are fully backwards compatible. Old code should is not supposed to break.
 
 The package now uses a session registry directory, which is a subdirectory of the temporary session directory. This has become mandatory, because CRAN policies do not allow to reset paths within a package, once it has been installed. But it is very useful, because now, switching registry directories can be avoided. The `use()`-function will now add the corpora in a R data package to the session registry. So this is a good start to work with multiple corpora wrapped in various packages. This involves a set of new functions:
 
@@ -26,14 +26,16 @@ A set of changes makes working with `bundle` objects more versatile and robust:
 
 The new version upgrades the `count`-class. So the `count()`-method will serve as a constructor for a count object, if no query is provided. This is particularly useful when working with `count_bundle`-objects. 
 
-## Minor changes
+
+## Minor changes:
 
 * There is a new `is.partition()`-function (a logical check);
 * A new argument 'type' has been added to `partition_bundle()`-method;
 * A new method `get_type()` introduced to make getting corpus type more robust.
 * A new `partition_bundle()`-method for `partition_bundle`-objects has been introduced;
 
-## Bug fixes
+
+## Bug fixes:
 
 * `s_attributes()` for partition-objects in line with RcppCWB requirements (no negative values of strucs);
 * `count()` repaired for muliple p-attributes;
