@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "polmineR version 0.7.9 at CRAN"
-date:   2018-07-16
+date:   2018-07-09
 author: Andreas Blätte
 categories: Posts
 tags: news
