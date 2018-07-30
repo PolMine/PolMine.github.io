@@ -139,15 +139,56 @@
 
 
   <article class="post-content">
-    <p>The PolMine Project developed out of the conviction that developing the capacities of text mining in the social sciences is as much about data as it is about exploring new analytical approaches. Hacky solutions inhibit reproducible findings and collaboration. The following four ideas are cornerstones of the project:</p>
+    <p>XML/TEI versions of corpora are publicly available under Creative Commons licenses for non-commercial users either at GitHub, or for cooperation partners through our <a href="https://gitlab.sowi.uni-due.de">GitLab server</a>. GitHub/GitLab offers tools for tracking the differences of versions and comes with a issue tracking system very useful for quality management purposes.</p>
 
-<p><strong>Public data:</strong> The focus of PolMine is on the texts published by public institutions. Corpora of parliamentary protocols have been, and remain at the heart of the project.</p>
+<p>Linguistically annotated versions of corpora that have been indexed and imported into the Corpus Workbench are shipped using R data packages. In combination with the polmineR package, large corpora will work (more or less) out of the box on average computers that everybody can afford. To keep the initial installation size of data packages modest, they only include small sample data and corpus-specific functionality at the outset. Full corpora can then be downloaded from a dedicated webspace. The following corpora are accessible accordingly.</p>
 
-<p><strong>Sustainability:</strong> To facilitate the growth of sustainable corpora, the project’s concern is to develop a sustainable codebase that will ensure the reproducible preparation of corpora, and make updating the data as efficient as possible.</p>
+<hr />
 
-<p><strong>Standardization:</strong> We adhere to standardizations suggested by the Text Encoding Initiative (TEI). An XML document conforming to TEI can then be turned into almost any other data format that is required.</p>
+<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">GermaParl</span><a style="display: inline !important;" href="https://github.com/PolMine/GermaParl"><img style="display:inline !important;width:20px !important; height:20px;" src="/assets/icons/mark-github.svg" /></a>    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img style="display: inline !important;height: 20px; width: unset !important;" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" /></a>  <a href="https://doi.org/10.5281/zenodo.1312551"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.1312551.svg" alt="DOI" style="display: inline !important;height: 20px; width: unset !important;" /></a>  <a href="https://travis-ci.org/PolMine/GermaParl"><img style="display: inline; width: unset !important;height: 20px;" src="https://api.travis-ci.org/PolMine/GermaParl.svg?branch=master" /></a>  <a href=""><img style="display: inline !important; width: unset !important; height: 20px;" src="https://ci.appveyor.com/api/projects/status/github/PolMine/GermaParl?branch=master&amp;svg=true" /></a></p>
 
-<p><strong>Ensuring quality:</strong> Released corpora are available for registered academic users through our <a href="https://gitlab.sowi.uni-due.de">GitLab server</a>. The choice for git/GitLab supports versioning the data, and facilitates an issue tracking system. We want to involve users in a process to improve the quality of the data.</p>
+<p>GermaParl, a corpus of debates in the German Bundestag, is the flagship corpus of the PolMine Project. At this stage, the corpus includes all plenary protocols that were published by the German Bundestag between 1996 and 2016. Plain text documents issued by the German Bundestag were considered the best raw data format for corpus preparation and were used whenever they are available. For a period between 2008 and 2010, txt files are not available throughout. To fill the gap, pdf documents were processed. The naming of GermaParl is inspired by the EuroParl and DutchParl corpus. XML/TEI version of the corpus are available at GitHub. Consult the GitHub Pages with the package and corpus documentation to learn more.</p>
+
+<p>To install GermaParl, proceed as follows.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="n">drat</span><span class="p">)</span><span class="w">
+</span><span class="n">drat</span><span class="o">::</span><span class="n">addRepo</span><span class="p">(</span><span class="s2">"polmine"</span><span class="p">)</span><span class="w">
+</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"GermaParl"</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">GermaParl</span><span class="p">)</span><span class="w">
+</span><span class="n">germaparl_download_corpus</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>To check whether GermaParl has been installed correctly, run the following code.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="s2">"polmineR"</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">polmineR</span><span class="p">)</span><span class="w">
+</span><span class="n">use</span><span class="p">(</span><span class="s2">"GermaParl"</span><span class="p">)</span><span class="w">
+</span><span class="n">corpus</span><span class="p">()</span><span class="w"> </span><span class="c1"># you should see GERMAPARL in the output table</span><span class="w">
+</span></code></pre></div></div>
+
+<hr />
+
+<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">UNGA</span>  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img style="display: inline !important;height: 20px; width: unset !important;" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" /></a></p>
+
+<p>The data included in the corpus are the verbatim meeting records of the United Nations General Assembly. At http://research.un.org/c.php?g=98268&amp;p=636540, the UN describes the practices and systematics of record keeping in some detail. After handling technical restrictions of the UN’s document database (http://unbisnet.un.org), most of the verbatim records (about 7000) were downloaded, a qualitative evaluation revealed that the recognition accuracy of the optical character recognition (OCR) of the documents was limited for meeting records from 1993 or before. Hence, we decided to restrict ourselves to the use of documents starting from 1994 (the 49th session). At the point of writing, the most recent document processed is the one of the 79th meeting of the 72nd session (20 March 2018). All in all, at this point we work with 2585 pdf files.</p>
+
+<p>To install UNGA, proceed as follows.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="n">drat</span><span class="p">)</span><span class="w">
+</span><span class="n">drat</span><span class="o">::</span><span class="n">addRepo</span><span class="p">(</span><span class="s2">"polmine"</span><span class="p">)</span><span class="w">
+</span><span class="n">install.packages</span><span class="p">(</span><span class="s2">"UNGA"</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">UNGA</span><span class="p">)</span><span class="w">
+</span><span class="n">unga_download_corpus</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>To check whether UNGA has been installed correctly, proceed as follows.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="s2">"polmineR"</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">polmineR</span><span class="p">)</span><span class="w">
+</span><span class="n">use</span><span class="p">(</span><span class="s2">"UNGA"</span><span class="p">)</span><span class="w">
+</span><span class="n">corpus</span><span class="p">()</span><span class="w"> </span><span class="c1"># you should see UNGA in the output table</span><span class="w">
+</span></code></pre></div></div>
+
 
   </article>
 
