@@ -10,7 +10,7 @@
   <meta name="description" content="I have been asked often (i.e. very often), whether the polmineR package can be used on Windows machines. For many years, my answer has been: I am very sorry,...">
   
   <meta name="author" content="Andreas Blaette">
-  <meta name="copyright" content="&copy; Andreas Blaette 2017">
+  <meta name="copyright" content="&copy; Andreas Blaette 2018">
   
 
   <!-- External libraries -->
@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="I have been asked often (i.e. very often), whether the polmineR package can be used on Windows machines. For many years, my answer has been: I am very sorry,..." />
-  <meta property="og:url" content="http://polmine.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="PolMine Project" />
   <meta property="og:title" content="Finally: polmineR available for Windows (32-bit R)" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://polmine.github.io/assets/logo.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Finally: polmineR available for Windows (32-bit R)">
   <meta name="twitter:description" content="I have been asked often (i.e. very often), whether the polmineR package can be used on Windows machines. For many years, my answer has been: I am very sorry,...">
-  <meta name="twitter:image" content="http://polmine.github.io/assets/logo.png">
-  <meta name="twitter:url" content="http://polmine.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://polmine.github.io/posts/2017/02/27/polmineR-Goes-Windows.html">
-  <link rel="alternate" type="application/rss+xml" title="PolMine Project" href="http://polmine.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/posts/2017/02/27/polmineR-Goes-Windows.html">
+  <link rel="alternate" type="application/rss+xml" title="PolMine Project" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -104,6 +104,12 @@
         
           
           <li class="nav-link"><a href="/links/">Links</a>
+          
+        
+          
+        
+          
+        
           
         
           
@@ -172,8 +178,8 @@
 
 <p>Having the dlls at hand, I have modified the rcqp package slightly. The dll files are included into the package, and I changed the procedure when loading the package (file zzz.R). The binary is then generated from the command line as follows:</p>
 
-<figure class="highlight"><pre><code class="language-sh" data-lang="sh">R CMD build polmineR.rcqp --no-build-vignettes --no-manual
-R CMD INSTALL --build rcqp_0.4.tar.gz</code></pre></figure>
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh">R CMD build polmineR.rcqp <span class="nt">--no-build-vignettes</span> <span class="nt">--no-manual</span>
+R CMD INSTALL <span class="nt">--build</span> rcqp_0.4.tar.gz</code></pre></figure>
 
 <p>The resulting binary package is a zipped file (<em>rcqp_0.4.zip</em>). Using Dirk Eddelbuettel’s <a href="https://github.com/eddelbuettel/drat">drat</a> package, I insert that binary package into the drat archive I offer at the <a href="https://github.com/PolMine/polmineR">GitHub presence of the PolMine Project</a>. And that’s the place from where you can install the rcqp package using the command given in the intro.</p>
 
@@ -209,7 +215,7 @@ R CMD INSTALL --build rcqp_0.4.tar.gz</code></pre></figure>
   
     
     
-      <a href="//twitter.com/share?text=Finally%3A+polmineR+available+for+Windows+%2832-bit+R%29&url=http%3A%2F%2Fpolmine.github.io%2Fposts%2F2017%2F02%2F27%2FpolmineR-Goes-Windows.html&via=ablaette"
+      <a href="//twitter.com/share?text=Finally%3A+polmineR+available+for+Windows+%2832-bit+R%29&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2F2017%2F02%2F27%2FpolmineR-Goes-Windows.html&via=ablaette"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -275,6 +281,12 @@ R CMD INSTALL --build rcqp_0.4.tar.gz</code></pre></figure>
         
         
           <li class="nav-link"><a href="/links/">Links</a>
+        
+        
+        
+        
+        
+        
         
         
         

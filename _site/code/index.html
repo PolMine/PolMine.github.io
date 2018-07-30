@@ -10,7 +10,7 @@
   <meta name="description" content="Website of the PolMine Project">
   
   <meta name="author" content="Andreas Blaette">
-  <meta name="copyright" content="&copy; Andreas Blaette 2017">
+  <meta name="copyright" content="&copy; Andreas Blaette 2018">
   
 
   <!-- External libraries -->
@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Website of the PolMine Project" />
-  <meta property="og:url" content="http://polmine.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="PolMine Project" />
   <meta property="og:title" content="Code" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://polmine.github.io/assets/logo.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Code">
   <meta name="twitter:description" content="Website of the PolMine Project">
-  <meta name="twitter:image" content="http://polmine.github.io/assets/logo.png">
-  <meta name="twitter:url" content="http://polmine.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://polmine.github.io/code/">
-  <link rel="alternate" type="application/rss+xml" title="PolMine Project" href="http://polmine.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/code/">
+  <link rel="alternate" type="application/rss+xml" title="PolMine Project" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -112,6 +112,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       </ul>
     </nav>
   </div>
@@ -133,11 +139,40 @@
 
 
   <article class="post-content">
-    <p><strong>The Choice for R:</strong> The codebase of the PolMine project is written in the statistical programming language R. R offers a broad range of packages for statistical analysis, great visualisation capabilites, and is widely used by social scientists.</p>
+    <p>The codebase of the PolMine Project is developed using the statistical programming language R. Why do we opt for R? Perl, Java and Python are viable alternatives for processing text and text mining. Yet R offers a broad range of packages for statistical analysis, great visualisation capabilites, and is widely used by social scientists - the primary target group of the PolMine Project.</p>
 
-<p><strong>polmineR:</strong> The polmineR-package follows the design principle of a three-tier architecture. The Open Corpus Workbench (CWB) serves as an engine for indexing corpora and for retrieving information. The syntax of the Corpus Query Processor (CQP) provides powerful abilities to formulate complex queries. Releases of the polmineR package are available at <a href="https://cran.r-project.org/web/packages/polmineR/index.html">CRAN</a>. The package is under active development, and development versions are available via <a href="http://www.github.com/PolMine/polmineR">GitHub</a>. GitHub is also where issues and feature requests can be reported.</p>
+<p>The polmineR and the RcppCWB packages are available via the <a href="https://cran.r-project.org/">Comprehensive R Archive Network (CRAN)</a>.  Several additional packages, some of them more experimental, are publicly available at the <a href="https://github.com/PolMine/">GitHub presence of the PolMine Project</a>. The following packages are the core of the PolMine codebase.</p>
 
-<p><strong>ctk:</strong> The corpus toolkit (ctk), available at <a href="http://www.github.com/PolMine/ctk">GitHub</a> is a companion package to the polmineR package for corpus preparation. The ctk package provides a set of R wrappers for standard tools for natural language processing such as the TreeTagger (for linguistic annotation), stanfordNLP or openNLP.</p>
+<hr />
+
+<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">polmineR</span><a style="display: inline !important;" href="https://github.com/PolMine/polmineR"><img style="display:inline !important;width:20px !important; height:20px;" src="/assets/icons/mark-github.svg" /></a>  <a href="https://CRAN.R-project.org/package=polmineR"><img style="display:inline !important; width:85px !important; height:20px !important;" src="https://www.r-pkg.org/badges/version/polmineR" /></a>  <a href="http://www.gnu.org/licenses/gpl-3.0.html"><img style="display: inline !important;height: 20px; width: unset !important;" src="https://img.shields.io/badge/License-GPL%20v3-red.svg" /></a>
+  <img src="https://zenodo.org/badge/17337554.svg" style="display: inline !important;height: 20px; width: 186px !important;" /> <a href="https://travis-ci.org/PolMine/polmineR"><img style="display: inline; width:90px !important;height: 20px;" src="https://api.travis-ci.org/PolMine/polmineR.svg?branch=master" /></a>  <a href=""><img style="display: inline !important; width: unset !important; height: 20px;" src="https://ci.appveyor.com/api/projects/status/github/PolMine/polmineR?branch=master&amp;svg=true" /></a></p>
+
+<p>The driving idea for developing polmineR is to deal with text as linguistic data. The package supports working with linguistically and structurally annoted data and offers a seamless integration of qualitative and quantitative steps in corpus analysis to facilitate validation. In its design, polmineR follows the paradigm of object-oriented programming and implements a three-tier software architecture. The <em>Open Corpus Workbench</em> (CWB), a classic indexing and query engine, serves as an efficient backend. Using the CWB exposes a powerful language for querying large corpora, the Corpus Query Processor (CQP).</p>
+
+<hr />
+
+<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">RcppCWB</span><a style="display: inline !important;" href="https://github.com/PolMine/RcppCWB"><img style="display:inline !important;width:20px !important; height:20px;" src="/assets/icons/mark-github.svg" /></a>  <a href="https://CRAN.R-project.org/package=RcppCWB"><img style="display:inline !important; width:85px !important; height:20px !important;" src="https://www.r-pkg.org/badges/version/RcppCWB" /></a>  <a href="http://www.gnu.org/licenses/gpl-3.0.html"><img style="display: inline !important;height: 20px; width: unset !important;" src="https://img.shields.io/badge/License-GPL%20v3-red.svg" /></a>  <img src="https://zenodo.org/badge/116121859.svg" style="display: inline !important;height: 20px; width: 186px !important;" /> <a href="https://travis-ci.org/PolMine/RcppCWB"><img style="display: inline; width:90px !important;height: 20px;" src="https://api.travis-ci.org/PolMine/RcppCWB.svg?branch=master" /></a>  <a href=""><img style="display: inline !important; width: 97px !important; height: 20px;" src="https://ci.appveyor.com/api/projects/status/github/PolMine/RcppCWB?branch=master&amp;svg=true" /></a></p>
+
+<p>The RcppCWB package is a follow-up to the rcqp package (now in the <a href="https://cran.r-project.org/web/packages/rcqp/index.html">CRAN archives</a>) that has pioneered to wrap the CWB into an R package. The primary purpose of the RcppCWB package is to reimplement a wrapper library for the CWB using a design (using Rcpp) that makes it easier to achieve cross-platform portability. RcppCWB can be installed on Windows, macOS and Linux. Even though RcppCWB may be used in an analytical workflow directly, it is intended to be used as an interface for packages  with higher-level functionality for working with large, linguistically and structurally annotated corpora. This is how the RcppCWB package is used by polmineR to query CWB indexed corpora.</p>
+
+<hr />
+
+<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">cwbtools</span><a style="display: inline !important;" href="https://github.com/PolMine/cwbtools"><img style="display:inline !important;width:20px !important; height:20px;" src="/assets/icons/mark-github.svg" /></a>  <a href="http://www.gnu.org/licenses/gpl-3.0.html"><img style="display: inline !important;height: 20px; width: unset !important;" src="https://img.shields.io/badge/License-GPL%20v3-red.svg" /></a>  <a href="https://travis-ci.org/PolMine/cwbtools"><img style="display: inline; width: unset !important;height: 20px;" src="https://api.travis-ci.org/PolMine/cwbtools.svg?branch=master" /></a>  <a href=""><img style="display: inline !important; width: unset !important; height: 20px;" src="https://ci.appveyor.com/api/projects/status/github/PolMine/cwbtools?branch=master&amp;svg=true" /></a></p>
+
+<p>The cwbtools package includes a set of tools to conveniently create, manipulate and manage CWB indexed corpora from within R. It complements packages that use the CWB as a backend for text mining and corpus analysis with R, namely the packages ‘rcqp’ and ‘RcppCWB’. The core class of the package is the CorpusData-class to manage the tokenstream of a corpus (including linguistic annotation) and corpus metadata. Methods for coercing and/or importing data from other data structures are the basis for a workflow to make the transition from other established tools and approaches for corpus analysis (such as tm, quanteda, or tidytext) to importing data into the CWB, for using it with polmineR.</p>
+
+<hr />
+
+<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">trickypdf</span><a style="display: inline !important;" href="https://github.com/PolMine/trickypdf"><img style="display:inline !important;width:20px !important; height:20px;" src="/assets/icons/mark-github.svg" /></a>  <a href="http://www.gnu.org/licenses/gpl-3.0.html"><img style="display: inline !important;height: 20px; width: unset !important;" src="https://img.shields.io/badge/License-GPL%20v3-red.svg" /></a>  <a href="https://travis-ci.org/PolMine/trickypdf"><img style="display: inline; width:90px !important;height: 20px;" src="https://api.travis-ci.org/PolMine/trickypdf.svg?branch=master" /></a>  <a href=""><img style="display: inline !important; width: unset !important; height: 20px;" src="https://ci.appveyor.com/api/projects/status/github/PolMine/trickypdf?branch=master&amp;svg=true" /></a></p>
+
+<p>Quite often, liberating text from a pdf prison is the first step to further process text. To proceed from pdf to machine-readable text, R users can use a couple of packages, such as <a href="https://cran.r-project.org/package=Rpoppler">Rpoppler</a>, or <a href="https://cran.r-project.org/package=pdftools">pdftools</a>. However, when dealing with more heavily layouted document, potentially arduous postprocessing work really starts after the initial text extraction. To get rid of unwanted features resulting from document layout, manual cleaning, batteries of regular expressions and several further programming quirks may be necessary to get the wanted text cleanly. The idea of the trickypdf package is to proactively deal with the layout of a document and to only extract from defined boxes from the outset, and to keep nerve-wrecking postprocessing minimal. In the context of the PolMine Project, trickypdf is used to deal with the two-column layout often used by parliaments for publishing plenary protocols.</p>
+
+<hr />
+
+<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">bignlp</span><a style="display: inline !important;" href="https://github.com/PolMine/bignlp"><img style="display:inline !important;width:20px !important; height:20px;" src="/assets/icons/mark-github.svg" /></a>  <a href="http://www.gnu.org/licenses/gpl-3.0.html"><img style="display: inline !important;height: 20px; width: unset !important;" src="https://img.shields.io/badge/License-GPL%20v3-red.svg" /></a>  <a href="https://travis-ci.org/PolMine/bignlp"><img style="display: inline; width:90px !important;height: 20px;" src="https://api.travis-ci.org/PolMine/bignlp.svg?branch=master" /></a>  <a href=""><img style="display: inline !important; width: 97px !important; height: 20px;" src="https://ci.appveyor.com/api/projects/status/github/PolMine/bignlp?branch=master&amp;svg=true" /></a></p>
+
+<p>CRAN offers a few packages for Natural Language Processing (NLP). These packages are not “pure R” NLP-tools, but offer interfaces to standard NLP tools implemented in other programming languages, see <a href="https://cran.r-project.org/package=openNLP">OpenNLP</a>, <a href="https://cran.r-project.org/package=coreNLP">coreNLP</a>, <a href="https://cran.r-project.org/package=udpipe">udpipe</a>, or <a href="https://cran.r-project.org/package=spacyr">spacyr</a>. The <a href="https://cran.r-project.org/package=cleanNLP">cleanNLP</a> package combines external tools in one coherent framework. So why yet another NLP R package? Existing packages are not particularly good at dealing with large corpora. The thrust of the bignlp-package is to use a standard tool (Stanford CoreNLP) in parallel mode. To be parsimonious with the memory available, it implements  line-by-line processing, so that annotated data is not be kept in memory.</p>
 
   </article>
 
@@ -175,6 +210,12 @@
         
         
           <li class="nav-link"><a href="/links/">Links</a>
+        
+        
+        
+        
+        
+        
         
         
         

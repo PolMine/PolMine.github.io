@@ -10,7 +10,7 @@
   <meta name="description" content="Vector representations for words are becoming popular in text mining. In particular, the text2vec algorithm (by Tomáš Mikolov) and the GloVe algorithm (by Je...">
   
   <meta name="author" content="Andreas Blaette">
-  <meta name="copyright" content="&copy; Andreas Blaette 2017">
+  <meta name="copyright" content="&copy; Andreas Blaette 2018">
   
 
   <!-- External libraries -->
@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Vector representations for words are becoming popular in text mining. In particular, the text2vec algorithm (by Tomáš Mikolov) and the GloVe algorithm (by Je..." />
-  <meta property="og:url" content="http://polmine.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="PolMine Project" />
   <meta property="og:title" content="Using Global Vectors for Getting Semantic Fields" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://polmine.github.io/assets/logo.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Using Global Vectors for Getting Semantic Fields">
   <meta name="twitter:description" content="Vector representations for words are becoming popular in text mining. In particular, the text2vec algorithm (by Tomáš Mikolov) and the GloVe algorithm (by Je...">
-  <meta name="twitter:image" content="http://polmine.github.io/assets/logo.png">
-  <meta name="twitter:url" content="http://polmine.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://polmine.github.io/posts/2017/02/06/GlobalVectors.html">
-  <link rel="alternate" type="application/rss+xml" title="PolMine Project" href="http://polmine.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/posts/2017/02/06/GlobalVectors.html">
+  <link rel="alternate" type="application/rss+xml" title="PolMine Project" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -104,6 +104,12 @@
         
           
           <li class="nav-link"><a href="/links/">Links</a>
+          
+        
+          
+        
+          
+        
           
         
           
@@ -202,7 +208,7 @@
 </span><span class="n">GV</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">GloVe</span><span class="o">$</span><span class="n">new</span><span class="p">(</span><span class="w">
   </span><span class="n">word_vectors_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span><span class="p">,</span><span class="w"> </span><span class="n">vocabulary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rownames</span><span class="p">(</span><span class="n">PLPRBT_tcm_dgTMatrix</span><span class="p">),</span><span class="w">
   </span><span class="n">x_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">learning_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.1</span><span class="w">
-  </span><span class="p">)</span><span class="w"> </span><span class="c1"># in example learning_rate .25
+  </span><span class="p">)</span><span class="w"> </span><span class="c1"># in example learning_rate .25</span><span class="w">
 </span><span class="n">GV</span><span class="o">$</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PLPRBT_tcm_dgTMatrix</span><span class="p">,</span><span class="w"> </span><span class="n">n_iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">25</span><span class="p">)</span></code></pre></figure>
 
 <p>I may be running more iterations than necessary. Getting the word vectors as described takes 10 minutes. Having run the fitting algorithm, I can get the matrix with word vectors - the object of desire!</p>
@@ -295,7 +301,7 @@
   
     
     
-      <a href="//twitter.com/share?text=Using+Global+Vectors+for+Getting+Semantic+Fields&url=http%3A%2F%2Fpolmine.github.io%2Fposts%2F2017%2F02%2F06%2FGlobalVectors.html&via=ablaette"
+      <a href="//twitter.com/share?text=Using+Global+Vectors+for+Getting+Semantic+Fields&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2F2017%2F02%2F06%2FGlobalVectors.html&via=ablaette"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -361,6 +367,12 @@
         
         
           <li class="nav-link"><a href="/links/">Links</a>
+        
+        
+        
+        
+        
+        
         
         
         

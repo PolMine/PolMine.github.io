@@ -3,11 +3,69 @@
   <channel>
     <title>PolMine Project</title>
     <description>Website of the PolMine Project</description>
-    <link>http://polmine.github.io/</link>
-    <atom:link href="http://polmine.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 25 May 2017 11:40:38 +0200</pubDate>
-    <lastBuildDate>Thu, 25 May 2017 11:40:38 +0200</lastBuildDate>
-    <generator>Jekyll v3.2.1</generator>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 30 Jul 2018 16:53:52 +0200</pubDate>
+    <lastBuildDate>Mon, 30 Jul 2018 16:53:52 +0200</lastBuildDate>
+    <generator>Jekyll v3.7.3</generator>
+    
+      <item>
+        <title>polmineR version 0.7.9 at CRAN</title>
+        <description>&lt;h1 id=&quot;new-polminer-version-v079-jeanne-darc&quot;&gt;New polmineR version v0.7.9 (“Jeanne d’Arc”)!&lt;/h1&gt;
+
+&lt;h2 id=&quot;major-changes&quot;&gt;Major changes:&lt;/h2&gt;
+
+&lt;p&gt;The most visible change of polmineR v0.7.9 may be that the package moves to a snake_case coding style. This is increasingly the state-of-the-art of newly developed R packages, and feels much more intuitive when working with the arguments ‘s_attributes’ and ‘p_attributes’ (rather than pAttributes, and sAttributes). Functions/methods are fully backwards compatible. Old code should is not supposed to break.&lt;/p&gt;
+
+&lt;p&gt;The package now uses a session registry directory, which is a subdirectory of the temporary session directory. This has become mandatory, because CRAN policies do not allow to reset paths within a package, once it has been installed. But it is very useful, because now, switching registry directories can be avoided. The &lt;code class=&quot;highlighter-rouge&quot;&gt;use()&lt;/code&gt;-function will now add the corpora in a R data package to the session registry. So this is a good start to work with multiple corpora wrapped in various packages. This involves a set of new functions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;A (new) &lt;code class=&quot;highlighter-rouge&quot;&gt;registry_move()&lt;/code&gt;-function is used to copy files to the tmp registry;&lt;/li&gt;
+  &lt;li&gt;The (new) &lt;code class=&quot;highlighter-rouge&quot;&gt;registry()&lt;/code&gt;-function will get the temporary registry directory;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;A set of changes makes working with &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle&lt;/code&gt; objects more versatile and robust:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;There is a new &lt;code class=&quot;highlighter-rouge&quot;&gt;as.list()&lt;/code&gt;-method for bundle objects, to access the list in the slot &lt;code class=&quot;highlighter-rouge&quot;&gt;objects&lt;/code&gt;;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;as.bundle()&lt;/code&gt; is more generic now, so that any kind of object can be coerced to a bundle now;&lt;/li&gt;
+  &lt;li&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;as.speeches()&lt;/code&gt;-method turned into function that allows a partition or a corpus as input;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The new version upgrades the &lt;code class=&quot;highlighter-rouge&quot;&gt;count&lt;/code&gt;-class. So the &lt;code class=&quot;highlighter-rouge&quot;&gt;count()&lt;/code&gt;-method will serve as a constructor for a count object, if no query is provided. This is particularly useful when working with &lt;code class=&quot;highlighter-rouge&quot;&gt;count_bundle&lt;/code&gt;-objects.&lt;/p&gt;
+
+&lt;h2 id=&quot;minor-changes&quot;&gt;Minor changes:&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;There is a new &lt;code class=&quot;highlighter-rouge&quot;&gt;is.partition()&lt;/code&gt;-function (a logical check);&lt;/li&gt;
+  &lt;li&gt;A new argument ‘type’ has been added to &lt;code class=&quot;highlighter-rouge&quot;&gt;partition_bundle()&lt;/code&gt;-method;&lt;/li&gt;
+  &lt;li&gt;A new method &lt;code class=&quot;highlighter-rouge&quot;&gt;get_type()&lt;/code&gt; introduced to make getting corpus type more robust.&lt;/li&gt;
+  &lt;li&gt;A new &lt;code class=&quot;highlighter-rouge&quot;&gt;partition_bundle()&lt;/code&gt;-method for &lt;code class=&quot;highlighter-rouge&quot;&gt;partition_bundle&lt;/code&gt;-objects has been introduced;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;bug-fixes&quot;&gt;Bug fixes:&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;s_attributes()&lt;/code&gt; for partition-objects in line with RcppCWB requirements (no negative values of strucs);&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;count()&lt;/code&gt; repaired for muliple p-attributes;&lt;/li&gt;
+  &lt;li&gt;bug removed causing a crash for &lt;code class=&quot;highlighter-rouge&quot;&gt;as.markdown()&lt;/code&gt;-method when cutoff is larger than number of tokens;&lt;/li&gt;
+  &lt;li&gt;a bug removed that has prevented the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&amp;lt;-&lt;/code&gt; method to work properly for bundle objects&lt;/li&gt;
+  &lt;li&gt;for &lt;code class=&quot;highlighter-rouge&quot;&gt;count()&lt;/code&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;partition_bundle&lt;/code&gt;-objects, the column ‘partition’ will be a character vector now (not factor)&lt;/li&gt;
+  &lt;li&gt;bug removed that has caused a crash when cutoff is larger than number of tokens in a partition when calling get_token_stream&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+        <pubDate>Mon, 09 Jul 2018 00:00:00 +0200</pubDate>
+        <link>http://localhost:4000/posts/2018/07/09/Release-of-polmineR-v0.7.9.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2018/07/09/Release-of-polmineR-v0.7.9.html</guid>
+        
+        <category>news</category>
+        
+        
+        <category>Posts</category>
+        
+      </item>
     
       <item>
         <title>polmineR version 0.7.3 at CRAN</title>
@@ -222,8 +280,8 @@
 &lt;p&gt;I am happy that there is a growing community of users. I am looking forward to your advice, and to making this an increasingly useful package.&lt;/p&gt;
 </description>
         <pubDate>Thu, 25 May 2017 00:00:00 +0200</pubDate>
-        <link>http://polmine.github.io/posts/2017/05/25/Release-of-polmineR-v0.7.3-at-CRAN.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2017/05/25/Release-of-polmineR-v0.7.3-at-CRAN.html</guid>
+        <link>http://localhost:4000/posts/2017/05/25/Release-of-polmineR-v0.7.3-at-CRAN.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2017/05/25/Release-of-polmineR-v0.7.3-at-CRAN.html</guid>
         
         <category>news</category>
         
@@ -243,7 +301,7 @@
 &lt;p&gt;The new C++ code is included in a package I call ‘polmineR.Rcpp’. You may have a look at the package &lt;a href=&quot;http://polmine.sowi.uni-due.de/PolMine/polmineR.Rcpp&quot;&gt;at GitHub&lt;/a&gt; and install it from there using devtools. If you want to reproduce things, make sure that you have the latest development version of the polmineR package.&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;devtools&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;install_github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;PolMine/polmineR.Rcpp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;devtools&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;install_github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;PolMine/polmineR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;dev&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dev&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;things&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;development&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;branch&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;devtools&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;install_github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;PolMine/polmineR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;dev&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# dev to get things from the development branch&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;We load these two packages, and ggplot2 for visualisation.&lt;/p&gt;
 
@@ -434,8 +492,8 @@
 &lt;p&gt;However, these successes will not induce me to rewrite everything. There are a few other performance boosters in the package. Using the the data.table package has made a huge difference. Still, I am really happy that I managed to write some Rcpp routines that speed up performance critical tasks considerably. It should make using the package more enjoyable!&lt;/p&gt;
 </description>
         <pubDate>Thu, 09 Mar 2017 00:00:00 +0100</pubDate>
-        <link>http://polmine.github.io/posts/2017/03/09/Rcpp-for-performance.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2017/03/09/Rcpp-for-performance.html</guid>
+        <link>http://localhost:4000/posts/2017/03/09/Rcpp-for-performance.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2017/03/09/Rcpp-for-performance.html</guid>
         
         <category>news</category>
         
@@ -469,8 +527,8 @@
 
 &lt;p&gt;Having the dlls at hand, I have modified the rcqp package slightly. The dll files are included into the package, and I changed the procedure when loading the package (file zzz.R). The binary is then generated from the command line as follows:&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;R CMD build polmineR.rcqp --no-build-vignettes --no-manual
-R CMD INSTALL --build rcqp_0.4.tar.gz&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;R CMD build polmineR.rcqp &lt;span class=&quot;nt&quot;&gt;--no-build-vignettes&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--no-manual&lt;/span&gt;
+R CMD INSTALL &lt;span class=&quot;nt&quot;&gt;--build&lt;/span&gt; rcqp_0.4.tar.gz&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;The resulting binary package is a zipped file (&lt;em&gt;rcqp_0.4.zip&lt;/em&gt;). Using Dirk Eddelbuettel’s &lt;a href=&quot;https://github.com/eddelbuettel/drat&quot;&gt;drat&lt;/a&gt; package, I insert that binary package into the drat archive I offer at the &lt;a href=&quot;https://github.com/PolMine/polmineR&quot;&gt;GitHub presence of the PolMine Project&lt;/a&gt;. And that’s the place from where you can install the rcqp package using the command given in the intro.&lt;/p&gt;
 
@@ -488,8 +546,8 @@ R CMD INSTALL --build rcqp_0.4.tar.gz&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;I did not manage to cross-compile rcqp myself. Bernard Desgraupes and Sylvain Loiseau explain the procedure in great detail. Once again I realize and acknowledge the care and mastery they have invested into the rcqp package. Their admirable work is gratefully acknowledged!&lt;/p&gt;
 </description>
         <pubDate>Mon, 27 Feb 2017 00:00:00 +0100</pubDate>
-        <link>http://polmine.github.io/posts/2017/02/27/polmineR-Goes-Windows.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2017/02/27/polmineR-Goes-Windows.html</guid>
+        <link>http://localhost:4000/posts/2017/02/27/polmineR-Goes-Windows.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2017/02/27/polmineR-Goes-Windows.html</guid>
         
         <category>news</category>
         
@@ -553,7 +611,7 @@ R CMD INSTALL --build rcqp_0.4.tar.gz&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GV&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GloVe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;word_vectors_size&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vocabulary&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rownames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PLPRBT_tcm_dgTMatrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x_max&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;learning_rate&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;.1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# in example learning_rate .25
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# in example learning_rate .25&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PLPRBT_tcm_dgTMatrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_iter&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;I may be running more iterations than necessary. Getting the word vectors as described takes 10 minutes. Having run the fitting algorithm, I can get the matrix with word vectors - the object of desire!&lt;/p&gt;
@@ -628,8 +686,8 @@ R CMD INSTALL --build rcqp_0.4.tar.gz&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;&lt;em&gt;This is an updated version of the original post. Thanks to Christopher Smith for his useful feedback!&lt;/em&gt;&lt;/p&gt;
 </description>
         <pubDate>Mon, 06 Feb 2017 00:00:00 +0100</pubDate>
-        <link>http://polmine.github.io/posts/2017/02/06/GlobalVectors.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2017/02/06/GlobalVectors.html</guid>
+        <link>http://localhost:4000/posts/2017/02/06/GlobalVectors.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2017/02/06/GlobalVectors.html</guid>
         
         <category>news</category>
         
@@ -673,8 +731,8 @@ R CMD INSTALL --build rcqp_0.4.tar.gz&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;Very good - that’s exactly what I was looking for! Admittedly, there are technical preconditions to use polmineR for performing the kind of search I described here. But as you recycle these lines of code, you will be much, much faster to query procotols (or any other kind of material) than with official query engines. And something I did not mention here: Queries might also use the CQP syntax, a powerful option official search engines would not offer.&lt;/p&gt;
 </description>
         <pubDate>Thu, 19 Jan 2017 00:00:00 +0100</pubDate>
-        <link>http://polmine.github.io/posts/2017/01/19/Pride-and-Prejudice.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2017/01/19/Pride-and-Prejudice.html</guid>
+        <link>http://localhost:4000/posts/2017/01/19/Pride-and-Prejudice.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2017/01/19/Pride-and-Prejudice.html</guid>
         
         <category>news</category>
         
@@ -720,8 +778,8 @@ R CMD INSTALL --build rcqp_0.4.tar.gz&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;A clear peak in 2015 far beyond anything before. As it seems: In a long-term perspective, 2015 has been the peak of attention for debating refugee migration. For more than two decades.&lt;/p&gt;
 </description>
         <pubDate>Mon, 16 Jan 2017 00:00:00 +0100</pubDate>
-        <link>http://polmine.github.io/posts/2017/01/16/Dispersion-of-Terms.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2017/01/16/Dispersion-of-Terms.html</guid>
+        <link>http://localhost:4000/posts/2017/01/16/Dispersion-of-Terms.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2017/01/16/Dispersion-of-Terms.html</guid>
         
         <category>news</category>
         
@@ -739,8 +797,8 @@ academic users through our GitLab server (gitlab.sowi.uni-due.de).&lt;/p&gt;
 
 </description>
         <pubDate>Mon, 10 Oct 2016 00:00:00 +0200</pubDate>
-        <link>http://polmine.github.io/posts/2016/10/10/CLARIN-registration.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2016/10/10/CLARIN-registration.html</guid>
+        <link>http://localhost:4000/posts/2016/10/10/CLARIN-registration.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2016/10/10/CLARIN-registration.html</guid>
         
         <category>news</category>
         
@@ -756,8 +814,8 @@ there availability of progress bars for time-consuming functions has been extend
 update.&lt;/p&gt;
 </description>
         <pubDate>Wed, 07 Sep 2016 00:00:00 +0200</pubDate>
-        <link>http://polmine.github.io/posts/2016/09/07/polmineR-update.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2016/09/07/polmineR-update.html</guid>
+        <link>http://localhost:4000/posts/2016/09/07/polmineR-update.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2016/09/07/polmineR-update.html</guid>
         
         <category>release</category>
         
@@ -774,23 +832,8 @@ at GitHub. That’s also where we offer a tutorial to install polmineR and all n
 
 </description>
         <pubDate>Wed, 22 Jun 2016 00:00:00 +0200</pubDate>
-        <link>http://polmine.github.io/posts/2016/06/22/polmineR-initial-release.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2016/06/22/polmineR-initial-release.html</guid>
-        
-        <category>release</category>
-        
-        
-        <category>Posts</category>
-        
-      </item>
-    
-      <item>
-        <title>PolMine at YouTube: Installation tutorials</title>
-        <description>&lt;p&gt;Installing the polmineR-package can be an awkward experience - but you can also get it done in less than five minutes. To support users who want to install and use the polmineR package, we offer two video tutorials at YouTube - one for &lt;a href=&quot;https://www.youtube.com/watch?v=bn6ycr8b248&quot;&gt;Linux&lt;/a&gt;, and one for &lt;a href=&quot;https://www.youtube.com/watch?v=3PmctDeRBKk&quot;&gt;Mac OS&lt;/a&gt;. (Sorry - due to the rcqp dependency, we cannot yet offer an installation option on Windows machines, apart from virtual machines). A great thanks goes to Simon Gehlhar for preparing the tutorials!&lt;/p&gt;
-</description>
-        <pubDate>Wed, 22 Jun 2016 00:00:00 +0200</pubDate>
-        <link>http://polmine.github.io/posts/2016/06/22/polmineR-installation-tutorials.html</link>
-        <guid isPermaLink="true">http://polmine.github.io/posts/2016/06/22/polmineR-installation-tutorials.html</guid>
+        <link>http://localhost:4000/posts/2016/06/22/polmineR-initial-release.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2016/06/22/polmineR-initial-release.html</guid>
         
         <category>release</category>
         
