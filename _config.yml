@@ -10,7 +10,7 @@ exclude:
 
 # Site settings
 title: PolMine Project
-subtitle: "Data and code for corpus analysis"
+subtitle: "Data and Code for Corpus Analysis"
 email: andreas.blaette@uni-due.de
 name: Andreas Blaette
 description: Website of the PolMine Project
@@ -80,20 +80,21 @@ social:
     url: https://twitter.com/ablaette
     desc: Follow me on Twitter
     share: true
-
+    
   - name: GitHub
     icon: github
-    username: polmine
+    username: PolMine
     url: https://github.com/PolMine
     desc: Fork me on GitHub
     share: true
 
   - name: YouTube
     icon: youtube
-    username: PolMine
-    url:
+    username: "PolMine"
+    url: https://www.youtube.com/channel/UCx1zIcGXoQVAUJa7uYeuRSQ
     desc: Subscribe on YouTube
     share: true
+
 
 
 # Social sharing protocols

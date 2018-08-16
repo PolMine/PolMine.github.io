@@ -1,24 +1,9 @@
-<footer class="site-footer">
+<footer class="site-footer" style="background-color: #dfe4f2;">
 
   <div class="wrapper">
-
-    <h3 class="footer-heading">{{ site.title }}</h3>
-
-    <div class="site-navigation">
-
-      <p><strong>Site Map</strong></p>
-      <ul class="pages">
-        {% for page in site.pages %}
-        {% if page.title and page.main_nav != false %}
-          <li class="nav-link"><a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
-        {% endif %}
-        {% endfor %}
-      </ul>
-    </div>
-
     <div class="site-contact">
 
-      <p><strong>Contact</strong></p>
+      <p style="margin: 0 0 6px;"><strong>Follow Us</strong></p>
       <ul class="social-media-list">
         <li>
           <a href="mailto:{{ site.email }}">
@@ -42,14 +27,32 @@
     </div>
 
     <div class="site-contact">
-      <p><strong>Affiliation</strong></p>
-      <ul>
+      <p style="margin: 0 0 6px;"><strong >Affiliation</strong></p>
+                  <ul>
         <li><a href="http://www.nrwschool.de">NRW School of Governance</a></li>
         <li><a href="https://www.uni-due.de/politik">Institute of Political Science</a></li>
         <li><a href="https://www.uni-due.de/gesellschaftswissenschaften/">Department of the Social Sciences</a></li>
         <li><a href="http://www.uni-due.de">University of Duisburg-Essen</a></li>
-      </ul>
+</ul>
+
     </div>
+    
+      <div class="site-contact">
+        <p style="margin: 0 0 12px;"><strong>Member of the CLARIN Network</strong></p>
+          <ul><li><a href="https://www.uni-due.de/politik"><img src="{{ "/assets/logos/clarin/ClarinD-Logo.svg" | prepend: site.baseurl }}" style="display: block; margin-left:auto; margin-right: auto; border-radius: 5px; background: white; height: 95px; border: 1px solid #004c93;"/></a></li></ul>
+      </div>
+
+    
+    
+
+  </div>
+
+</footer>
+<footer class="site-footer" style="background-color:  #004c93; padding: 0.25em;">
+
+  <div class="wrapper">
+
+    <p style="font-size: smaller; color: #fff; padding:0em; margin: 0px 0px 0px 0px;">Prof. Dr. Andreas Blätte | University of Duisburg-Essen | Department of Social Sciences | Lotharstr. 57 | 40751 Duisburg</h3>
 
   </div>
 
