@@ -34,11 +34,8 @@ library(polmineR)
 kwic("REUTERS", query = "oil")
 {% endhighlight %}
 
-
-
-dfasdf
-
-<iframe title="My embedded document" width="100%"  src="../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_1.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important"></iframe>
+<br/>
+<iframe title="KWIC htmlwidget" width="100%"  src="../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_1.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important"></iframe>
 
 The only thing that is necessary is to include `render = polmineR::knit_print` in the statement of the chunk options. Having implemented the `knit_print()`-method is the basis for the convenient inclusion of htmlwidgets in Rmarkdown documents using polmineR. The same works for the tables resulting from a call to the `cooccurrences()`-method.
 
@@ -47,6 +44,10 @@ The only thing that is necessary is to include `render = polmineR::knit_print` i
 cooccurrences("REUTERS", query = "oil")
 {% endhighlight %}
 
+<br/>
+<iframe title="KWIC htmlwidget" width="100%"  src="../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/cooccurrences_widget.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important"></iframe>
+
+
 The standard for the `datatables`-htmlwidget is to show 10 rows. Sometimes this may be too much, particularly when you want to include the table in a set of slides. You can manage the number of rows shown by setting the `polmineR.pagelength` option. See the following example
 
 
@@ -54,6 +55,10 @@ The standard for the `datatables`-htmlwidget is to show 10 rows. Sometimes this 
 options("polmineR.pagelength" = 3L)
 kwic("REUTERS", query = "oil")
 {% endhighlight %}
+
+<br/>
+<iframe title="KWIC htmlwidget" width="100%"  src="../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_2.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important"></iframe>
+
 
 Related to the enhanced functionality to include htmlwidgets in Rmarkdown documents, the `highlight()`-method and the `tooltips()`-method have been implemented for `kwic`-objects. 
 
@@ -66,6 +71,10 @@ kwic("REUTERS", query = "oil") %>%
   highlight(yellow = dictionary) %>% 
   tooltips(setNames(dictionary, 1:4))
 {% endhighlight %}
+
+<br/>
+<iframe title="KWIC htmlwidget" width="100%"  src="../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_3.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important"></iframe>
+
 
 Apart from highlighting the terms in our `dictionary`-character vector, we have also added tooltips to these terms. Obviously, this is not a substantively interesting example. But being able to highlight terms and to inspect tooltips with term weights can be very smart to validate how a dictionary may work, for sentiment analysis, for instance.
 

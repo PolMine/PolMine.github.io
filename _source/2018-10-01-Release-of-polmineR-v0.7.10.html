@@ -314,6 +314,11 @@ $(document).ready(function () {
 </div>
 
 
+<script>
+  function resizeIframe(obj) {
+    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+  }
+</script>
 <div id="new-polminer-version-v0.7.10-at-cran" class="section level1">
 <h1>New polmineR version v0.7.10 at CRAN</h1>
 <p>A few days ago, a new version of <em>polmineR</em> made it to <a href="https://CRAN.R-project.org/package=polmineR">CRAN</a>. See the <a href="https://github.com/PolMine/polmineR/blob/master/NEWS.md">NEWS file</a> for a full report on new features, minor changes, bug fixes and improved documentation. In this blog post, I want to highlight the most important set of changes that make it much more convenient than before to include htmlwidgets resulting from analyses prepared with polmineR in Rmarkdown documents, and to implement a workflow for dictionary-based sentiment analysis that is fairly intuitive.</p>
@@ -323,12 +328,14 @@ $(document).ready(function () {
 <p>In the polmineR package, you get a htmlwidget when the <code>show()</code>-method is invoked on a <code>kwic</code>-object, or a <code>cooccurrences</code>-object. For the sake of keeping the explanation simple, it is as simple as follows to include an htmlwidget with kwic output.</p>
 <pre class="r"><code>library(polmineR)
 kwic(&quot;REUTERS&quot;, query = &quot;oil&quot;)</code></pre>
-<p>&lt;iframe width=“800”, height=“500” title=“My embedded document” src=“../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_1.html”&gt;</iframe></p>
+<p><br /> <iframe title="KWIC htmlwidget" width="100%" src="../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_1.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important"></iframe></p>
 <p>The only thing that is necessary is to include <code>render = polmineR::knit_print</code> in the statement of the chunk options. Having implemented the <code>knit_print()</code>-method is the basis for the convenient inclusion of htmlwidgets in Rmarkdown documents using polmineR. The same works for the tables resulting from a call to the <code>cooccurrences()</code>-method.</p>
 <pre class="r"><code>cooccurrences(&quot;REUTERS&quot;, query = &quot;oil&quot;)</code></pre>
+<p><br /> <iframe title="KWIC htmlwidget" width="100%" src="../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/cooccurrences_widget.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important"></iframe></p>
 <p>The standard for the <code>datatables</code>-htmlwidget is to show 10 rows. Sometimes this may be too much, particularly when you want to include the table in a set of slides. You can manage the number of rows shown by setting the <code>polmineR.pagelength</code> option. See the following example</p>
 <pre class="r"><code>options(&quot;polmineR.pagelength&quot; = 3L)
 kwic(&quot;REUTERS&quot;, query = &quot;oil&quot;)</code></pre>
+<p><br /> <iframe title="KWIC htmlwidget" width="100%" src="../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_2.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important"></iframe></p>
 <p>Related to the enhanced functionality to include htmlwidgets in Rmarkdown documents, the <code>highlight()</code>-method and the <code>tooltips()</code>-method have been implemented for <code>kwic</code>-objects.</p>
 <pre class="r"><code>library(magrittr)
 dictionary &lt;- c(&quot;crude&quot;, &quot;barrel&quot;, &quot;company&quot;, &quot;product&quot;)
@@ -336,6 +343,7 @@ weights &lt;- 1:4
 kwic(&quot;REUTERS&quot;, query = &quot;oil&quot;) %&gt;% 
   highlight(yellow = dictionary) %&gt;% 
   tooltips(setNames(dictionary, 1:4))</code></pre>
+<p><br /> <iframe title="KWIC htmlwidget" width="100%" src="../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_3.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important"></iframe></p>
 <p>Apart from highlighting the terms in our <code>dictionary</code>-character vector, we have also added tooltips to these terms. Obviously, this is not a substantively interesting example. But being able to highlight terms and to inspect tooltips with term weights can be very smart to validate how a dictionary may work, for sentiment analysis, for instance.</p>
 <p>Let us leave it to another post to explain how this might work. To conclude this post on the new core feature of polmineR v0.7.10, I would like to thank the participants of my ‘methods training’-course in the academic year 2017/18. Several improvements of the polmineR package have resulted from the feedback. This includes working with htmlwidgets much more than before, so that I could develop slides for teaching purposes with a certain level of interactivity. To thanks to my students of their endurance to be exposed to my experiments!</p>
 </div>

@@ -5,8 +5,8 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 01 Oct 2018 18:05:33 +0200</pubDate>
-    <lastBuildDate>Mon, 01 Oct 2018 18:05:33 +0200</lastBuildDate>
+    <pubDate>Mon, 01 Oct 2018 18:20:28 +0200</pubDate>
+    <lastBuildDate>Mon, 01 Oct 2018 18:20:28 +0200</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
     
       <item>
@@ -32,18 +32,23 @@
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polmineR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;dfasdf&lt;/p&gt;
-
-&lt;iframe title=&quot;My embedded document&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_1.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;iframe title=&quot;KWIC htmlwidget&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_1.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
 
 &lt;p&gt;The only thing that is necessary is to include &lt;code class=&quot;highlighter-rouge&quot;&gt;render = polmineR::knit_print&lt;/code&gt; in the statement of the chunk options. Having implemented the &lt;code class=&quot;highlighter-rouge&quot;&gt;knit_print()&lt;/code&gt;-method is the basis for the convenient inclusion of htmlwidgets in Rmarkdown documents using polmineR. The same works for the tables resulting from a call to the &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences()&lt;/code&gt;-method.&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;cooccurrences&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;iframe title=&quot;KWIC htmlwidget&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/cooccurrences_widget.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
+
 &lt;p&gt;The standard for the &lt;code class=&quot;highlighter-rouge&quot;&gt;datatables&lt;/code&gt;-htmlwidget is to show 10 rows. Sometimes this may be too much, particularly when you want to include the table in a set of slides. You can manage the number of rows shown by setting the &lt;code class=&quot;highlighter-rouge&quot;&gt;polmineR.pagelength&lt;/code&gt; option. See the following example&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;polmineR.pagelength&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;iframe title=&quot;KWIC htmlwidget&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_2.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
 
 &lt;p&gt;Related to the enhanced functionality to include htmlwidgets in Rmarkdown documents, the &lt;code class=&quot;highlighter-rouge&quot;&gt;highlight()&lt;/code&gt;-method and the &lt;code class=&quot;highlighter-rouge&quot;&gt;tooltips()&lt;/code&gt;-method have been implemented for &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt;-objects.&lt;/p&gt;
 
@@ -53,6 +58,9 @@
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;highlight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yellow&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dictionary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
   &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tooltips&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setNames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dictionary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;iframe title=&quot;KWIC htmlwidget&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_3.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
 
 &lt;p&gt;Apart from highlighting the terms in our &lt;code class=&quot;highlighter-rouge&quot;&gt;dictionary&lt;/code&gt;-character vector, we have also added tooltips to these terms. Obviously, this is not a substantively interesting example. But being able to highlight terms and to inspect tooltips with term weights can be very smart to validate how a dictionary may work, for sentiment analysis, for instance.&lt;/p&gt;
 
