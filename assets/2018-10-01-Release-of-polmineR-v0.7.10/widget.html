@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>fulltext</title>
+<script>(function() {
+  // If window.HTMLWidgets is already defined, then use it; otherwise create a
+  // new object. This allows preceding code to set options that affect the
+  // initialization process (though none currently exist).
+  window.HTMLWidgets = window.HTMLWidgets || {};
+
+  // See if we're running in a viewer pane. If not, we're in a web browser.
+  var viewerMode = window.HTMLWidgets.viewerMode =
+      /\bviewer_pane=1\b/.test(window.location);
+
+  // See if we're running in Shiny mode. If not, it's a static document.
+  // Note that static widgets can appear in both Shiny and static modes, but
+  // obviously, Shiny widgets can only appear in Shiny apps/documents.
+  var shinyMode = window.HTMLWidgets.shinyMode =
+      typeof(window.Shiny) !== "undefined" && !!window.Shiny.outputBindings;
+
+  // We can't count on jQuery being available, so we implement our own
+  // version if necessary.
+  function querySelectorAll(scope, selector) {
+    if (typeof(jQuery) !== "undefined" && scope instanceof jQuery) {
+      return scope.find(selector);
+    }
+    if (scope.querySelectorAll) {
+      return scope.querySelectorAll(selector);
+    }
+  }
+
+  function asArray(value) {
+    if (value === null)
+      return [];
+    if ($.isArray(value))
+      return value;
+    return [value];
+  }
+
+  // Implement jQuery's extend
+  function extend(target /*, ... */) {
+    if (arguments.length == 1) {
+      return target;
+    }
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var prop in source) {
+        if (source.hasOwnProperty(prop)) {
+          target[prop] = source[prop];
+        }
+      }
+    }
+    return target;
+  }
+
+  // IE8 doesn't support Array.forEach.
+  function forEach(values, callback, thisArg) {
+    if (values.forEach) {
+      values.forEach(callback, thisArg);
+    } else {
+      for (var i = 0; i < values.length; i++) {
+        callback.call(thisArg, values[i], i, values);
+      }
+    }
+  }
+
+  // Replaces the specified method with the return value of funcSource.
+  //
+  // Note that funcSource should not BE the new method, it should be a function
+  // that RETURNS the new method. funcSource receives a single argument that is
+  // the overridden method, it can be called from the new method. The overridden
+  // method can be called like a regular function, it has the target permanently
+  // bound to it so "this" will work correctly.
+  function overrideMethod(target, methodName, funcSource) {
+    var superFunc = target[methodName] || function() {};
+    var superFuncBound = function() {
+      return superFunc.apply(target, arguments);
+    };
+    target[methodName] = funcSource(superFuncBound);
+  }
+
+  // Add a method to delegator that, when invoked, calls
+  // delegatee.methodName. If there is no such method on
+  // the delegatee, but there was one on delegator before
+  // delegateMethod was called, then the original version
+  // is invoked instead.
+  // For example:
+  //
+  // var a = {
+  //   method1: function() { console.log('a1'); }
+  //   method2: function() { console.log('a2'); }
+  // };
+  // var b = {
+  //   method1: function() { console.log('b1'); }
+  // };
+  // delegateMethod(a, b, "method1");
+  // delegateMethod(a, b, "method2");
+  // a.method1();
+  // a.method2();
+  //
+  // The output would be "b1", "a2".
+  function delegateMethod(delegator, delegatee, methodName) {
+    var inherited = delegator[methodName];
+    delegator[methodName] = function() {
+      var target = delegatee;
+      var method = delegatee[methodName];
+
+      // The method doesn't exist on the delegatee. Instead,
+      // call the method on the delegator, if it exists.
+      if (!method) {
+        target = delegator;
+        method = inherited;
+      }
+
+      if (method) {
+        return method.apply(target, arguments);
+      }
+    };
+  }
+
+  // Implement a vague facsimilie of jQuery's data method
+  function elementData(el, name, value) {
+    if (arguments.length == 2) {
+      return el["htmlwidget_data_" + name];
+    } else if (arguments.length == 3) {
+      el["htmlwidget_data_" + name] = value;
+      return el;
+    } else {
+      throw new Error("Wrong number of arguments for elementData: " +
+        arguments.length);
+    }
+  }
+
+  // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+  function escapeRegExp(str) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+  }
+
+  function hasClass(el, className) {
+    var re = new RegExp("\\b" + escapeRegExp(className) + "\\b");
+    return re.test(el.className);
+  }
+
+  // elements - array (or array-like object) of HTML elements
+  // className - class name to test for
+  // include - if true, only return elements with given className;
+  //   if false, only return elements *without* given className
+  function filterByClass(elements, className, include) {
+    var results = [];
+    for (var i = 0; i < elements.length; i++) {
+      if (hasClass(elements[i], className) == include)
+        results.push(elements[i]);
+    }
+    return results;
+  }
+
+  function on(obj, eventName, func) {
+    if (obj.addEventListener) {
+      obj.addEventListener(eventName, func, false);
+    } else if (obj.attachEvent) {
+      obj.attachEvent(eventName, func);
+    }
+  }
+
+  function off(obj, eventName, func) {
+    if (obj.removeEventListener)
+      obj.removeEventListener(eventName, func, false);
+    else if (obj.detachEvent) {
+      obj.detachEvent(eventName, func);
+    }
+  }
+
+  // Translate array of values to top/right/bottom/left, as usual with
+  // the "padding" CSS property
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/padding
+  function unpackPadding(value) {
+    if (typeof(value) === "number")
+      value = [value];
+    if (value.length === 1) {
+      return {top: value[0], right: value[0], bottom: value[0], left: value[0]};
+    }
+    if (value.length === 2) {
+      return {top: value[0], right: value[1], bottom: value[0], left: value[1]};
+    }
+    if (value.length === 3) {
+      return {top: value[0], right: value[1], bottom: value[2], left: value[1]};
+    }
+    if (value.length === 4) {
+      return {top: value[0], right: value[1], bottom: value[2], left: value[3]};
+    }
+  }
+
+  // Convert an unpacked padding object to a CSS value
+  function paddingToCss(paddingObj) {
+    return paddingObj.top + "px " + paddingObj.right + "px " + paddingObj.bottom + "px " + paddingObj.left + "px";
+  }
+
+  // Makes a number suitable for CSS
+  function px(x) {
+    if (typeof(x) === "number")
+      return x + "px";
+    else
+      return x;
+  }
+
+  // Retrieves runtime widget sizing information for an element.
+  // The return value is either null, or an object with fill, padding,
+  // defaultWidth, defaultHeight fields.
+  function sizingPolicy(el) {
+    var sizingEl = document.querySelector("script[data-for='" + el.id + "'][type='application/htmlwidget-sizing']");
+    if (!sizingEl)
+      return null;
+    var sp = JSON.parse(sizingEl.textContent || sizingEl.text || "{}");
+    if (viewerMode) {
+      return sp.viewer;
+    } else {
+      return sp.browser;
+    }
+  }
+
+  // @param tasks Array of strings (or falsy value, in which case no-op).
+  //   Each element must be a valid JavaScript expression that yields a
+  //   function. Or, can be an array of objects with "code" and "data"
+  //   properties; in this case, the "code" property should be a string
+  //   of JS that's an expr that yields a function, and "data" should be
+  //   an object that will be added as an additional argument when that
+  //   function is called.
+  // @param target The object that will be "this" for each function
+  //   execution.
+  // @param args Array of arguments to be passed to the functions. (The
+  //   same arguments will be passed to all functions.)
+  function evalAndRun(tasks, target, args) {
+    if (tasks) {
+      forEach(tasks, function(task) {
+        var theseArgs = args;
+        if (typeof(task) === "object") {
+          theseArgs = theseArgs.concat([task.data]);
+          task = task.code;
+        }
+        var taskFunc = eval("(" + task + ")");
+        if (typeof(taskFunc) !== "function") {
+          throw new Error("Task must be a function! Source:\n" + task);
+        }
+        taskFunc.apply(target, theseArgs);
+      });
+    }
+  }
+
+  function initSizing(el) {
+    var sizing = sizingPolicy(el);
+    if (!sizing)
+      return;
+
+    var cel = document.getElementById("htmlwidget_container");
+    if (!cel)
+      return;
+
+    if (typeof(sizing.padding) !== "undefined") {
+      document.body.style.margin = "0";
+      document.body.style.padding = paddingToCss(unpackPadding(sizing.padding));
+    }
+
+    if (sizing.fill) {
+      document.body.style.overflow = "hidden";
+      document.body.style.width = "100%";
+      document.body.style.height = "100%";
+      document.documentElement.style.width = "100%";
+      document.documentElement.style.height = "100%";
+      if (cel) {
+        cel.style.position = "absolute";
+        var pad = unpackPadding(sizing.padding);
+        cel.style.top = pad.top + "px";
+        cel.style.right = pad.right + "px";
+        cel.style.bottom = pad.bottom + "px";
+        cel.style.left = pad.left + "px";
+        el.style.width = "100%";
+        el.style.height = "100%";
+      }
+
+      return {
+        getWidth: function() { return cel.offsetWidth; },
+        getHeight: function() { return cel.offsetHeight; }
+      };
+
+    } else {
+      el.style.width = px(sizing.width);
+      el.style.height = px(sizing.height);
+
+      return {
+        getWidth: function() { return el.offsetWidth; },
+        getHeight: function() { return el.offsetHeight; }
+      };
+    }
+  }
+
+  // Default implementations for methods
+  var defaults = {
+    find: function(scope) {
+      return querySelectorAll(scope, "." + this.name);
+    },
+    renderError: function(el, err) {
+      var $el = $(el);
+
+      this.clearError(el);
+
+      // Add all these error classes, as Shiny does
+      var errClass = "shiny-output-error";
+      if (err.type !== null) {
+        // use the classes of the error condition as CSS class names
+        errClass = errClass + " " + $.map(asArray(err.type), function(type) {
+          return errClass + "-" + type;
+        }).join(" ");
+      }
+      errClass = errClass + " htmlwidgets-error";
+
+      // Is el inline or block? If inline or inline-block, just display:none it
+      // and add an inline error.
+      var display = $el.css("display");
+      $el.data("restore-display-mode", display);
+
+      if (display === "inline" || display === "inline-block") {
+        $el.hide();
+        if (err.message !== "") {
+          var errorSpan = $("<span>").addClass(errClass);
+          errorSpan.text(err.message);
+          $el.after(errorSpan);
+        }
+      } else if (display === "block") {
+        // If block, add an error just after the el, set visibility:none on the
+        // el, and position the error to be on top of the el.
+        // Mark it with a unique ID and CSS class so we can remove it later.
+        $el.css("visibility", "hidden");
+        if (err.message !== "") {
+          var errorDiv = $("<div>").addClass(errClass).css("position", "absolute")
+            .css("top", el.offsetTop)
+            .css("left", el.offsetLeft)
+            // setting width can push out the page size, forcing otherwise
+            // unnecessary scrollbars to appear and making it impossible for
+            // the element to shrink; so use max-width instead
+            .css("maxWidth", el.offsetWidth)
+            .css("height", el.offsetHeight);
+          errorDiv.text(err.message);
+          $el.after(errorDiv);
+
+          // Really dumb way to keep the size/position of the error in sync with
+          // the parent element as the window is resized or whatever.
+          var intId = setInterval(function() {
+            if (!errorDiv[0].parentElement) {
+              clearInterval(intId);
+              return;
+            }
+            errorDiv
+              .css("top", el.offsetTop)
+              .css("left", el.offsetLeft)
+              .css("maxWidth", el.offsetWidth)
+              .css("height", el.offsetHeight);
+          }, 500);
+        }
+      }
+    },
+    clearError: function(el) {
+      var $el = $(el);
+      var display = $el.data("restore-display-mode");
+      $el.data("restore-display-mode", null);
+
+      if (display === "inline" || display === "inline-block") {
+        if (display)
+          $el.css("display", display);
+        $(el.nextSibling).filter(".htmlwidgets-error").remove();
+      } else if (display === "block"){
+        $el.css("visibility", "inherit");
+        $(el.nextSibling).filter(".htmlwidgets-error").remove();
+      }
+    },
+    sizing: {}
+  };
+
+  // Called by widget bindings to register a new type of widget. The definition
+  // object can contain the following properties:
+  // - name (required) - A string indicating the binding name, which will be
+  //   used by default as the CSS classname to look for.
+  // - initialize (optional) - A function(el) that will be called once per
+  //   widget element; if a value is returned, it will be passed as the third
+  //   value to renderValue.
+  // - renderValue (required) - A function(el, data, initValue) that will be
+  //   called with data. Static contexts will cause this to be called once per
+  //   element; Shiny apps will cause this to be called multiple times per
+  //   element, as the data changes.
+  window.HTMLWidgets.widget = function(definition) {
+    if (!definition.name) {
+      throw new Error("Widget must have a name");
+    }
+    if (!definition.type) {
+      throw new Error("Widget must have a type");
+    }
+    // Currently we only support output widgets
+    if (definition.type !== "output") {
+      throw new Error("Unrecognized widget type '" + definition.type + "'");
+    }
+    // TODO: Verify that .name is a valid CSS classname
+
+    // Support new-style instance-bound definitions. Old-style class-bound
+    // definitions have one widget "object" per widget per type/class of
+    // widget; the renderValue and resize methods on such widget objects
+    // take el and instance arguments, because the widget object can't
+    // store them. New-style instance-bound definitions have one widget
+    // object per widget instance; the definition that's passed in doesn't
+    // provide renderValue or resize methods at all, just the single method
+    //   factory(el, width, height)
+    // which returns an object that has renderValue(x) and resize(w, h).
+    // This enables a far more natural programming style for the widget
+    // author, who can store per-instance state using either OO-style
+    // instance fields or functional-style closure variables (I guess this
+    // is in contrast to what can only be called C-style pseudo-OO which is
+    // what we required before).
+    if (definition.factory) {
+      definition = createLegacyDefinitionAdapter(definition);
+    }
+
+    if (!definition.renderValue) {
+      throw new Error("Widget must have a renderValue function");
+    }
+
+    // For static rendering (non-Shiny), use a simple widget registration
+    // scheme. We also use this scheme for Shiny apps/documents that also
+    // contain static widgets.
+    window.HTMLWidgets.widgets = window.HTMLWidgets.widgets || [];
+    // Merge defaults into the definition; don't mutate the original definition.
+    var staticBinding = extend({}, defaults, definition);
+    overrideMethod(staticBinding, "find", function(superfunc) {
+      return function(scope) {
+        var results = superfunc(scope);
+        // Filter out Shiny outputs, we only want the static kind
+        return filterByClass(results, "html-widget-output", false);
+      };
+    });
+    window.HTMLWidgets.widgets.push(staticBinding);
+
+    if (shinyMode) {
+      // Shiny is running. Register the definition with an output binding.
+      // The definition itself will not be the output binding, instead
+      // we will make an output binding object that delegates to the
+      // definition. This is because we foolishly used the same method
+      // name (renderValue) for htmlwidgets definition and Shiny bindings
+      // but they actually have quite different semantics (the Shiny
+      // bindings receive data that includes lots of metadata that it
+      // strips off before calling htmlwidgets renderValue). We can't
+      // just ignore the difference because in some widgets it's helpful
+      // to call this.renderValue() from inside of resize(), and if
+      // we're not delegating, then that call will go to the Shiny
+      // version instead of the htmlwidgets version.
+
+      // Merge defaults with definition, without mutating either.
+      var bindingDef = extend({}, defaults, definition);
+
+      // This object will be our actual Shiny binding.
+      var shinyBinding = new Shiny.OutputBinding();
+
+      // With a few exceptions, we'll want to simply use the bindingDef's
+      // version of methods if they are available, otherwise fall back to
+      // Shiny's defaults. NOTE: If Shiny's output bindings gain additional
+      // methods in the future, and we want them to be overrideable by
+      // HTMLWidget binding definitions, then we'll need to add them to this
+      // list.
+      delegateMethod(shinyBinding, bindingDef, "getId");
+      delegateMethod(shinyBinding, bindingDef, "onValueChange");
+      delegateMethod(shinyBinding, bindingDef, "onValueError");
+      delegateMethod(shinyBinding, bindingDef, "renderError");
+      delegateMethod(shinyBinding, bindingDef, "clearError");
+      delegateMethod(shinyBinding, bindingDef, "showProgress");
+
+      // The find, renderValue, and resize are handled differently, because we
+      // want to actually decorate the behavior of the bindingDef methods.
+
+      shinyBinding.find = function(scope) {
+        var results = bindingDef.find(scope);
+
+        // Only return elements that are Shiny outputs, not static ones
+        var dynamicResults = results.filter(".html-widget-output");
+
+        // It's possible that whatever caused Shiny to think there might be
+        // new dynamic outputs, also caused there to be new static outputs.
+        // Since there might be lots of different htmlwidgets bindings, we
+        // schedule execution for later--no need to staticRender multiple
+        // times.
+        if (results.length !== dynamicResults.length)
+          scheduleStaticRender();
+
+        return dynamicResults;
+      };
+
+      // Wrap renderValue to handle initialization, which unfortunately isn't
+      // supported natively by Shiny at the time of this writing.
+
+      shinyBinding.renderValue = function(el, data) {
+        Shiny.renderDependencies(data.deps);
+        // Resolve strings marked as javascript literals to objects
+        if (!(data.evals instanceof Array)) data.evals = [data.evals];
+        for (var i = 0; data.evals && i < data.evals.length; i++) {
+          window.HTMLWidgets.evaluateStringMember(data.x, data.evals[i]);
+        }
+        if (!bindingDef.renderOnNullValue) {
+          if (data.x === null) {
+            el.style.visibility = "hidden";
+            return;
+          } else {
+            el.style.visibility = "inherit";
+          }
+        }
+        if (!elementData(el, "initialized")) {
+          initSizing(el);
+
+          elementData(el, "initialized", true);
+          if (bindingDef.initialize) {
+            var result = bindingDef.initialize(el, el.offsetWidth,
+              el.offsetHeight);
+            elementData(el, "init_result", result);
+          }
+        }
+        bindingDef.renderValue(el, data.x, elementData(el, "init_result"));
+        evalAndRun(data.jsHooks.render, elementData(el, "init_result"), [el, data.x]);
+      };
+
+      // Only override resize if bindingDef implements it
+      if (bindingDef.resize) {
+        shinyBinding.resize = function(el, width, height) {
+          // Shiny can call resize before initialize/renderValue have been
+          // called, which doesn't make sense for widgets.
+          if (elementData(el, "initialized")) {
+            bindingDef.resize(el, width, height, elementData(el, "init_result"));
+          }
+        };
+      }
+
+      Shiny.outputBindings.register(shinyBinding, bindingDef.name);
+    }
+  };
+
+  var scheduleStaticRenderTimerId = null;
+  function scheduleStaticRender() {
+    if (!scheduleStaticRenderTimerId) {
+      scheduleStaticRenderTimerId = setTimeout(function() {
+        scheduleStaticRenderTimerId = null;
+        window.HTMLWidgets.staticRender();
+      }, 1);
+    }
+  }
+
+  // Render static widgets after the document finishes loading
+  // Statically render all elements that are of this widget's class
+  window.HTMLWidgets.staticRender = function() {
+    var bindings = window.HTMLWidgets.widgets || [];
+    forEach(bindings, function(binding) {
+      var matches = binding.find(document.documentElement);
+      forEach(matches, function(el) {
+        var sizeObj = initSizing(el, binding);
+
+        if (hasClass(el, "html-widget-static-bound"))
+          return;
+        el.className = el.className + " html-widget-static-bound";
+
+        var initResult;
+        if (binding.initialize) {
+          initResult = binding.initialize(el,
+            sizeObj ? sizeObj.getWidth() : el.offsetWidth,
+            sizeObj ? sizeObj.getHeight() : el.offsetHeight
+          );
+          elementData(el, "init_result", initResult);
+        }
+
+        if (binding.resize) {
+          var lastSize = {};
+          var resizeHandler = function(e) {
+            var size = {
+              w: sizeObj ? sizeObj.getWidth() : el.offsetWidth,
+              h: sizeObj ? sizeObj.getHeight() : el.offsetHeight
+            };
+            if (size.w === 0 && size.h === 0)
+              return;
+            if (size.w === lastSize.w && size.h === lastSize.h)
+              return;
+            lastSize = size;
+            binding.resize(el, size.w, size.h, initResult);
+          };
+
+          on(window, "resize", resizeHandler);
+
+          // This is needed for cases where we're running in a Shiny
+          // app, but the widget itself is not a Shiny output, but
+          // rather a simple static widget. One example of this is
+          // an rmarkdown document that has runtime:shiny and widget
+          // that isn't in a render function. Shiny only knows to
+          // call resize handlers for Shiny outputs, not for static
+          // widgets, so we do it ourselves.
+          if (window.jQuery) {
+            window.jQuery(document).on(
+              "shown.htmlwidgets shown.bs.tab.htmlwidgets shown.bs.collapse.htmlwidgets",
+              resizeHandler
+            );
+            window.jQuery(document).on(
+              "hidden.htmlwidgets hidden.bs.tab.htmlwidgets hidden.bs.collapse.htmlwidgets",
+              resizeHandler
+            );
+          }
+
+          // This is needed for the specific case of ioslides, which
+          // flips slides between display:none and display:block.
+          // Ideally we would not have to have ioslide-specific code
+          // here, but rather have ioslides raise a generic event,
+          // but the rmarkdown package just went to CRAN so the
+          // window to getting that fixed may be long.
+          if (window.addEventListener) {
+            // It's OK to limit this to window.addEventListener
+            // browsers because ioslides itself only supports
+            // such browsers.
+            on(document, "slideenter", resizeHandler);
+            on(document, "slideleave", resizeHandler);
+          }
+        }
+
+        var scriptData = document.querySelector("script[data-for='" + el.id + "'][type='application/json']");
+        if (scriptData) {
+          var data = JSON.parse(scriptData.textContent || scriptData.text);
+          // Resolve strings marked as javascript literals to objects
+          if (!(data.evals instanceof Array)) data.evals = [data.evals];
+          for (var k = 0; data.evals && k < data.evals.length; k++) {
+            window.HTMLWidgets.evaluateStringMember(data.x, data.evals[k]);
+          }
+          binding.renderValue(el, data.x, initResult);
+          evalAndRun(data.jsHooks.render, initResult, [el, data.x]);
+        }
+      });
+    });
+
+    invokePostRenderHandlers();
+  }
+
+  // Wait until after the document has loaded to render the widgets.
+  if (document.addEventListener) {
+    document.addEventListener("DOMContentLoaded", function() {
+      document.removeEventListener("DOMContentLoaded", arguments.callee, false);
+      window.HTMLWidgets.staticRender();
+    }, false);
+  } else if (document.attachEvent) {
+    document.attachEvent("onreadystatechange", function() {
+      if (document.readyState === "complete") {
+        document.detachEvent("onreadystatechange", arguments.callee);
+        window.HTMLWidgets.staticRender();
+      }
+    });
+  }
+
+
+  window.HTMLWidgets.getAttachmentUrl = function(depname, key) {
+    // If no key, default to the first item
+    if (typeof(key) === "undefined")
+      key = 1;
+
+    var link = document.getElementById(depname + "-" + key + "-attachment");
+    if (!link) {
+      throw new Error("Attachment " + depname + "/" + key + " not found in document");
+    }
+    return link.getAttribute("href");
+  };
+
+  window.HTMLWidgets.dataframeToD3 = function(df) {
+    var names = [];
+    var length;
+    for (var name in df) {
+        if (df.hasOwnProperty(name))
+            names.push(name);
+        if (typeof(df[name]) !== "object" || typeof(df[name].length) === "undefined") {
+            throw new Error("All fields must be arrays");
+        } else if (typeof(length) !== "undefined" && length !== df[name].length) {
+            throw new Error("All fields must be arrays of the same length");
+        }
+        length = df[name].length;
+    }
+    var results = [];
+    var item;
+    for (var row = 0; row < length; row++) {
+        item = {};
+        for (var col = 0; col < names.length; col++) {
+            item[names[col]] = df[names[col]][row];
+        }
+        results.push(item);
+    }
+    return results;
+  };
+
+  window.HTMLWidgets.transposeArray2D = function(array) {
+      if (array.length === 0) return array;
+      var newArray = array[0].map(function(col, i) {
+          return array.map(function(row) {
+              return row[i]
+          })
+      });
+      return newArray;
+  };
+  // Split value at splitChar, but allow splitChar to be escaped
+  // using escapeChar. Any other characters escaped by escapeChar
+  // will be included as usual (including escapeChar itself).
+  function splitWithEscape(value, splitChar, escapeChar) {
+    var results = [];
+    var escapeMode = false;
+    var currentResult = "";
+    for (var pos = 0; pos < value.length; pos++) {
+      if (!escapeMode) {
+        if (value[pos] === splitChar) {
+          results.push(currentResult);
+          currentResult = "";
+        } else if (value[pos] === escapeChar) {
+          escapeMode = true;
+        } else {
+          currentResult += value[pos];
+        }
+      } else {
+        currentResult += value[pos];
+        escapeMode = false;
+      }
+    }
+    if (currentResult !== "") {
+      results.push(currentResult);
+    }
+    return results;
+  }
+  // Function authored by Yihui/JJ Allaire
+  window.HTMLWidgets.evaluateStringMember = function(o, member) {
+    var parts = splitWithEscape(member, '.', '\\');
+    for (var i = 0, l = parts.length; i < l; i++) {
+      var part = parts[i];
+      // part may be a character or 'numeric' member name
+      if (o !== null && typeof o === "object" && part in o) {
+        if (i == (l - 1)) { // if we are at the end of the line then evalulate
+          if (typeof o[part] === "string")
+            o[part] = eval("(" + o[part] + ")");
+        } else { // otherwise continue to next embedded object
+          o = o[part];
+        }
+      }
+    }
+  };
+
+  // Retrieve the HTMLWidget instance (i.e. the return value of an
+  // HTMLWidget binding's initialize() or factory() function)
+  // associated with an element, or null if none.
+  window.HTMLWidgets.getInstance = function(el) {
+    return elementData(el, "init_result");
+  };
+
+  // Finds the first element in the scope that matches the selector,
+  // and returns the HTMLWidget instance (i.e. the return value of
+  // an HTMLWidget binding's initialize() or factory() function)
+  // associated with that element, if any. If no element matches the
+  // selector, or the first matching element has no HTMLWidget
+  // instance associated with it, then null is returned.
+  //
+  // The scope argument is optional, and defaults to window.document.
+  window.HTMLWidgets.find = function(scope, selector) {
+    if (arguments.length == 1) {
+      selector = scope;
+      scope = document;
+    }
+
+    var el = scope.querySelector(selector);
+    if (el === null) {
+      return null;
+    } else {
+      return window.HTMLWidgets.getInstance(el);
+    }
+  };
+
+  // Finds all elements in the scope that match the selector, and
+  // returns the HTMLWidget instances (i.e. the return values of
+  // an HTMLWidget binding's initialize() or factory() function)
+  // associated with the elements, in an array. If elements that
+  // match the selector don't have an associated HTMLWidget
+  // instance, the returned array will contain nulls.
+  //
+  // The scope argument is optional, and defaults to window.document.
+  window.HTMLWidgets.findAll = function(scope, selector) {
+    if (arguments.length == 1) {
+      selector = scope;
+      scope = document;
+    }
+
+    var nodes = scope.querySelectorAll(selector);
+    var results = [];
+    for (var i = 0; i < nodes.length; i++) {
+      results.push(window.HTMLWidgets.getInstance(nodes[i]));
+    }
+    return results;
+  };
+
+  var postRenderHandlers = [];
+  function invokePostRenderHandlers() {
+    while (postRenderHandlers.length) {
+      var handler = postRenderHandlers.shift();
+      if (handler) {
+        handler();
+      }
+    }
+  }
+
+  // Register the given callback function to be invoked after the
+  // next time static widgets are rendered.
+  window.HTMLWidgets.addPostRenderHandler = function(callback) {
+    postRenderHandlers.push(callback);
+  };
+
+  // Takes a new-style instance-bound definition, and returns an
+  // old-style class-bound definition. This saves us from having
+  // to rewrite all the logic in this file to accomodate both
+  // types of definitions.
+  function createLegacyDefinitionAdapter(defn) {
+    var result = {
+      name: defn.name,
+      type: defn.type,
+      initialize: function(el, width, height) {
+        return defn.factory(el, width, height);
+      },
+      renderValue: function(el, x, instance) {
+        return instance.renderValue(x);
+      },
+      resize: function(el, width, height, instance) {
+        return instance.resize(width, height);
+      }
+    };
+
+    if (defn.find)
+      result.find = defn.find;
+    if (defn.renderError)
+      result.renderError = defn.renderError;
+    if (defn.clearError)
+      result.clearError = defn.clearError;
+
+    return result;
+  }
+})();
+
+</script>
+<style type="text/css">body {
+font-family: Helvetica, arial, sans-serif;
+font-size: 14px;
+line-height: 1.6;
+padding-top: 10px;
+padding-bottom: 10px;
+background-color: white;
+padding: 30px; }
+body > *:first-child {
+margin-top: 0 !important; }
+body > *:last-child {
+margin-bottom: 0 !important; }
+a {
+color: #4183C4; }
+a.absent {
+color: #cc0000; }
+a.anchor {
+display: block;
+padding-left: 30px;
+margin-left: -30px;
+cursor: pointer;
+position: absolute;
+top: 0;
+left: 0;
+bottom: 0; }
+h1, h2, h3, h4, h5, h6 {
+margin: 20px 0 10px;
+padding: 0;
+font-weight: bold;
+-webkit-font-smoothing: antialiased;
+cursor: text;
+position: relative; }
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+text-decoration: none; }
+h1 tt, h1 code {
+font-size: inherit; }
+h2 tt, h2 code {
+font-size: inherit; }
+h3 tt, h3 code {
+font-size: inherit; }
+h4 tt, h4 code {
+font-size: inherit; }
+h5 tt, h5 code {
+font-size: inherit; }
+h6 tt, h6 code {
+font-size: inherit; }
+h1 {
+font-size: 28px;
+color: black; }
+h2 {
+font-size: 24px;
+border-bottom: 1px solid #cccccc;
+color: black; }
+h3 {
+font-size: 18px; }
+h4 {
+font-size: 16px; }
+h5 {
+font-size: 14px; }
+h6 {
+color: #777777;
+font-size: 14px; }
+p, blockquote, ul, ol, dl, li, table, pre {
+margin: 15px 0; }
+hr {
+border: 0 none;
+color: #cccccc;
+height: 4px;
+padding: 0;
+}
+body > h2:first-child {
+margin-top: 0;
+padding-top: 0; }
+body > h1:first-child {
+margin-top: 0;
+padding-top: 0; }
+body > h1:first-child + h2 {
+margin-top: 0;
+padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+margin-top: 0;
+padding-top: 0; }
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+margin-top: 0;
+padding-top: 0; }
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+margin-top: 0; }
+li p.first {
+display: inline-block; }
+li {
+margin: 0; }
+ul, ol {
+padding-left: 30px; }
+ul :first-child, ol :first-child {
+margin-top: 0; }
+dl {
+padding: 0; }
+dl dt {
+font-size: 14px;
+font-weight: bold;
+font-style: italic;
+padding: 0;
+margin: 15px 0 5px; }
+dl dt:first-child {
+padding: 0; }
+dl dt > :first-child {
+margin-top: 0; }
+dl dt > :last-child {
+margin-bottom: 0; }
+dl dd {
+margin: 0 0 15px;
+padding: 0 15px; }
+dl dd > :first-child {
+margin-top: 0; }
+dl dd > :last-child {
+margin-bottom: 0; }
+blockquote {
+border-left: 4px solid #dddddd;
+padding: 0 15px;
+color: #777777; }
+blockquote > :first-child {
+margin-top: 0; }
+blockquote > :last-child {
+margin-bottom: 0; }
+table {
+padding: 0;border-collapse: collapse; }
+table tr {
+border-top: 1px solid #cccccc;
+background-color: white;
+margin: 0;
+padding: 0; }
+table tr:nth-child(2n) {
+background-color: #f8f8f8; }
+table tr th {
+font-weight: bold;
+border: 1px solid #cccccc;
+margin: 0;
+padding: 6px 13px; }
+table tr td {
+border: 1px solid #cccccc;
+margin: 0;
+padding: 6px 13px; }
+table tr th :first-child, table tr td :first-child {
+margin-top: 0; }
+table tr th :last-child, table tr td :last-child {
+margin-bottom: 0; }
+img {
+max-width: 100%; }
+span.frame {
+display: block;
+overflow: hidden; }
+span.frame > span {
+border: 1px solid #dddddd;
+display: block;
+float: left;
+overflow: hidden;
+margin: 13px 0 0;
+padding: 7px;
+width: auto; }
+span.frame span img {
+display: block;
+float: left; }
+span.frame span span {
+clear: both;
+color: #333333;
+display: block;
+padding: 5px 0 0; }
+span.align-center {
+display: block;
+overflow: hidden;
+clear: both; }
+span.align-center > span {
+display: block;
+overflow: hidden;
+margin: 13px auto 0;
+text-align: center; }
+span.align-center span img {
+margin: 0 auto;
+text-align: center; }
+span.align-right {
+display: block;
+overflow: hidden;
+clear: both; }
+span.align-right > span {
+display: block;
+overflow: hidden;
+margin: 13px 0 0;
+text-align: right; }
+span.align-right span img {
+margin: 0;
+text-align: right; }
+span.float-left {
+display: block;
+margin-right: 13px;
+overflow: hidden;
+float: left; }
+span.float-left span {
+margin: 13px 0 0; }
+span.float-right {
+display: block;
+margin-left: 13px;
+overflow: hidden;
+float: right; }
+span.float-right > span {
+display: block;
+overflow: hidden;
+margin: 13px auto 0;
+text-align: right; }
+code, tt {
+margin: 0 2px;
+padding: 0 5px;
+white-space: nowrap;
+border: 1px solid #eaeaea;
+background-color: #f8f8f8;
+border-radius: 3px; }
+pre code {
+margin: 0;
+padding: 0;
+white-space: pre;
+border: none;
+background: transparent; }
+.highlight pre {
+background-color: #f8f8f8;
+border: 1px solid #cccccc;
+font-size: 13px;
+line-height: 19px;
+overflow: auto;
+padding: 6px 10px;
+border-radius: 3px; }
+pre {
+background-color: #f8f8f8;
+border: 1px solid #cccccc;
+font-size: 13px;
+line-height: 19px;
+overflow: auto;
+padding: 6px 10px;
+border-radius: 3px; }
+pre code, pre tt {
+background-color: transparent;
+border: none; }
+sup {
+font-size: 0.83em;
+vertical-align: super;
+line-height: 0;
+}
+* {
+-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+body {
+width: 854px;
+margin:0 auto;
+}
+}
+@media print {
+table, pre {
+page-break-inside: avoid;
+}
+pre {
+word-wrap: break-word;
+}
+}</style>
+<script>/**
+ * bootbox.js v4.4.0
+ *
+ * http://bootboxjs.com/license.txt
+ */
+!function(a,b){"use strict";"function"==typeof define&&define.amd?define(["jquery"],b):"object"==typeof exports?module.exports=b(require("jquery")):a.bootbox=b(a.jQuery)}(this,function a(b,c){"use strict";function d(a){var b=q[o.locale];return b?b[a]:q.en[a]}function e(a,c,d){a.stopPropagation(),a.preventDefault();var e=b.isFunction(d)&&d.call(c,a)===!1;e||c.modal("hide")}function f(a){var b,c=0;for(b in a)c++;return c}function g(a,c){var d=0;b.each(a,function(a,b){c(a,b,d++)})}function h(a){var c,d;if("object"!=typeof a)throw new Error("Please supply an object of options");if(!a.message)throw new Error("Please specify a message");return a=b.extend({},o,a),a.buttons||(a.buttons={}),c=a.buttons,d=f(c),g(c,function(a,e,f){if(b.isFunction(e)&&(e=c[a]={callback:e}),"object"!==b.type(e))throw new Error("button with key "+a+" must be an object");e.label||(e.label=a),e.className||(e.className=2>=d&&f===d-1?"btn-primary":"btn-default")}),a}function i(a,b){var c=a.length,d={};if(1>c||c>2)throw new Error("Invalid argument length");return 2===c||"string"==typeof a[0]?(d[b[0]]=a[0],d[b[1]]=a[1]):d=a[0],d}function j(a,c,d){return b.extend(!0,{},a,i(c,d))}function k(a,b,c,d){var e={className:"bootbox-"+a,buttons:l.apply(null,b)};return m(j(e,d,c),b)}function l(){for(var a={},b=0,c=arguments.length;c>b;b++){var e=arguments[b],f=e.toLowerCase(),g=e.toUpperCase();a[f]={label:d(g)}}return a}function m(a,b){var d={};return g(b,function(a,b){d[b]=!0}),g(a.buttons,function(a){if(d[a]===c)throw new Error("button key "+a+" is not allowed (options are "+b.join("\n")+")")}),a}var n={dialog:"<div class='bootbox modal' tabindex='-1' role='dialog'><div class='modal-dialog'><div class='modal-content'><div class='modal-body'><div class='bootbox-body'></div></div></div></div></div>",header:"<div class='modal-header'><h4 class='modal-title'></h4></div>",footer:"<div class='modal-footer'></div>",closeButton:"<button type='button' class='bootbox-close-button close' data-dismiss='modal' aria-hidden='true'>&times;</button>",form:"<form class='bootbox-form'></form>",inputs:{text:"<input class='bootbox-input bootbox-input-text form-control' autocomplete=off type=text />",textarea:"<textarea class='bootbox-input bootbox-input-textarea form-control'></textarea>",email:"<input class='bootbox-input bootbox-input-email form-control' autocomplete='off' type='email' />",select:"<select class='bootbox-input bootbox-input-select form-control'></select>",checkbox:"<div class='checkbox'><label><input class='bootbox-input bootbox-input-checkbox' type='checkbox' /></label></div>",date:"<input class='bootbox-input bootbox-input-date form-control' autocomplete=off type='date' />",time:"<input class='bootbox-input bootbox-input-time form-control' autocomplete=off type='time' />",number:"<input class='bootbox-input bootbox-input-number form-control' autocomplete=off type='number' />",password:"<input class='bootbox-input bootbox-input-password form-control' autocomplete='off' type='password' />"}},o={locale:"en",backdrop:"static",animate:!0,className:null,closeButton:!0,show:!0,container:"body"},p={};p.alert=function(){var a;if(a=k("alert",["ok"],["message","callback"],arguments),a.callback&&!b.isFunction(a.callback))throw new Error("alert requires callback property to be a function when provided");return a.buttons.ok.callback=a.onEscape=function(){return b.isFunction(a.callback)?a.callback.call(this):!0},p.dialog(a)},p.confirm=function(){var a;if(a=k("confirm",["cancel","confirm"],["message","callback"],arguments),a.buttons.cancel.callback=a.onEscape=function(){return a.callback.call(this,!1)},a.buttons.confirm.callback=function(){return a.callback.call(this,!0)},!b.isFunction(a.callback))throw new Error("confirm requires a callback");return p.dialog(a)},p.prompt=function(){var a,d,e,f,h,i,k;if(f=b(n.form),d={className:"bootbox-prompt",buttons:l("cancel","confirm"),value:"",inputType:"text"},a=m(j(d,arguments,["title","callback"]),["cancel","confirm"]),i=a.show===c?!0:a.show,a.message=f,a.buttons.cancel.callback=a.onEscape=function(){return a.callback.call(this,null)},a.buttons.confirm.callback=function(){var c;switch(a.inputType){case"text":case"textarea":case"email":case"select":case"date":case"time":case"number":case"password":c=h.val();break;case"checkbox":var d=h.find("input:checked");c=[],g(d,function(a,d){c.push(b(d).val())})}return a.callback.call(this,c)},a.show=!1,!a.title)throw new Error("prompt requires a title");if(!b.isFunction(a.callback))throw new Error("prompt requires a callback");if(!n.inputs[a.inputType])throw new Error("invalid prompt type");switch(h=b(n.inputs[a.inputType]),a.inputType){case"text":case"textarea":case"email":case"date":case"time":case"number":case"password":h.val(a.value);break;case"select":var o={};if(k=a.inputOptions||[],!b.isArray(k))throw new Error("Please pass an array of input options");if(!k.length)throw new Error("prompt with select requires options");g(k,function(a,d){var e=h;if(d.value===c||d.text===c)throw new Error("given options in wrong format");d.group&&(o[d.group]||(o[d.group]=b("<optgroup/>").attr("label",d.group)),e=o[d.group]),e.append("<option value='"+d.value+"'>"+d.text+"</option>")}),g(o,function(a,b){h.append(b)}),h.val(a.value);break;case"checkbox":var q=b.isArray(a.value)?a.value:[a.value];if(k=a.inputOptions||[],!k.length)throw new Error("prompt with checkbox requires options");if(!k[0].value||!k[0].text)throw new Error("given options in wrong format");h=b("<div/>"),g(k,function(c,d){var e=b(n.inputs[a.inputType]);e.find("input").attr("value",d.value),e.find("label").append(d.text),g(q,function(a,b){b===d.value&&e.find("input").prop("checked",!0)}),h.append(e)})}return a.placeholder&&h.attr("placeholder",a.placeholder),a.pattern&&h.attr("pattern",a.pattern),a.maxlength&&h.attr("maxlength",a.maxlength),f.append(h),f.on("submit",function(a){a.preventDefault(),a.stopPropagation(),e.find(".btn-primary").click()}),e=p.dialog(a),e.off("shown.bs.modal"),e.on("shown.bs.modal",function(){h.focus()}),i===!0&&e.modal("show"),e},p.dialog=function(a){a=h(a);var d=b(n.dialog),f=d.find(".modal-dialog"),i=d.find(".modal-body"),j=a.buttons,k="",l={onEscape:a.onEscape};if(b.fn.modal===c)throw new Error("$.fn.modal is not defined; please double check you have included the Bootstrap JavaScript library. See http://getbootstrap.com/javascript/ for more details.");if(g(j,function(a,b){k+="<button data-bb-handler='"+a+"' type='button' class='btn "+b.className+"'>"+b.label+"</button>",l[a]=b.callback}),i.find(".bootbox-body").html(a.message),a.animate===!0&&d.addClass("fade"),a.className&&d.addClass(a.className),"large"===a.size?f.addClass("modal-lg"):"small"===a.size&&f.addClass("modal-sm"),a.title&&i.before(n.header),a.closeButton){var m=b(n.closeButton);a.title?d.find(".modal-header").prepend(m):m.css("margin-top","-10px").prependTo(i)}return a.title&&d.find(".modal-title").html(a.title),k.length&&(i.after(n.footer),d.find(".modal-footer").html(k)),d.on("hidden.bs.modal",function(a){a.target===this&&d.remove()}),d.on("shown.bs.modal",function(){d.find(".btn-primary:first").focus()}),"static"!==a.backdrop&&d.on("click.dismiss.bs.modal",function(a){d.children(".modal-backdrop").length&&(a.currentTarget=d.children(".modal-backdrop").get(0)),a.target===a.currentTarget&&d.trigger("escape.close.bb")}),d.on("escape.close.bb",function(a){l.onEscape&&e(a,d,l.onEscape)}),d.on("click",".modal-footer button",function(a){var c=b(this).data("bb-handler");e(a,d,l[c])}),d.on("click",".bootbox-close-button",function(a){e(a,d,l.onEscape)}),d.on("keyup",function(a){27===a.which&&d.trigger("escape.close.bb")}),b(a.container).append(d),d.modal({backdrop:a.backdrop?"static":!1,keyboard:!1,show:!1}),a.show&&d.modal("show"),d},p.setDefaults=function(){var a={};2===arguments.length?a[arguments[0]]=arguments[1]:a=arguments[0],b.extend(o,a)},p.hideAll=function(){return b(".bootbox").modal("hide"),p};var q={bg_BG:{OK:"Ок",CANCEL:"Отказ",CONFIRM:"Потвърждавам"},br:{OK:"OK",CANCEL:"Cancelar",CONFIRM:"Sim"},cs:{OK:"OK",CANCEL:"Zrušit",CONFIRM:"Potvrdit"},da:{OK:"OK",CANCEL:"Annuller",CONFIRM:"Accepter"},de:{OK:"OK",CANCEL:"Abbrechen",CONFIRM:"Akzeptieren"},el:{OK:"Εντάξει",CANCEL:"Ακύρωση",CONFIRM:"Επιβεβαίωση"},en:{OK:"OK",CANCEL:"Cancel",CONFIRM:"OK"},es:{OK:"OK",CANCEL:"Cancelar",CONFIRM:"Aceptar"},et:{OK:"OK",CANCEL:"Katkesta",CONFIRM:"OK"},fa:{OK:"قبول",CANCEL:"لغو",CONFIRM:"تایید"},fi:{OK:"OK",CANCEL:"Peruuta",CONFIRM:"OK"},fr:{OK:"OK",CANCEL:"Annuler",CONFIRM:"D'accord"},he:{OK:"אישור",CANCEL:"ביטול",CONFIRM:"אישור"},hu:{OK:"OK",CANCEL:"Mégsem",CONFIRM:"Megerősít"},hr:{OK:"OK",CANCEL:"Odustani",CONFIRM:"Potvrdi"},id:{OK:"OK",CANCEL:"Batal",CONFIRM:"OK"},it:{OK:"OK",CANCEL:"Annulla",CONFIRM:"Conferma"},ja:{OK:"OK",CANCEL:"キャンセル",CONFIRM:"確認"},lt:{OK:"Gerai",CANCEL:"Atšaukti",CONFIRM:"Patvirtinti"},lv:{OK:"Labi",CANCEL:"Atcelt",CONFIRM:"Apstiprināt"},nl:{OK:"OK",CANCEL:"Annuleren",CONFIRM:"Accepteren"},no:{OK:"OK",CANCEL:"Avbryt",CONFIRM:"OK"},pl:{OK:"OK",CANCEL:"Anuluj",CONFIRM:"Potwierdź"},pt:{OK:"OK",CANCEL:"Cancelar",CONFIRM:"Confirmar"},ru:{OK:"OK",CANCEL:"Отмена",CONFIRM:"Применить"},sq:{OK:"OK",CANCEL:"Anulo",CONFIRM:"Prano"},sv:{OK:"OK",CANCEL:"Avbryt",CONFIRM:"OK"},th:{OK:"ตกลง",CANCEL:"ยกเลิก",CONFIRM:"ยืนยัน"},tr:{OK:"Tamam",CANCEL:"İptal",CONFIRM:"Onayla"},zh_CN:{OK:"OK",CANCEL:"取消",CONFIRM:"确认"},zh_TW:{OK:"OK",CANCEL:"取消",CONFIRM:"確認"}};return p.addLocale=function(a,c){return b.each(["OK","CANCEL","CONFIRM"],function(a,b){if(!c[b])throw new Error("Please supply a translation for '"+b+"'")}),q[a]={OK:c.OK,CANCEL:c.CANCEL,CONFIRM:c.CONFIRM},p},p.removeLocale=function(a){return delete q[a],p},p.setLocale=function(a){return p.setDefaults("locale",a)},p.init=function(c){return a(c||b)},p});</script>
+<script>HTMLWidgets.widget({
+  
+  name: "fulltext",
+  
+  type: "output",
+  
+  factory: function(el, width, height) {
+    
+    document.annotations = {};
+    document.annotationsCreated = 0;
+    var getSelectionText; // needs to be defined globally
+    
+    // document.getElementsByTagName("body")[0].style.overflow = "scroll";
+
+    // var div = document.getElementsByClassName("fulltext")[0];
+    el.style.overflow = "scroll";
+    el.style.padding = "5px";
+    var container = el;
+    
+
+    return {
+      renderValue: function(x) {
+        
+        document.annotations = x.data.annotations;
+        if (x.settings.box){ container.style.border = "1px solid #ddd"; };
+
+
+        for (var i = 0; i < x.data.paragraphs.length; i++){
+            p = x.data.paragraphs[i].tokenstream;
+            newPara = "<" + x.data.paragraphs[i].element + ">";
+            for (var j = 0; j < p.token.length; j++){
+              newPara = newPara + '<span id="' + p.id[j] + '">' + p.token[j] + '</span> ';
+            }
+            newPara = newPara + "</" + x.data.paragraphs[i].element + ">";
+            container.innerHTML = container.innerHTML + newPara;
+        };
+        
+        for (var i = 0; i < x.data.annotations.id_left.length; i++){
+          for (var id = x.data.annotations.id_left[i]; id <= x.data.annotations.id_right[i]; id ++){
+            el = document.getElementById(id.toString())
+            el.style.backgroundColor = x.data.annotations.code[i];
+            el.addEventListener('contextmenu', function(ev) {
+              ev.preventDefault();
+              alert('success!');
+              return false;
+            }, true);
+          };
+        };
+        
+        function getSelectionText() {
+          var text = "";
+          if (window.getSelection) {
+            
+            document.annotations.text.push(window.getSelection().toString());
+
+            var id_left = parseInt(window.getSelection().anchorNode.parentNode.getAttribute("id"));
+            var id_right = parseInt(window.getSelection().focusNode.parentNode.getAttribute("id"));
+
+            document.annotations.id_left.push(id_left);
+            document.annotations.id_right.push(id_right);
+
+            var code_color = bootbox.prompt({
+              title: x.settings.codeSelection,
+              inputType: 'textarea',
+              callback: x.settings.callbackFunction
+            });
+            
+          } else if (document.selection && document.selection.type != "Control") {
+            text = document.selection.createRange().text;
+            
+          }
+          
+        }
+        
+        if (x.settings.dialog){
+          container.onmouseup = function(el) { getSelectionText() };
+        };
+
+      },
+      
+      resize: function(width, height) {
+      }
+    };
+  }
+});</script>
+</head>
+<body style="background-color: white;">
+<div id="htmlwidget_container">
+<div id="htmlwidget-15232823a14358547982" class="fulltext html-widget" style="width:1000px;height:400px;">
+
+</div>
+</div>
+<script type="application/json" data-for="htmlwidget-15232823a14358547982">{"x":{"data":{"paragraphs":[{"element":"h2","tokenstream":{"token":["Cornelie Sonntag-Wolgast (2005-01-21)"],"id":[""]}},{"element":"p","tokenstream":{"token":["Frau","Präsidentin","!","Liebe","Kolleginnen","und","Kollegen","!","Herr","Koschyk","!","Meine","verehrten","Kollegen","der","CDU","/","CSU-Fraktion",",","offenbar","können","Sie","es","nicht","lassen",".","Sie","wissen","doch",",","dass","die","Zeit","über","Sie","hinweggegangen","ist",",","dass","die","EU","am","17",".","Dezember","den","Auftakt","der","Beitrittsverhandlungen","beschlossen","hat",".","Sie","wissen","darüber","hinaus",",","dass","Sie","sich","europäisch","isoliert","haben",".","Jetzt","spielen","Sie","die","schlechten","Verlierer","und","gerade","der","letzte","Beitrag","hat","bewiesen",":"],"id":[41711682,41711683,41711684,41711685,41711686,41711687,41711688,41711689,41711690,41711691,41711692,41711693,41711694,41711695,41711696,41711697,41711698,41711699,41711700,41711701,41711702,41711703,41711704,41711705,41711706,41711707,41711708,41711709,41711710,41711711,41711712,41711713,41711714,41711715,41711716,41711717,41711718,41711719,41711720,41711721,41711722,41711723,41711724,41711725,41711726,41711727,41711728,41711729,41711730,41711731,41711732,41711733,41711734,41711735,41711736,41711737,41711738,41711739,41711740,41711741,41711742,41711743,41711744,41711745,41711746,41711747,41711748,41711749,41711750,41711751,41711752,41711753,41711754,41711755,41711756,41711757,41711758,41711759]}},{"element":"blockquote","tokenstream":{"token":["(","Hartmut","Koschyk","[","CDU/CSU","]",":","Wir","vertreten","die","Mehrheitsmeinung","der","deutschen","Bevölkerung",",","im","Gegensatz","zu","Ihnen","!",")"],"id":[41711760,41711761,41711762,41711763,41711764,41711765,41711766,41711767,41711768,41711769,41711770,41711771,41711772,41711773,41711774,41711775,41711776,41711777,41711778,41711779,41711780]}},{"element":"p","tokenstream":{"token":["Sie","müssen","stören","und","sticheln",",","Sie","wollen","Angst","und","Misstrauen","säen"],"id":[41711781,41711782,41711783,41711784,41711785,41711786,41711787,41711788,41711789,41711790,41711791,41711792]}},{"element":"blockquote","tokenstream":{"token":["(","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Wer","tut","das","?",")"],"id":[41711793,41711794,41711795,41711796,41711797,41711798,41711799,41711800,41711801,41711802,41711803,41711804,41711805,41711806,41711807]}},{"element":"p","tokenstream":{"token":["und","Sie","vermengen","in","unzulässiger","Weise","Islamismus","mit","Türkei",".","Das","geht","nicht","."],"id":[41711808,41711809,41711810,41711811,41711812,41711813,41711814,41711815,41711816,41711817,41711818,41711819,41711820,41711821]}},{"element":"blockquote","tokenstream":{"token":["(","Beifall","bei","der","SPD",")"],"id":[41711822,41711823,41711824,41711825,41711826,41711827]}},{"element":"p","tokenstream":{"token":["Ich","gebe","Ihnen","Brief","und","Siegel",":","Wir","werden",",","wie","Gott","sei","Dank","auch","die","Mehrheit","der","Bürger",",","Ihnen","auf","diesem","Weg","nicht","folgen","."],"id":[41711828,41711829,41711830,41711831,41711832,41711833,41711834,41711835,41711836,41711837,41711838,41711839,41711840,41711841,41711842,41711843,41711844,41711845,41711846,41711847,41711848,41711849,41711850,41711851,41711852,41711853,41711854]}},{"element":"p","tokenstream":{"token":["Gerade","weil","die","europäische","Einigung","ein","schwieriger","Prozess","ist",",","ist","es","nötig",",","damit","in","aufklärerischer","und","sachlicher","Atmosphäre","umzugehen",".","Er","verträgt","keine","pauschale","Verunglimpfung","und","Hetzerei",".","Genau","das","tun","Sie",".","Das","ist","unzulässig","und","fahrlässig","."],"id":[41711855,41711856,41711857,41711858,41711859,41711860,41711861,41711862,41711863,41711864,41711865,41711866,41711867,41711868,41711869,41711870,41711871,41711872,41711873,41711874,41711875,41711876,41711877,41711878,41711879,41711880,41711881,41711882,41711883,41711884,41711885,41711886,41711887,41711888,41711889,41711890,41711891,41711892,41711893,41711894,41711895]}},{"element":"blockquote","tokenstream":{"token":["(","Beifall","bei","der","SPD","und","dem","BÜNDNIS","90","/","DIE","GRÜNEN","-","Hartmut","Koschyk","[","CDU","/","CSU","]",":","Frau","Präsidentin",",","das","müssen","Sie","zurückweisen","!","Hetzerei","lasse","ich","mir","hier","im","Parlament","nicht","sagen","!",")"],"id":[41711896,41711897,41711898,41711899,41711900,41711901,41711902,41711903,41711904,41711905,41711906,41711907,41711908,41711909,41711910,41711911,41711912,41711913,41711914,41711915,41711916,41711917,41711918,41711919,41711920,41711921,41711922,41711923,41711924,41711925,41711926,41711927,41711928,41711929,41711930,41711931,41711932,41711933,41711934,41711935]}},{"element":"p","tokenstream":{"token":["Ich","nehme","ihn","zurück",".","Ich","glaube",",","es","ist","im","Beitrag","des","Kollegen","deutlich","geworden",",","was","er","damit","bezweckt","."],"id":[41711960,41711961,41711962,41711963,41711964,41711965,41711966,41711967,41711968,41711969,41711970,41711971,41711972,41711973,41711974,41711975,41711976,41711977,41711978,41711979,41711980,41711981]}},{"element":"blockquote","tokenstream":{"token":["(","Hartmut","Koschyk","[","CDU/CSU","]",":","Unverschämtheit","!",")"],"id":[41711982,41711983,41711984,41711985,41711986,41711987,41711988,41711989,41711990,41711991]}},{"element":"p","tokenstream":{"token":["Ja","."],"id":[41712001,41712002]}},{"element":"p","tokenstream":{"token":["Die","unzulässige","Vermengung","geht","aus","dem","Gesamttenor","eindeutig","hervor",".","Ich","beziehe","mich","auf","die","Wortwahl","Ihres","Antrags",".","Darin","wird","gehäuft","von","''","''","''","''","''","''","''","``","rechtsmissbräuchlicher","Wiedereinbürgerung","''","''","''","''","''","''","''","''",",","von","''","''","''","''","''","''","''","``","Schwerkriminellen","''","''","''","''","''","''","''","''",",","von","''","''","''","''","''","''","''","``","Drogen","-","und","Gewaltdelikten","''","''","''","''","''","''","''","''",",","von","''","''","''","''","''","''","''","``","Sicherheitsrisiken","''","''","''","''","''","''","''","''",",","von","''","''","''","''","''","''","''","``","Rechtfertigung","von","Gewalt","''","''","''","''","''","''","''","''",",","von","''","''","''","''","''","''","''","``","terroristischer","Bedrohung","''","''","''","''","''","''","''","''","und","von","''","''","''","''","''","''","''","``","geistig-politischem","Einfluss","von","Islamisten","''","''","''","''","''","''","''","''","gesprochen",".","Das","ist","der","Grund","dafür",",","dass","ich","dies","in","aller","Schärfe","anprangern","muss","."],"id":[41712118,41712119,41712120,41712121,41712122,41712123,41712124,41712125,41712126,41712127,41712128,41712129,41712130,41712131,41712132,41712133,41712134,41712135,41712136,41712137,41712138,41712139,41712140,41712141,41712142,41712143,41712144,41712145,41712146,41712147,41712148,41712149,41712150,41712151,41712152,41712153,41712154,41712155,41712156,41712157,41712158,41712159,41712160,41712161,41712162,41712163,41712164,41712165,41712166,41712167,41712168,41712169,41712170,41712171,41712172,41712173,41712174,41712175,41712176,41712177,41712178,41712179,41712180,41712181,41712182,41712183,41712184,41712185,41712186,41712187,41712188,41712189,41712190,41712191,41712192,41712193,41712194,41712195,41712196,41712197,41712198,41712199,41712200,41712201,41712202,41712203,41712204,41712205,41712206,41712207,41712208,41712209,41712210,41712211,41712212,41712213,41712214,41712215,41712216,41712217,41712218,41712219,41712220,41712221,41712222,41712223,41712224,41712225,41712226,41712227,41712228,41712229,41712230,41712231,41712232,41712233,41712234,41712235,41712236,41712237,41712238,41712239,41712240,41712241,41712242,41712243,41712244,41712245,41712246,41712247,41712248,41712249,41712250,41712251,41712252,41712253,41712254,41712255,41712256,41712257,41712258,41712259,41712260,41712261,41712262,41712263,41712264,41712265,41712266,41712267,41712268,41712269,41712270,41712271,41712272,41712273,41712274,41712275,41712276,41712277,41712278,41712279,41712280,41712281,41712282,41712283,41712284,41712285,41712286,41712287,41712288,41712289,41712290,41712291,41712292,41712293,41712294,41712295,41712296,41712297,41712298]}},{"element":"blockquote","tokenstream":{"token":["(","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Sie","müssen","sich","mit","den","Fakten","auseinander","setzen","!",")"],"id":[41712299,41712300,41712301,41712302,41712303,41712304,41712305,41712306,41712307,41712308,41712309,41712310,41712311,41712312,41712313,41712314,41712315,41712316,41712317,41712318]}},{"element":"p","tokenstream":{"token":["-","Ich","gehe","von","der","Wortwahl","Ihres","Antrags","und","vor","allem","vom","Beitrag","des","Kollegen","Koschyk","aus","."],"id":[41712319,41712320,41712321,41712322,41712323,41712324,41712325,41712326,41712327,41712328,41712329,41712330,41712331,41712332,41712333,41712334,41712335,41712336]}},{"element":"blockquote","tokenstream":{"token":["(","Dr.","Gerd","Müller","[","CDU/CSU","]",":","Gehen","Sie","die","Probleme","an","!","-","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Gehen","Sie","auf","die","Fakten","ein","!",")"],"id":[41712337,41712338,41712339,41712340,41712341,41712342,41712343,41712344,41712345,41712346,41712347,41712348,41712349,41712350,41712351,41712352,41712353,41712354,41712355,41712356,41712357,41712358,41712359,41712360,41712361,41712362,41712363,41712364,41712365,41712366,41712367,41712368]}},{"element":"p","tokenstream":{"token":["-","Ich","komme","jetzt","dazu",",","wenn","Sie","mir","die","Gelegenheit","geben",".","Keiner","behauptet",",","Herr","Kollege",",","dass","der","Beitrittsprozess","ein","Spaziergang","bei","schönem","Wetter","sein","wird",".","Niemand","blendet","Probleme","mit","der","Türkei","aus",".","Genauso","wenig","sollten","übrigens","die","Probleme","mit","anderen","Beitrittskandidaten","ausgeblendet","werden",".","Es","stimmt",",","dass","es","Schwierigkeiten","bei","der","Wiedereinbürgerung","oder","bei","der","Ausbürgerung","gibt","."],"id":[41712369,41712370,41712371,41712372,41712373,41712374,41712375,41712376,41712377,41712378,41712379,41712380,41712381,41712382,41712383,41712384,41712385,41712386,41712387,41712388,41712389,41712390,41712391,41712392,41712393,41712394,41712395,41712396,41712397,41712398,41712399,41712400,41712401,41712402,41712403,41712404,41712405,41712406,41712407,41712408,41712409,41712410,41712411,41712412,41712413,41712414,41712415,41712416,41712417,41712418,41712419,41712420,41712421,41712422,41712423,41712424,41712425,41712426,41712427,41712428,41712429,41712430,41712431,41712432,41712433]}},{"element":"blockquote","tokenstream":{"token":["(","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Aha","!",")"],"id":[41712434,41712435,41712436,41712437,41712438,41712439,41712440,41712441,41712442,41712443,41712444,41712445,41712446]}},{"element":"p","tokenstream":{"token":["Die","Türkei","ist","-","auch","das","muss","ich","sagen","-","für","ihre","Staatsbürger","verantwortlich",".","Sie","hat","die","anstehenden","Probleme","zu","lösen","und","darf","sie","nicht","bei","uns","abladen",",","vor","allen","Dingen","nicht","bei","den","hier","lebenden","Migranten","türkischer","Herkunft",",","aber","ebenso","wenig","bei","den","in","der","Türkei","lebenden","Bürgern","aus","anderen","Staaten",".","Das","ist","völlig","unstrittig",".","Um","dies","zu","verdeutlichen",",","ist","die","Bundesregierung",",","wie","wir","gehört","haben",",","seit","langer","Zeit","tätig","."],"id":[41712447,41712448,41712449,41712450,41712451,41712452,41712453,41712454,41712455,41712456,41712457,41712458,41712459,41712460,41712461,41712462,41712463,41712464,41712465,41712466,41712467,41712468,41712469,41712470,41712471,41712472,41712473,41712474,41712475,41712476,41712477,41712478,41712479,41712480,41712481,41712482,41712483,41712484,41712485,41712486,41712487,41712488,41712489,41712490,41712491,41712492,41712493,41712494,41712495,41712496,41712497,41712498,41712499,41712500,41712501,41712502,41712503,41712504,41712505,41712506,41712507,41712508,41712509,41712510,41712511,41712512,41712513,41712514,41712515,41712516,41712517,41712518,41712519,41712520,41712521,41712522,41712523,41712524,41712525,41712526]}},{"element":"p","tokenstream":{"token":["Die","bestehenden","Konflikte","etwa","bei","der","Frage",",","was","mit","den","Anträgen","von","Menschen","türkischer","Abstammung","auf","Einbürgerung","geschieht",",","die","die","Anträge","schon","vor","dem","1",".","Januar","2000","gestellt","haben",",","aber","von","der","Türkei","die","entsprechenden","Bescheide","noch","nicht","bekommen","haben",",","und",",","da","sie","sich","auf","altes","Recht","bezogen",",","noch","mit","ihrer","Wiedereinbürgerung","rechneten",",","müssen","auf","der","soliden","aktuellen","rechtlichen","Grundlage","gelöst","werden",",","und","zwar","human",".","Das","ist","doch","völlig","klar","."],"id":[41712527,41712528,41712529,41712530,41712531,41712532,41712533,41712534,41712535,41712536,41712537,41712538,41712539,41712540,41712541,41712542,41712543,41712544,41712545,41712546,41712547,41712548,41712549,41712550,41712551,41712552,41712553,41712554,41712555,41712556,41712557,41712558,41712559,41712560,41712561,41712562,41712563,41712564,41712565,41712566,41712567,41712568,41712569,41712570,41712571,41712572,41712573,41712574,41712575,41712576,41712577,41712578,41712579,41712580,41712581,41712582,41712583,41712584,41712585,41712586,41712587,41712588,41712589,41712590,41712591,41712592,41712593,41712594,41712595,41712596,41712597,41712598,41712599,41712600,41712601,41712602,41712603,41712604,41712605,41712606,41712607]}},{"element":"blockquote","tokenstream":{"token":["(","Beifall","bei","der","SPD","und","dem","BÜNDNIS","90","/","DIE","GRÜNEN",")"],"id":[41712608,41712609,41712610,41712611,41712612,41712613,41712614,41712615,41712616,41712617,41712618,41712619,41712620]}},{"element":"p","tokenstream":{"token":["All","diese","Bemühungen","haben","aber","doch","viel","größere","Aussicht","auf","Erfolg",",","wenn","sie","mit","der","Perspektive","eines","EU-Beitritts","verbunden","sind","-","man","kann","ruhig","sagen",",","dass","das","ein","permanentes",",","willkommenes","Druckmittel","darstellt","-",",","als","dann",",","wenn","sie","mit","einer","Politik","der","Abweisung","und","des","Misstrauens","verbunden","werden",",","wie","Sie","sie","betreiben","."],"id":[41712621,41712622,41712623,41712624,41712625,41712626,41712627,41712628,41712629,41712630,41712631,41712632,41712633,41712634,41712635,41712636,41712637,41712638,41712639,41712640,41712641,41712642,41712643,41712644,41712645,41712646,41712647,41712648,41712649,41712650,41712651,41712652,41712653,41712654,41712655,41712656,41712657,41712658,41712659,41712660,41712661,41712662,41712663,41712664,41712665,41712666,41712667,41712668,41712669,41712670,41712671,41712672,41712673,41712674,41712675,41712676,41712677,41712678]}},{"element":"p","tokenstream":{"token":["Das","ist","ganz","offensichtlich",".","Wir","sind","uns","doch","hoffentlich","darüber","einig",",","dass","es","darum","gehen","muss",",","dass","sich","möglichst","viele","der","dauerhaft","hier","bei","uns","lebenden","Ausländer","einbürgern","lassen",".","Dafür","haben","wir","die","Bemühungen","im","neuen","Gesetz","klar","und","einfach","gefasst",".","Wir","haben","Anforderungen","an","die","Sprachkenntnisse","und","an","die","Hinwendung","zu","unserer","Verfassung","aufgestellt",".","Wir","wollen","eben","diese","Menschen","mit","vollen","Rechten","und","Pflichten","auf","gleiche","Augenhöhe","und","mit","voller","politischer","Teilhabe","hier","bei","uns","integrieren","."],"id":[41712679,41712680,41712681,41712682,41712683,41712684,41712685,41712686,41712687,41712688,41712689,41712690,41712691,41712692,41712693,41712694,41712695,41712696,41712697,41712698,41712699,41712700,41712701,41712702,41712703,41712704,41712705,41712706,41712707,41712708,41712709,41712710,41712711,41712712,41712713,41712714,41712715,41712716,41712717,41712718,41712719,41712720,41712721,41712722,41712723,41712724,41712725,41712726,41712727,41712728,41712729,41712730,41712731,41712732,41712733,41712734,41712735,41712736,41712737,41712738,41712739,41712740,41712741,41712742,41712743,41712744,41712745,41712746,41712747,41712748,41712749,41712750,41712751,41712752,41712753,41712754,41712755,41712756,41712757,41712758,41712759,41712760,41712761,41712762]}},{"element":"p","tokenstream":{"token":["Es","stimmt","schon",",","dass","Mehrstaatigkeit","in","der","Regel","vermieden","werden","soll",".","Das","besagt","ja","auch","das","reformierte","Staatsangehörigkeitsgesetz",".","Es","stimmt","aber","nicht",",","dass","generell","keine","doppelten","Staatsangehörigkeiten","existieren","können",".","Mehrfachstaatsangehörigkeiten",",","die","nach","dem","Abstammungsprinzip","oder","als","Folge","von","binationalen","Ehen","zustande","gekommen","sind",",","bleiben","unangetastet","."],"id":[41712763,41712764,41712765,41712766,41712767,41712768,41712769,41712770,41712771,41712772,41712773,41712774,41712775,41712776,41712777,41712778,41712779,41712780,41712781,41712782,41712783,41712784,41712785,41712786,41712787,41712788,41712789,41712790,41712791,41712792,41712793,41712794,41712795,41712796,41712797,41712798,41712799,41712800,41712801,41712802,41712803,41712804,41712805,41712806,41712807,41712808,41712809,41712810,41712811,41712812,41712813,41712814,41712815]}},{"element":"blockquote","tokenstream":{"token":["(","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Darum","geht","es","doch","gar","nicht","!",")"],"id":[41712816,41712817,41712818,41712819,41712820,41712821,41712822,41712823,41712824,41712825,41712826,41712827,41712828,41712829,41712830,41712831,41712832,41712833]}},{"element":"p","tokenstream":{"token":["Ich","darf","an","die","deutsch-türkische","Enkeltochter","des","Altbundeskanzlers","Helmut","Kohl",",","an","Otto","von","Habsburg","und","andere","erinnern",".","Die","Reihe","ließe","sich","beliebig","fortsetzen",".","Natürlich","gilt","auch","das","Prinzip","der","Gegenseitigkeit","."],"id":[41712834,41712835,41712836,41712837,41712838,41712839,41712840,41712841,41712842,41712843,41712844,41712845,41712846,41712847,41712848,41712849,41712850,41712851,41712852,41712853,41712854,41712855,41712856,41712857,41712858,41712859,41712860,41712861,41712862,41712863,41712864,41712865,41712866,41712867]}},{"element":"blockquote","tokenstream":{"token":["(","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Darum","geht","es","doch","gar","nicht","!","Es","geht","um","50","000","ganz","andere","Fälle","!","Frau","Vogt","hat","es","eingeräumt","!","-","Gegenruf","von","der","SPD",":","Sie","wollen","nicht","zuhören",",","Herr","Strobl","!",")"],"id":[41712868,41712869,41712870,41712871,41712872,41712873,41712874,41712875,41712876,41712877,41712878,41712879,41712880,41712881,41712882,41712883,41712884,41712885,41712886,41712887,41712888,41712889,41712890,41712891,41712892,41712893,41712894,41712895,41712896,41712897,41712898,41712899,41712900,41712901,41712902,41712903,41712904,41712905,41712906,41712907,41712908,41712909,41712910,41712911,41712912,41712913,41712914]}},{"element":"p","tokenstream":{"token":["-","Ich","rede","von","Ihrer","Neigung",",","schon","wieder","die","doppelte","Staatsbürgerschaft","zu","verteufeln","."],"id":[41712915,41712916,41712917,41712918,41712919,41712920,41712921,41712922,41712923,41712924,41712925,41712926,41712927,41712928,41712929]}},{"element":"p","tokenstream":{"token":["Viele","Menschen","streben","nun","einmal","danach","-","das","können","Sie","doch","gar","nicht","leugnen","-",",","ihre","jetzige","Staatsangehörigkeit","mit","der","ihres","Herkunftslandes","zu","verknüpfen","."],"id":[41712930,41712931,41712932,41712933,41712934,41712935,41712936,41712937,41712938,41712939,41712940,41712941,41712942,41712943,41712944,41712945,41712946,41712947,41712948,41712949,41712950,41712951,41712952,41712953,41712954,41712955]}},{"element":"blockquote","tokenstream":{"token":["(","Dr.","Gerd","Müller","[","CDU/CSU","]",":","Sie","reden","am","Thema","vorbei","!",")"],"id":[41712956,41712957,41712958,41712959,41712960,41712961,41712962,41712963,41712964,41712965,41712966,41712967,41712968,41712969,41712970]}},{"element":"p","tokenstream":{"token":["Dabei","müssen","sie","-","das","muss","man","ihnen","klar","machen","-","die","aktuelle","Gesetzeslage","beachten",";","ebenso","muss","das","auch","der","Herkunftsstaat","tun",".","Es","ist","aber","falsch",",","sie","zu","Kriminellen","abzustempeln",".","Das","tun","Sie","aber","praktisch","mit","Ihrem","Antrag",".","Dagegen","wehren","wir","uns","."],"id":[41712971,41712972,41712973,41712974,41712975,41712976,41712977,41712978,41712979,41712980,41712981,41712982,41712983,41712984,41712985,41712986,41712987,41712988,41712989,41712990,41712991,41712992,41712993,41712994,41712995,41712996,41712997,41712998,41712999,41713000,41713001,41713002,41713003,41713004,41713005,41713006,41713007,41713008,41713009,41713010,41713011,41713012,41713013,41713014,41713015,41713016,41713017,41713018]}},{"element":"blockquote","tokenstream":{"token":["(","Beifall","bei","der","SPD","und","dem","BÜNDNIS","90","/","DIE","GRÜNEN",")"],"id":[41713019,41713020,41713021,41713022,41713023,41713024,41713025,41713026,41713027,41713028,41713029,41713030,41713031]}},{"element":"p","tokenstream":{"token":["Es","ist",",","wie","ich","finde",",","nicht","nur","falsch",",","sondern","direkt","gefährlich",",","wenn","Sie","aus","Mängeln","der","türkischen","Rechtspraxis","-","die",",","um","das","noch","einmal","zu","betonen",",","behoben","werden","müssen","-","eine","terroristische","Bedrohung","ableiten",".","Das","haben","Sie","heute","Vormittag","getan",".","Was","soll","denn","in","diesem","Zusammenhang","diese","unselige","Verquickung","mit","Kriminalität","und","islamistischem","Extremismus","?"],"id":[41713032,41713033,41713034,41713035,41713036,41713037,41713038,41713039,41713040,41713041,41713042,41713043,41713044,41713045,41713046,41713047,41713048,41713049,41713050,41713051,41713052,41713053,41713054,41713055,41713056,41713057,41713058,41713059,41713060,41713061,41713062,41713063,41713064,41713065,41713066,41713067,41713068,41713069,41713070,41713071,41713072,41713073,41713074,41713075,41713076,41713077,41713078,41713079,41713080,41713081,41713082,41713083,41713084,41713085,41713086,41713087,41713088,41713089,41713090,41713091,41713092,41713093,41713094]}},{"element":"blockquote","tokenstream":{"token":["(","Dr.","Gerd","Müller","[","CDU/CSU","]",":","Unsinn","bleibt","Unsinn","!",")"],"id":[41713095,41713096,41713097,41713098,41713099,41713100,41713101,41713102,41713103,41713104,41713105,41713106,41713107]}},{"element":"p","tokenstream":{"token":["Was","soll","in","Ihrem","Antrag","der","Schwenk","zu","''","''","''","''","''","''","''","``","Zahlen","und","Aktivitäten","radikaler","Islam-Anhänger","''","''","''","''","''","''","''","''","in","Deutschland","bei","Freizeitaktivitäten","und","in","Ferienlagern","?"],"id":[41713108,41713109,41713110,41713111,41713112,41713113,41713114,41713115,41713116,41713117,41713118,41713119,41713120,41713121,41713122,41713123,41713124,41713125,41713126,41713127,41713128,41713129,41713130,41713131,41713132,41713133,41713134,41713135,41713136,41713137,41713138,41713139,41713140,41713141,41713142,41713143,41713144]}},{"element":"blockquote","tokenstream":{"token":["(","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Das","ist","das","Ergebnis","der","Anhörung","!",")"],"id":[41713145,41713146,41713147,41713148,41713149,41713150,41713151,41713152,41713153,41713154,41713155,41713156,41713157,41713158,41713159,41713160,41713161,41713162]}},{"element":"p","tokenstream":{"token":["Ich","habe","da","wahrhaftig","nichts","zu","beschönigen",".","Es","gilt","aber","schon","festzuhalten",",","Herr","Kollege",",","dass","nach","jüngeren","Untersuchungen","die","türkischen","Zuwanderer",",","die",",","wie","wir","wissen",",","überwiegend","muslimisch","geprägt","sind",",","die","deutsche","Gesellschaftsordnung","in","hohem","Maße","akzeptieren","und","dass","lediglich","1","Prozent","-","das","muss","ich","jetzt","einmal","Ihren","Behauptungen","entgegenhalten","-","der","Muslime","in","Deutschland","islamistischen","Organisationen","zuzurechnen","sind",".","Diese","sind","aber","fest","im","Blick","der","Sicherheitsbehörden","."],"id":[41713163,41713164,41713165,41713166,41713167,41713168,41713169,41713170,41713171,41713172,41713173,41713174,41713175,41713176,41713177,41713178,41713179,41713180,41713181,41713182,41713183,41713184,41713185,41713186,41713187,41713188,41713189,41713190,41713191,41713192,41713193,41713194,41713195,41713196,41713197,41713198,41713199,41713200,41713201,41713202,41713203,41713204,41713205,41713206,41713207,41713208,41713209,41713210,41713211,41713212,41713213,41713214,41713215,41713216,41713217,41713218,41713219,41713220,41713221,41713222,41713223,41713224,41713225,41713226,41713227,41713228,41713229,41713230,41713231,41713232,41713233,41713234,41713235,41713236,41713237,41713238]}},{"element":"blockquote","tokenstream":{"token":["(","Beifall","bei","der","SPD","sowie","bei","Abgeordneten","des","BÜNDNISSES","90/DIE","GRÜNEN",")"],"id":[41713239,41713240,41713241,41713242,41713243,41713244,41713245,41713246,41713247,41713248,41713249,41713250,41713251]}},{"element":"p","tokenstream":{"token":["Was","soll","also",",","liebe","Kolleginnen","und","Kollegen",",","die","Brunnenvergifterei",",","die","offenbar","mit","diesem","Antrag","bezweckt","wird","?"],"id":[41713252,41713253,41713254,41713255,41713256,41713257,41713258,41713259,41713260,41713261,41713262,41713263,41713264,41713265,41713266,41713267,41713268,41713269,41713270,41713271]}},{"element":"blockquote","tokenstream":{"token":["(","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Jetzt","geht","das","schon","wieder","los","!","Mäßigen","Sie","sich","einmal","!",")"],"id":[41713272,41713273,41713274,41713275,41713276,41713277,41713278,41713279,41713280,41713281,41713282,41713283,41713284,41713285,41713286,41713287,41713288,41713289,41713290,41713291,41713292,41713293,41713294]}},{"element":"p","tokenstream":{"token":["Ihre","Haltung","ist","sonnenklar",",","Herr","Kollege","Strobl",":","Die","Europapolitik","der","Bundesregierung","muss","verunglimpft","werden",",","das","Klima","zwischen","Türken","und","Deutschen","muss","verschlechtert","werden","und","es","muss","Stimmungsmache","betrieben","werden","-","das","alles","im","Hinblick","auf","die","Landtagswahlen","."],"id":[41713295,41713296,41713297,41713298,41713299,41713300,41713301,41713302,41713303,41713304,41713305,41713306,41713307,41713308,41713309,41713310,41713311,41713312,41713313,41713314,41713315,41713316,41713317,41713318,41713319,41713320,41713321,41713322,41713323,41713324,41713325,41713326,41713327,41713328,41713329,41713330,41713331,41713332,41713333,41713334,41713335]}},{"element":"blockquote","tokenstream":{"token":["(","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Unsinn","!","-","Günter","Gloser","[","SPD","]",":","Sonthofen","!",")"],"id":[41713336,41713337,41713338,41713339,41713340,41713341,41713342,41713343,41713344,41713345,41713346,41713347,41713348,41713349,41713350,41713351,41713352,41713353,41713354,41713355,41713356,41713357]}},{"element":"p","tokenstream":{"token":["Das","ist","doch","der","Sinn","Ihres","Antrages",".","Ich","prophezeie","Ihnen",",","Sie","werden","damit","Schiffbruch","erleiden",".","Für","mein","Land","Schleswig-Holstein","kann","ich","sagen",":"],"id":[41713358,41713359,41713360,41713361,41713362,41713363,41713364,41713365,41713366,41713367,41713368,41713369,41713370,41713371,41713372,41713373,41713374,41713375,41713376,41713377,41713378,41713379,41713380,41713381,41713382,41713383]}},{"element":"blockquote","tokenstream":{"token":["(","Jürgen","Koppelin","[","FDP","]",":","Sie","wohnen","doch","in","Hamburg","und","nicht","mehr","in","Schleswig-Holstein","!",")"],"id":[41713384,41713385,41713386,41713387,41713388,41713389,41713390,41713391,41713392,41713393,41713394,41713395,41713396,41713397,41713398,41713399,41713400,41713401,41713402]}},{"element":"p","tokenstream":{"token":["Wir","wollen","friedlich","mit","diesen","Menschen","leben",";","wir","lassen","uns","nicht","in","irgendeiner","Weise","in","eine","feindselige","Ecke","stellen",",","Herr","Kollege","Koppelin",".","Wir","pflegen","gute","Partnerschaft","mit","den","bei","uns","lebenden","Migranten","und","anderen","-","nationalen","-","Minderheiten",".","In","Nordrhein-Westfalen","werden","Sie","mit","solchen","Methoden","ebenso","wenig","punkten","."],"id":[41713403,41713404,41713405,41713406,41713407,41713408,41713409,41713410,41713411,41713412,41713413,41713414,41713415,41713416,41713417,41713418,41713419,41713420,41713421,41713422,41713423,41713424,41713425,41713426,41713427,41713428,41713429,41713430,41713431,41713432,41713433,41713434,41713435,41713436,41713437,41713438,41713439,41713440,41713441,41713442,41713443,41713444,41713445,41713446,41713447,41713448,41713449,41713450,41713451,41713452,41713453,41713454,41713455]}},{"element":"p","tokenstream":{"token":["Die","Zeiten",",","in","denen","Doppelpasskampagnen","gegen","doppelte","Staatsangehörigkeit","wie","in","Hessen","noch","funktionierten",",","sind","vorbei",".","Das","funktioniert","jetzt","nicht","mehr",".","Schon","bei","der","Kampagne","''","''","''","''","''","''","''","``","Kinder","statt","Inder","''","''","''","''","''","''","''","''","von","Herrn","Rüttgers","hat","sich","herausgestellt",",","dass","dies","nicht","mehr","zieht",".","Lassen","Sie","also","solche","Manöver","bleiben","!"],"id":[41713456,41713457,41713458,41713459,41713460,41713461,41713462,41713463,41713464,41713465,41713466,41713467,41713468,41713469,41713470,41713471,41713472,41713473,41713474,41713475,41713476,41713477,41713478,41713479,41713480,41713481,41713482,41713483,41713484,41713485,41713486,41713487,41713488,41713489,41713490,41713491,41713492,41713493,41713494,41713495,41713496,41713497,41713498,41713499,41713500,41713501,41713502,41713503,41713504,41713505,41713506,41713507,41713508,41713509,41713510,41713511,41713512,41713513,41713514,41713515,41713516,41713517,41713518,41713519,41713520,41713521,41713522]}},{"element":"p","tokenstream":{"token":["Eine","letzte","Anmerkung",".","Sie","fordern","wieder","einmal","schnell","ein","neues","Gesamtkonzept","''","''","''","''","''","''","''","``","zur","Wahrung","der","inneren","Sicherheit","und","zum","Kampf","gegen","den","islamistisch","geprägten","Terrorismus","''","''","''","''","''","''","''","''","."],"id":[41713523,41713524,41713525,41713526,41713527,41713528,41713529,41713530,41713531,41713532,41713533,41713534,41713535,41713536,41713537,41713538,41713539,41713540,41713541,41713542,41713543,41713544,41713545,41713546,41713547,41713548,41713549,41713550,41713551,41713552,41713553,41713554,41713555,41713556,41713557,41713558,41713559,41713560,41713561,41713562,41713563,41713564]}},{"element":"blockquote","tokenstream":{"token":["(","Thomas","Strobl","[","Heilbronn","]","[","CDU/CSU","]",":","Das","fordern","wir","!","Da","haben","Sie","Recht","!",")"],"id":[41713565,41713566,41713567,41713568,41713569,41713570,41713571,41713572,41713573,41713574,41713575,41713576,41713577,41713578,41713579,41713580,41713581,41713582,41713583,41713584]}},{"element":"p","tokenstream":{"token":["Es","gibt","aber","längst","ein","Gesamtkonzept",".","Ich","nenne","die","Anti-Terror-Pakete","I","und","II",",","die","demnächst","evaluiert","werden",".","Ich","nenne","ferner","die","umfassenden","Gepäck","-","und","Sicherheitskontrollen","an","den","Flughäfen",",","die","Verbote","islamistischer","Organisationen","-","vom","Kalifatsstaat","bis","al-Aqsa","-",",","die","Maßnahmen","gegen","Hassprediger",",","die","im","neuen","Zuwanderungsgesetz","enthalten","sind",".","Aber","vor","allem","gilt","unser","Prinzip",":","erhöhte","Wachsamkeit",",","hoher","Ermittlungsdruck","auf","der","notwendigen","gesetzlichen","Basis",",","aber","auch","verstärkte","Bemühungen","um","Integration","und","Prävention",".","Dabei","müssen","wir","-","in","diesem","Punkt","unterscheiden","wir","uns","-","die","Balance","zwischen","konsequentem","Vorgehen","gegen","islamistischen","Terror","einerseits","und","der","Wahrung","bürgerlicher","Freiheitsrechte","andererseits","halten","."],"id":[41713585,41713586,41713587,41713588,41713589,41713590,41713591,41713592,41713593,41713594,41713595,41713596,41713597,41713598,41713599,41713600,41713601,41713602,41713603,41713604,41713605,41713606,41713607,41713608,41713609,41713610,41713611,41713612,41713613,41713614,41713615,41713616,41713617,41713618,41713619,41713620,41713621,41713622,41713623,41713624,41713625,41713626,41713627,41713628,41713629,41713630,41713631,41713632,41713633,41713634,41713635,41713636,41713637,41713638,41713639,41713640,41713641,41713642,41713643,41713644,41713645,41713646,41713647,41713648,41713649,41713650,41713651,41713652,41713653,41713654,41713655,41713656,41713657,41713658,41713659,41713660,41713661,41713662,41713663,41713664,41713665,41713666,41713667,41713668,41713669,41713670,41713671,41713672,41713673,41713674,41713675,41713676,41713677,41713678,41713679,41713680,41713681,41713682,41713683,41713684,41713685,41713686,41713687,41713688,41713689,41713690,41713691,41713692,41713693,41713694,41713695]}},{"element":"p","tokenstream":{"token":["Panikmache","und","Verängstigung","gehören","allerdings","nicht","zu","unserem","Konzept",".","Das","haben","Sie","sich","auf","die","Fahnen","geschrieben",".","Ihr","Ansatz","ist","offenbar",",","wie","auch","Ihr","Antrag","zeigt",":","Polarisierung","und","Desintegration",".","Machen","Sie","sich","bitte","keine","Hoffnungen",",","dass","wir","Ihnen","darin","folgen","!"],"id":[41713696,41713697,41713698,41713699,41713700,41713701,41713702,41713703,41713704,41713705,41713706,41713707,41713708,41713709,41713710,41713711,41713712,41713713,41713714,41713715,41713716,41713717,41713718,41713719,41713720,41713721,41713722,41713723,41713724,41713725,41713726,41713727,41713728,41713729,41713730,41713731,41713732,41713733,41713734,41713735,41713736,41713737,41713738,41713739,41713740,41713741,41713742]}},{"element":"p","tokenstream":{"token":["Danke","schön","."],"id":[41713743,41713744,41713745]}},{"element":"blockquote","tokenstream":{"token":["(","Beifall","bei","der","SPD","und","dem","BÜNDNIS","90","/","DIE","GRÜNEN",")"],"id":[41713746,41713747,41713748,41713749,41713750,41713751,41713752,41713753,41713754,41713755,41713756,41713757,41713758]}}],"annotations":{"text":["","",""],"code":["yellow","lightgreen","yellow"],"annotation":["","",""],"id_left":[41712703,41712708,41712709],"id_right":[41712707,41712708,41712713]}},"settings":{"dialog":false,"box":true,"codeSelection":null,"callbackFunction":null}},"evals":[],"jsHooks":[]}</script>
+<script type="application/htmlwidget-sizing" data-for="htmlwidget-15232823a14358547982">{"viewer":{"width":1000,"height":400,"padding":15,"fill":false},"browser":{"width":1000,"height":400,"padding":40,"fill":false}}</script>
+</body>
+</html>

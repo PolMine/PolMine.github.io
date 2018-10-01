@@ -5,9 +5,69 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 20 Aug 2018 16:30:11 +0200</pubDate>
-    <lastBuildDate>Mon, 20 Aug 2018 16:30:11 +0200</lastBuildDate>
+    <pubDate>Mon, 01 Oct 2018 18:05:33 +0200</pubDate>
+    <lastBuildDate>Mon, 01 Oct 2018 18:05:33 +0200</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
+    
+      <item>
+        <title>polmineR version 0.7.10 at CRAN</title>
+        <description>&lt;script&gt;
+  function resizeIframe(obj) {
+    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+  }
+&lt;/script&gt;
+
+&lt;h1 id=&quot;new-polminer-version-v0710-at-cran&quot;&gt;New polmineR version v0.7.10 at CRAN&lt;/h1&gt;
+
+&lt;p&gt;A few days ago, a new version of &lt;em&gt;polmineR&lt;/em&gt; made it to &lt;a href=&quot;https://CRAN.R-project.org/package=polmineR&quot;&gt;CRAN&lt;/a&gt;. See the &lt;a href=&quot;https://github.com/PolMine/polmineR/blob/master/NEWS.md&quot;&gt;NEWS file&lt;/a&gt; for a full report on new features, minor changes, bug fixes and improved documentation. In this blog post, I want to highlight the most important set of changes that make it much more convenient than before to include htmlwidgets resulting from analyses prepared with polmineR in Rmarkdown documents, and to implement a workflow for dictionary-based sentiment analysis that is fairly intuitive.&lt;/p&gt;
+
+&lt;p&gt;The most direct way to convey the beauty of being able to include htmlwidgets in Rmarkdown documents may be to refer to the vignette of the polmineR package. If you have already installed polmineR version 0.7.10, open it as follows.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;vignette&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;vignette&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;package&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;polmineR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Alternatively, the vignette is online on the &lt;a href=&quot;https://polmine.github.io/polmineR/&quot;&gt;polmineR documentation website&lt;/a&gt; generated using &lt;a href=&quot;https://CRAN.R-project.org/package=pkgdown&quot;&gt;pkgdown&lt;/a&gt;. When scrolling down the document, you will see several interactive tables. A first set shows the results of calling the &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic()&lt;/code&gt;-method. Then you have a table with the results of the &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences()&lt;/code&gt;-method. Technically, these tables use the &lt;a href=&quot;https://datatables.net/&quot;&gt;DataTables JavaScript library&lt;/a&gt;. Earlier versions of polmineR were able to generate this output in an interactive R session,  which is not difficult, using the &lt;code class=&quot;highlighter-rouge&quot;&gt;datatable()&lt;/code&gt; function of the &lt;a href=&quot;https://rstudio.github.io/DT/&quot;&gt;DT package&lt;/a&gt;. We think the advantage of including this output in html documents may be considerable. Usually, the tables resulting from text analysis have many, many rows. If you have a browsable table in your research reports, making your research transperant and reproducible is much easier.&lt;/p&gt;
+
+&lt;p&gt;In the polmineR package, you get a htmlwidget when the &lt;code class=&quot;highlighter-rouge&quot;&gt;show()&lt;/code&gt;-method is invoked on a &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt;-object, or a &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences&lt;/code&gt;-object. For the sake of keeping the explanation simple, it is as simple as follows to include an htmlwidget with kwic output.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polmineR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;dfasdf&lt;/p&gt;
+
+&lt;iframe title=&quot;My embedded document&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_1.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;The only thing that is necessary is to include &lt;code class=&quot;highlighter-rouge&quot;&gt;render = polmineR::knit_print&lt;/code&gt; in the statement of the chunk options. Having implemented the &lt;code class=&quot;highlighter-rouge&quot;&gt;knit_print()&lt;/code&gt;-method is the basis for the convenient inclusion of htmlwidgets in Rmarkdown documents using polmineR. The same works for the tables resulting from a call to the &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences()&lt;/code&gt;-method.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;cooccurrences&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The standard for the &lt;code class=&quot;highlighter-rouge&quot;&gt;datatables&lt;/code&gt;-htmlwidget is to show 10 rows. Sometimes this may be too much, particularly when you want to include the table in a set of slides. You can manage the number of rows shown by setting the &lt;code class=&quot;highlighter-rouge&quot;&gt;polmineR.pagelength&lt;/code&gt; option. See the following example&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;polmineR.pagelength&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Related to the enhanced functionality to include htmlwidgets in Rmarkdown documents, the &lt;code class=&quot;highlighter-rouge&quot;&gt;highlight()&lt;/code&gt;-method and the &lt;code class=&quot;highlighter-rouge&quot;&gt;tooltips()&lt;/code&gt;-method have been implemented for &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt;-objects.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;magrittr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dictionary&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;crude&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;barrel&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;company&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;product&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;highlight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yellow&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dictionary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tooltips&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setNames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dictionary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Apart from highlighting the terms in our &lt;code class=&quot;highlighter-rouge&quot;&gt;dictionary&lt;/code&gt;-character vector, we have also added tooltips to these terms. Obviously, this is not a substantively interesting example. But being able to highlight terms and to inspect tooltips with term weights can be very smart to validate how a dictionary may work, for sentiment analysis, for instance.&lt;/p&gt;
+
+&lt;p&gt;Let us leave it to another post to explain how this might work. To conclude this post on the new core feature of polmineR v0.7.10, I would like to thank the participants of my ‘methods training’-course in the academic year 2017/18. Several improvements of the polmineR package have resulted from the feedback. This includes working with htmlwidgets much more than before, so that I could develop slides for teaching purposes with a certain level of interactivity. To thanks to my students of their endurance to be exposed to my experiments!&lt;/p&gt;
+</description>
+        <pubDate>Mon, 01 Oct 2018 00:00:00 +0200</pubDate>
+        <link>http://localhost:4000/posts/2018/10/01/Release-of-polmineR-v0.7.10.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2018/10/01/Release-of-polmineR-v0.7.10.html</guid>
+        
+        <category>news</category>
+        
+        
+        <category>Posts</category>
+        
+      </item>
     
       <item>
         <title>New RcppCWB version 0.2.5 at CRAN</title>
@@ -832,23 +892,6 @@ academic users through our GitLab server (gitlab.sowi.uni-due.de).&lt;/p&gt;
         <guid isPermaLink="true">http://localhost:4000/posts/2016/10/10/CLARIN-registration.html</guid>
         
         <category>news</category>
-        
-        
-        <category>Posts</category>
-        
-      </item>
-    
-      <item>
-        <title>polmineR update - version 0.6.2</title>
-        <description>&lt;p&gt;A new release of the polmineR-package is available at CRAN. Apart from behind-the-scenes-refactoring that makes the code more consistent, 
-there availability of progress bars for time-consuming functions has been extended. Improving the usability has been a prime aim of this
-update.&lt;/p&gt;
-</description>
-        <pubDate>Wed, 07 Sep 2016 00:00:00 +0200</pubDate>
-        <link>http://localhost:4000/posts/2016/09/07/polmineR-update.html</link>
-        <guid isPermaLink="true">http://localhost:4000/posts/2016/09/07/polmineR-update.html</guid>
-        
-        <category>release</category>
         
         
         <category>Posts</category>
