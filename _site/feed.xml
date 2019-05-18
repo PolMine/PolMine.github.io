@@ -5,9 +5,90 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 25 Oct 2018 12:56:06 +0200</pubDate>
-    <lastBuildDate>Thu, 25 Oct 2018 12:56:06 +0200</lastBuildDate>
+    <pubDate>Sat, 18 May 2019 21:11:39 +0200</pubDate>
+    <lastBuildDate>Sat, 18 May 2019 21:11:39 +0200</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
+    
+      <item>
+        <title>Towards polmineR v0.8.0: An annotation workflow </title>
+        <description>&lt;h1 id=&quot;towards-polminer-v080-an-annotation-workflow&quot;&gt;Towards polmineR v0.8.0: An annotation workflow&lt;/h1&gt;
+
+&lt;p&gt;The polmineR package strives to offer a basic programming vocabulary to implement workflows for complex text analytical tasks, including annotation. The basic requirements for this, i.e. the ability to reconstruct (passages of) full text at any time has always been there, but the annotation functionality has been an unfullfilled promised. As we are approaching v0.8.0, the idea to realize an annotation workflow shall finally materialize.&lt;/p&gt;
+
+&lt;p&gt;In this blog post, I would like to introduce a new workflow to annotate classes inheriting from the &lt;code class=&quot;highlighter-rouge&quot;&gt;textstat&lt;/code&gt; class, such as an analysis for keywords-in-context (&lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt;) or of &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences&lt;/code&gt;. It is available in its current form starting from polmineR version 0.7.11.9023, available on the development branch of polmineR at GitHub. It can be installed as follows (if you have the devtools package installed):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;devtools&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;install_github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;PolMine/polmineR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The impetus for developing the functionality came from using a dictionary to score the degree of populism in  parliamentary speeches. But using dictionaries comes with a risk. The validity of measurements using dictionaries can not always be taken for granted, given the ambiguity of terms. This is the idea that suggests itself: For annotation and disambiguation, it would be nice to have a simple and efficient “pure R” workflow, i.e. we do not want to leave the R session we are using for the rest of our analysis of corpora and further data.&lt;/p&gt;
+
+&lt;p&gt;To keep things simple, the scenario I use here is a simple effort to disambiguate (the German word) “Integration”. Fairly often, it is used to refer to the integration of immigrants into society. But there are other relevant contexts with a different meaning. You can also talk about the integration of unemployer persons into the labour market, or of handicapped persons into society. Thus, let us assume we want to count the number of occurrences of “Integration” in the context of migration and integration affairs and that we want to avoid counting the occurrence of “Integration” in other contexts.&lt;/p&gt;
+
+&lt;p&gt;This disambiguation might also be achieved through a rule-based procedure (i.e. a dictionary of words required to occurr in the neighborhood of our match, and/or a dictionary preventing a match to be counted), or a procedure based on training data. But to develop either approach, manual inspection and annotation may be necessary as a first step anyway. So this is why we need a workflow for manual annotation. Once we have it at hand, we can also use it for a brute-force manual annotation from dusk till dawn for all matches without further sophistication. At times, this appraoch may not be the worst one from the “know your data” and validity point of view.&lt;/p&gt;
+
+&lt;p&gt;The solution polmineR is now able to offer is a &lt;a href=&quot;https://www.rstudio.com/resources/webinars/shiny-gadgets-interactive-tools/&quot;&gt;shiny gadget&lt;/a&gt; that uses the &lt;a href=&quot;https://handsontable.com/&quot;&gt;Handsontable&lt;/a&gt; JavaScript library which is exposed through the &lt;a href=&quot;https://jrowen.github.io/rhandsontable/&quot;&gt;rhandsontable&lt;/a&gt; package. When you start the gadget in an RStudio session, it will be shown in the Viewer pane of RStudio, and you will have the results of your annotation exercise in the R sessions right away, without having to export data and switching applications. The following animated gif may convey the essence and the look and feel of this new feature.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;/assets/2019-05-17-Towards-polmineR-v0.8.0/annotation_demo.gif&quot; alt=&quot;fff&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now for the more verbose explanation how to use the new functionality, including the code. We start by loading polmineR and activating the GERMAPARL corpus of parliamentary debates in the German Bundestag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polmineR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;GermaParl&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# activate GERMAPARL corpus&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Then we generagte a &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt; object using the &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic()&lt;/code&gt;-method. Pursuing the scenario introduced before, we look up matches for “Integration” in the GERMAPARL corpus.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;GERMAPARL&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Integration&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The resulting object &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt; has used the default left and right context of 5 tokens. Often, we will find that we may want to see more words to solidify our annotation decisions. For this, we use a new argument of the &lt;code class=&quot;highlighter-rouge&quot;&gt;enrich()&lt;/code&gt;-method to get us an extra 5 words to the left and to the right of our search windows.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enrich&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extra&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;When &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt; objects are generated and enriched, a &lt;code class=&quot;highlighter-rouge&quot;&gt;data.table&lt;/code&gt; in the slot &lt;code class=&quot;highlighter-rouge&quot;&gt;stat&lt;/code&gt; of the object is filled with the concordance lines. This table can be augmented with a new column as follows. In our example, we add a (logical) column called “mi” (for migration and integration) to indicate whether our match for “Integration” occurrs in a migration and integration context.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;mi&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;what&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Note that you can also add columns with a character vector, or a factor. Assigning a factor can be a good choice, when you want to offer users or yourself a limited set of choices. One of the beauties of basing the shiny widget on the &lt;code class=&quot;highlighter-rouge&quot;&gt;Handsontable&lt;/code&gt; library for html spreadsheets is that for factor columns, a drop down menu is used for data input by default. See the examples for the annotation functionality (&lt;code class=&quot;highlighter-rouge&quot;&gt;?annotations&lt;/code&gt;) to see an example.&lt;/p&gt;
+
+&lt;p&gt;Now we have a kwic object with the annotation layer we just added. We can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;edit()&lt;/code&gt; method to call the shiny gadget we have been talking about and that you could see in the initial animated image.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;edit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Once you call the &lt;code class=&quot;highlighter-rouge&quot;&gt;edit()&lt;/code&gt;-method, the gadget pops up in the RStudio Viewer pane, and you can edit the annotations (here: the “mi”-column) as you wish, in a manner you would know from a conventional spreadsheet program such as Excel.&lt;/p&gt;
+
+&lt;p&gt;Once you finished editing annotations, click the “Done”-button, and the results of the annotation effort are available in the R session. You can get the &lt;code class=&quot;highlighter-rouge&quot;&gt;data.table&lt;/code&gt; with the annotations by calling the &lt;code class=&quot;highlighter-rouge&quot;&gt;annotations()&lt;/code&gt;-method on the annotated object.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And of course, you can aggregate the result. For instance, to count the number of TRUE/FALSE classifications, use the notation of the &lt;code class=&quot;highlighter-rouge&quot;&gt;data.table&lt;/code&gt;-package to aggregate results for the column “mi”.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;by&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Having gone through our &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt; object, the real work in our analysis to obtain a substantive result will usually only start. For instance, if the aim was just do get rid of false matches, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;subset()&lt;/code&gt;-method on the &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt; object to discard the matches we have annotated with FALSE.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;x_min&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mi&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x_min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# see the length of the shortened object&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Quite obviously, it may be tedious to go through concordances if we have a large number of matches. It may be very attractive to use a limited set of annotated lines as training data. For most ML exercises, we will need a Document-Term-Matrix. You get it as follows…&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;dtm&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as.DocumentTermMatrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p_attribute&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;word&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And we have the labels for the algorithm at hand, recall that we can get it by calling &lt;code class=&quot;highlighter-rouge&quot;&gt;annotations()&lt;/code&gt;. But explaining how to do the machine learning part goes beyond this post: The aim here has been to introduce the new annotation workflow of the polmineR package.&lt;/p&gt;
+
+&lt;p&gt;Just a final remark: You can annotate and edit any object that inherits from the &lt;code class=&quot;highlighter-rouge&quot;&gt;textstat&lt;/code&gt;-class. Apart from annotating &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt;-objects, annotating &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences&lt;/code&gt; may be an important use case.&lt;/p&gt;
+
+&lt;p&gt;I hope you find the new annotation functionality useful. Feedback is welcome!&lt;/p&gt;
+</description>
+        <pubDate>Fri, 17 May 2019 00:00:00 +0200</pubDate>
+        <link>http://localhost:4000/posts/2019/05/17/Towards-polmineR-v0.8.0-A-new-annotation-workflow.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2019/05/17/Towards-polmineR-v0.8.0-A-new-annotation-workflow.html</guid>
+        
+        <category>news</category>
+        
+        
+        <category>Posts</category>
+        
+      </item>
     
       <item>
         <title>RcppCWB v0.2.6 at CRAN: Towards publishing cwbtools</title>
@@ -872,53 +953,6 @@ R CMD INSTALL &lt;span class=&quot;nt&quot;&gt;--build&lt;/span&gt; rcqp_0.4.tar
         <pubDate>Thu, 19 Jan 2017 00:00:00 +0100</pubDate>
         <link>http://localhost:4000/posts/2017/01/19/Pride-and-Prejudice.html</link>
         <guid isPermaLink="true">http://localhost:4000/posts/2017/01/19/Pride-and-Prejudice.html</guid>
-        
-        <category>news</category>
-        
-        
-        <category>Posts</category>
-        
-      </item>
-    
-      <item>
-        <title>The peak of refugees: Dispersion of terms across time</title>
-        <description>&lt;h2 id=&quot;the-peak-of-refugees-dispersion-of-terms-across-time&quot;&gt;The peak of refugees: Dispersion of terms across time&lt;/h2&gt;
-
-&lt;p&gt;Publishing blog entries here has been a plan for a while. The intention is to share findings we may gain from large-scale corpora. Most of the time, I will elaborate on a some scenario that the polmineR package may be useful for.&lt;/p&gt;
-
-&lt;p&gt;It does not require text mining to say that politics in Germany has been dominated by the debate on refugees in 2015 and 2016. But what is the long-term trend? What happened a decade or more ago may evade our memory. Here, I will use a very basic technique to gain a first quick impression of developments: Word counts, the quick and dirty dispersion of terms across time.&lt;/p&gt;
-
-&lt;p&gt;Methodologically, analysing word counts is trivial. Yet combining polmineR for retrieving a dispersion quickly, and the zoo package for handling and visualising a time series go hand in hand smoothly. The following lines of code will use the query “Fl.cht.*’, i.e. a regular expression syntax that can be handled by CQP (the Corpus Query Processor), the backend of polmineR. The corpus I use are all plenary protocols starting from the 13th legislative period until the end of 2016 (corpus name: “PLPRBT”, a beta corpus).&lt;/p&gt;
-
-&lt;p&gt;Let’s move to the code. After loading the polmineR package, I tell R to use the PLPRBT corpus that is included in the ‘plprbt’-package, a data package I have prepared (for myself, beta version).&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polmineR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zoo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;plprbt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Six lines of code are enought to get the counts and have a time series object (class ‘zoo’):&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;cqp_query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&quot;Fl.cht.*&quot;'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;refugees_tab&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dispersion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;PLPRBT&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cqp_query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sAttribute&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;speaker_date&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cqp&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;progress&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_index&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;refugees_tab&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;speaker_date&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zoo_raw&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zoo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;refugees_tab&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;count&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order.by&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;years&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as.Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;^.*(\\d{4}).*$&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;\\1-01-01&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zoo_raw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zoo_aggr&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aggregate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zoo_raw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FUN&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;by&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;years&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We now have a zoo times series object with the counts. Of course, we might proceed with a normalization to inspect frequencies rather than counts. We might work with a more sophisticated set of queries. Anyway - the beauty of zoo is that it produces plots in a straight-forward manner. Let’s got for it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zoo_aggr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ylab&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;count&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xlab&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;year&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/2017-01-16-Dispersion-of-Terms/unnamed-chunk-2-1.png&quot; alt=&quot;plot of chunk unnamed-chunk-2&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;A clear peak in 2015 far beyond anything before. As it seems: In a long-term perspective, 2015 has been the peak of attention for debating refugee migration. For more than two decades.&lt;/p&gt;
-</description>
-        <pubDate>Mon, 16 Jan 2017 00:00:00 +0100</pubDate>
-        <link>http://localhost:4000/posts/2017/01/16/Dispersion-of-Terms.html</link>
-        <guid isPermaLink="true">http://localhost:4000/posts/2017/01/16/Dispersion-of-Terms.html</guid>
         
         <category>news</category>
         
