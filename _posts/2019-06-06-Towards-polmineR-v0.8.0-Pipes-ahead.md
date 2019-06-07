@@ -29,7 +29,7 @@ The new workflow is available in the new versions of polmineR on the development
 devtools::install_github("PolMine/polmineR", ref = "dev")
 {% endhighlight %}
 
-In the following examples, I will use the GermaParl corpus of plenary protocols of the German Bundestag [@BLÄTTE18.1024]. We activate the corpus after loading the polmineR package as follows.
+In the following examples, I will use the GermaParl corpus of plenary protocols of the German Bundestag. We activate the corpus after loading the polmineR package as follows.
 
 
 {% highlight r %}
@@ -230,5 +230,3 @@ Given the size of the intervention, I do not want to deprecate the old workflow 
 
 I gratefully acknowledge the feedback of Christoph Leonhardt on many questions I had whether the new workflow is more intuitive. A discussion with the text mining group of my department at the University of Duisburg-Essen encouraged me to finally advertise the changes made with this blogpost, thanks for the debate and feedback!
 
-
-## References
