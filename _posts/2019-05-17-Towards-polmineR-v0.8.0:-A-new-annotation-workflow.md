@@ -7,7 +7,7 @@ categories: Posts
 tags: news
 ---
 
-# Towards polmineR v0.8.0: An annotation workflow
+# Towards polmineR v0.8.0: A new annotation workflow
 
 The polmineR package strives to offer a basic programming vocabulary to implement workflows for complex text analytical tasks, including annotation. The basic requirements for this, i.e. the ability to reconstruct (passages of) full text at any time has always been there, but the annotation functionality has been an unfullfilled promised. As we are approaching v0.8.0, the idea to realize an annotation workflow shall finally materialize.
 
