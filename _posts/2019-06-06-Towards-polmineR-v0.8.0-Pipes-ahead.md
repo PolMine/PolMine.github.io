@@ -7,7 +7,7 @@ categories: Posts
 tags: news
 editor_options: 
   chunk_output_type: console
-bibliography: ~/Lab/github/PolMine.github.io/literature.bib
+bibliography: /Users/andreasblaette/Lab/github/PolMine.github.io/_source/literature.bib
 ---
   
 # Towards polmineR v0.8.0: Pipes ahead
@@ -88,7 +88,7 @@ First and foremost, I want to make the vocabulary and the workflows of the polmi
 
 When I started writing tutorials for polmineR last year (i.e. the ["Using Corpora in Social Science Research"](https://polmine.github.io/UCSSR) set of slides), an issue that had bothered me before re-occurred to me: Explaining why the `partition`-class is called "partition", and why the polmineR terminology opts for using the `partition()`-method to create a subcorpus is clumsy. The naming of the `partition` class again and again required me to write at least one extra sentence. Something like this: "In the polmineR context, I call a subcorpus a 'partition' in line with language established in the French lexicometric tradition." The French lexicometric tradition is still as rich and admirable as it has always been, but at the end of the day, the extra sentence is cumbersome. It is easier to just call a subcorpus a subcorpus. 
 
-In fact, I had refrained from defining a `subcorpus` class a couple of years ago  to avoid a namespace conflict with the rcqp package which included a `subcorpus`-class. But as the former rcqp package has been superseded by the RcppCWB package, this potential namespace conflict has ceased to exist. So the `partition()`-method can be replaced by a `subset()`-method defined for `corpus`- and `subcorpus`-objects. You now derive a subcorpus from a corpus by subsetting the corpus. My sense is that this is more intuitive, and you can explain workflows in a straght-forward manner, without the explanatory detours I have mentioned.
+In fact, I had refrained from defining a `subcorpus` class a couple of years ago  to avoid a namespace conflict with the rcqp package which included a `subcorpus`-class. But as the former rcqp package has been superseded by the RcppCWB package, this potential namespace conflict has ceased to exist. So the `partition()`-method can be replaced by a `subset()`-method defined for `corpus`- and `subcorpus`-objects. You now derive a subcorpus from a corpus by subsetting the corpus. My sense is that this is more intuitive, and you can explain workflows in a straight-forward manner, without the explanatory detours I have mentioned.
 
 
 ### Subsetting (sub)corpora: A more intuitive workflow using pipes
@@ -201,35 +201,9 @@ A corpus stored locally will almost always be the fastest option. But at times, 
 
 A final goodie: Creating subcorpora from corpora using the `subset()`-method is faster than creating a `partition`. If we create a `partition`/`subcorpus` of the GERMAPARL corpus a couple of times (five times here), the new subsetting-procedure takes on average only half of the time compared to the old procedure. See the following basic benchmark.
 
+![plot of chunk benchmark](/assets/2019-06-06-Towards-polmineR-v0.8.0-Pipes-ahead/benchmark-1.png)
 
-{% highlight r %}
-old <- sapply(
-  1:5,
-  function(i){
-    system.time(
-      partition("GERMAPARL", speaker = "Angela Merkel", verbose = FALSE)
-      )[["elapsed"]]
-  }
-)
-new <- sapply(
-  1:5,
-  function(i){
-    system.time(
-      corpus("GERMAPARL") %>% subset(speaker == "Angela Merkel")
-      )[["elapsed"]]
-  }
-)
-barplot(
-  height = c(mean(old), mean(new)),
-  names.arg = c("partition()", "subset()"),
-  ylab = "average time (in seconds)",
-  main = "Time to create partition/subcorpus (5 runs)"
-)
-{% endhighlight %}
-
-![plot of chunk benchmark](figure/source/2019-06-06-Towards-polmineR-v0.8.0-Pipes-ahead/benchmark-1.png)
-
-The performance improvement results from a new procedure for decoding structural attributes for an entire corpus. Note that the improvement will be more limited if you subset an existing subcorpus. Neverthelessd: Subsetting an entire corpus is a significant scenario, and cutting the time consumed by 50% is substantial.
+The performance improvement results from a new procedure for decoding structural attributes for an entire corpus. Note that the improvement will be more limited if you subset an existing subcorpus. Nevertheless: Subsetting an entire corpus is a significant scenario, and cutting the time consumed by 50% is substantial.
 
 
 ## Discussion
@@ -238,7 +212,7 @@ The presented intervention in the polmineR package is non-trivial and significan
 
   * The introduction of the `corpus` class comes at a cost: The quanteda package also defines a class with the same name. The polmineR package uses the S4 class system, quanteda uses S3, but both packages use the same constructor, the `corpus()`-method. If you load the polmineR package after having loaded quanteda, or vice versa, there will now be a warning on a namespace conflict. This is far from ideal, as the quanteda package includes important analytical functionality polmineR users may want to use. Having thought about the pros and cons, I thought the namespace conflict may be bearable: First of all, there is no substantial problem beyond the warning issued, if you use polmineR to evaluate a corpus and quanteda for there further analytics. Second, the solution to omit defining the `corpus()`-method in polmineR would have violated the aim to establish a new naming of classes/methods that is as intuitive as possible.
   
-  * Another question was whether using the `subset()`-method might not provoke the misunderstanding that the result would be a `data.frame`. Indeed, I had worked with a `zoom()`-method experimentally.  But when moving from a corpus to a subcorpus, it is not actually a "zooming in"-operation that is performed. If you extract the speeches given by Angela Merkel, for instance, these passages of speech are scattered across many protocols. So the term "zoom" will not capture well what you actually do (thanks to Max Hugendubel for this suggestion!). So I do not think that that omitting usage of the `subset()`-method is the solution, but documenting and explaining the workflow within the package is what matters.
+  * Another question was whether using the `subset()`-method might not provoke the misunderstanding that the result would be a `data.frame`. Indeed, I had worked with a `zoom()`-method experimentally.  But when moving from a corpus to a subcorpus, it is not actually a "zooming in"-operation that is performed. If you extract the speeches given by Angela Merkel, for instance, these passages of speech are scattered across many protocols. So the term "zoom" will not capture well what you actually do (thanks to Max Hugendubel and  Stefan Haußner for their thoughtful input on this!). So I do not think that that omitting usage of the `subset()`-method is the solution, but documenting and explaining the workflow within the package is what matters.
 
 
 ## Roadmap
@@ -249,12 +223,12 @@ Given the size of the intervention, I do not want to deprecate the old workflow 
 
   * In v.0.8.0, the "old" workflow (that uses the `partition()`-method) will remain fully intact. 
   * v0.9.0  will issue warning messages that the old workflow is deprecated.
-  * Only with v1.0.0 I will clean up the code and remove functionality that will then knowingly been be defunct.
+  * Only with v1.0.0 I will clean up the code and remove functionality that will then knowingly be defunct.
 
 
 ## Acknowledgements
 
-I gratefully acknowledge the feedback of Christoph Leonhardt on many questions I had whether the new workflow is more intuitive. A discussion with the text mining group of my department at the University of Duisburg-Essen encouraged me to finally advertise the changes made with this blogpost, thanks for the debate!
+I gratefully acknowledge the feedback of Christoph Leonhardt on many questions I had whether the new workflow is more intuitive. A discussion with the text mining group of my department at the University of Duisburg-Essen encouraged me to finally advertise the changes made with this blogpost, thanks for the debate and feedback!
 
 
 ## References
