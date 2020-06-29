@@ -1,0 +1,35 @@
+ ---
+title: "Untitled"
+output: html_document
+---
+
+```{r, warning = FALSE}
+suppressPackageStartupMessages(library(rgdal, quietly = TRUE))
+library(DT)
+```
+
+```{r}
+einwohner_mmh_csv <- "https://opendata-duisburg.de/sites/default/files/MHGo2018_2.csv"
+df <- read.csv(file = einwohner_mmh_csv, sep = ";")
+df[["mmh_share"]] <- round(df[["Personen.mit.Migrationshintergrund"]] / df[["Einwohner.insgesamt"]] * 100, 2)
+df[["OTName"]] <- gsub("(\\w)\\s(\\w)", "\\1-\\2", df[["OTName"]])
+df[["OTName"]] <- gsub("\\s/\\s", "-", df[["OTName"]])
+df[["OTNummer"]] <- NULL
+df[["Personen.ohne.Migrationshintergrund"]] <- NULL
+colnames(df) <- c("Ortsteil", "N", "MMH", "Ausländer", "MMH_DE", "MMH_SHARE")
+datatable(df, options = list(pageLength = nrow(df)))
+```
+
+
+```{r}
+percentage <- round(df[["MMH_SHARE"]], 0)
+percentage_mod <- percentage - min(percentage) + 1
+mmh_col <- rev(gray.colors(n = max(percentage_mod), start = 0.0, end = 0.95))[percentage_mod]
+names(mmh_col) <- df[["Ortsteil"]]
+```
+
+```{r}
+x <- rgdal::readOGR(dsn = "~/Downloads/Ortsteile", verbose = FALSE)
+plot(x, col = mmh_col[x@data[["OTNAME"]]])
+```
+
