@@ -1,0 +1,40 @@
+---
+layout: post
+title:  "Reuniting the PolMine family"
+date:   2020-06-30
+author: Andreas Blätte
+categories: Posts
+tags: news
+editor_options: 
+  chunk_output_type: console
+---
+  
+# Reuniting the PolMine family
+
+A new version of RcppCWB (v0.2.10) just made it to CRAN. Updates of polmineR and cwbtools are about to follow. Among others, the new versions will offer more performance and a better user experience: The download mechanism of the cwbtools package has been reworked thoroughly and the polmineR package will use the buttons of the DataTable JavaScript library, leading to workflows that are much more intuitive for exporting data than the `store()` and `mail()` methods originally included in the package.
+
+Admittedly, putting things this way involves a good deal of whitewashing. The past days brought tons of unexpected hard work to prepare the releases caused by an unexpected meltdown of the PolMine presence at GitHub. Users must have been wondering what was going on.
+
+The offspring of all calamities was a harmless CRAN message that RcppCWB would not compile on Fedora 32 which uses GCC10. I do not know any polmineR user who uses Fedora, but the matter needed to be fixed. Fedora is a forerunner to use the latest compilers. It is just a matter of time that Debian and Ubuntu will move to GCC10 too.
+
+So I submitted the new RcppCWB version two day before the CRAN deadline. Having run extensive checks of the new version, I was very confident that the package was addressing all issues CRAN had informed me about appropriatly. That assumption was perfectly true. But there was one more thing. A newly introduced test to prevent the usage of bash scripts and "bashisms" triggered the CRAN checks for incoming packages to fail. RcppCWB was archived. All dependencies of RcppCWB (polmineR and cwbtools) were archived. The PolMine suite of packages gone with the wind.
+
+This is where we stand: RcppCWB is back at CRAN for a few days. But when preparing the new releases of polmineR and cwbtools, all kinds of new CRAN checks and tests made one rework after another necessary. I learned that the CRAN team is implementing policies in a much stricter manner than when I submitted the packages first. 
+
+Even though it made my life miserable the past days, I highly appreciate what the CRAN team does. It s a great safeguard to maintain the quality and portability of CRAN-publshed packages. It helps to make our packages better and more reliable.
+
+Users have started to depend on the presence of RcppCWB, polmineR and cwbtools at CRAN. A couple of university courses use the packages and students may find it very frustrating that tools are not there, just as researchers. The current situation violates my own standards and what I want to achieve. So I really do apologize for the situation.
+
+What can we do in the meantime? Releases of the new packages are finalized and are awaiting approval to re-appear at CRAN. It's just just a little PolMine-CRAN ping pong we need to endure. To offer a convenient installation mechanism, PolMine's CRAN-style drat repository at GitHub can be used. Please proceed as follows to get polmineR and cwbtools:
+
+```r
+install.packages("drat") # 'drat' package needed to access drat repository easily
+drat::addRepo("polmine") # PolMine in lower case here
+
+install.packages("polmineR")
+install.packages("cwbtools")
+```
+
+One cautionary note: Older R versions are difficult to get but necessary to prepare binary versions for outdated R versions. So if you want to download binary packages for Windows and macOS, R version 4.0 may be necessary.
+
+Believe me, I have learned my lesson. And everything we just experienced is a very strong stimulous for me to improve further to offer a suite of packages for the analysis of textual data that is as reliably there as possible.
