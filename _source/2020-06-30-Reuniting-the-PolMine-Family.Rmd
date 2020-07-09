@@ -21,11 +21,11 @@ So I submitted the new RcppCWB version two days before deadline CRAN hat set. Ha
 
 This is where we stand: RcppCWB is back at CRAN for a few days. But when preparing the new releases of polmineR and cwbtools, all kinds of new CRAN checks and tests made one rework after another necessary. So I learned the tough way that the CRAN team is implementing policies in a much stricter manner than when I submitted the packages first. 
 
-Even though it made my life miserable the past days, I highly appreciate what the CRAN team does. It s a great safeguard to maintain the quality and portability of CRAN-publshed packages. It helps to make our packages better and more reliable.
+Even though it made my life miserable the past days, I highly appreciate what the CRAN team does. It is a great safeguard to maintain the quality and portability of CRAN-published packages. It helps to make our packages better and more reliable.
 
-Users have started to depend on the presence of RcppCWB, polmineR and cwbtools at CRAN. A couple of university courses use the packages and students may find it very frustrating that tools are not there, just as researchers. The current situation violates my own standards and what I want to achieve. So I really do apologize for the situation.
+Users have started to depend on the presence of RcppCWB, polmineR and cwbtools at CRAN. A couple of university courses use the packages and students may find it very frustrating that tools are not theres. The current situation violates my own standards and what I want to achieve. So I really do apologize for the situation.
 
-What can we do in the meantime? Releases of the new packages are finalized and are awaiting approval to re-appear at CRAN. It's just just a little PolMine-CRAN ping pong we need to endure. To offer a convenient installation mechanism, PolMine's CRAN-style drat repository at GitHub can be used. Please proceed as follows to get polmineR and cwbtools:
+Releases of the new packages are finalized and are awaiting approval to re-appear at CRAN. It's just just a little PolMine-CRAN ping pong we need to endure. To offer a convenient installation mechanism in the meantime, PolMine's CRAN-style drat repository at GitHub has been updated. Please proceed as follows to get polmineR and cwbtools:
 
 ```r
 install.packages("drat") # 'drat' package needed to access drat repository easily
@@ -35,6 +35,6 @@ install.packages("polmineR")
 install.packages("cwbtools")
 ```
 
-One cautionary note: Older R versions are difficult to get but necessary to prepare binary versions for outdated R versions. So if you want to download binary packages for Windows and macOS, R version 4.0 may be necessary.
+One cautionary note: Older R versions are difficult to get but necessary to prepare binary versions for previous R versions. So if you want to download binary packages for Windows and macOS, R version 4.0 may be necessary.
 
 Believe me, I have learned my lesson. And everything we just experienced is a very strong stimulous for me to improve further to offer a suite of packages for the analysis of textual data that is as reliably there as possible.

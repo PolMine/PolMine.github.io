@@ -1,0 +1,38 @@
+---
+layout: post
+title:  "RcppCWB v0.3.0 'Sunrise' Released"
+date:   2020-07-09
+author: Andreas Blätte
+categories: Posts
+tags: news
+editor_options: 
+  chunk_output_type: console
+---
+  
+# RcppCWB v0.3.0 'Sunrise' Released
+
+We happily announce that RcppCWB v0.3.0 is available at CRAN! 
+
+The deployment of the binaries for Windows and macOS users may still take a few days. But admittedly, this release is not about Windows and macOS, it is about Linux and Solaris.
+
+The first major modification of RcppCWB v0.3.0 concerns the configure script. It know checks systematically whether dependencies (ncurses, glib-2.0, pcre) are present and will issue a telling error message when requirements are not met.
+
+Second, the quick fix of RcppCWB v0.2.10 to use the '-fcommon' flag to avoid GCC 10 errors with multiple includes has been dropped and replaced with a proper and durable solution:
+
+- Global variables in the original CWB C code that GCC 10 would detect to be defined several times because of multiple includes have been turned to external variables.
+- A newly written header file provides the definition that satisfies the compiler.
+
+CRAN pushed me hard in this direction. But they are perfectly right to do so: GCC 10 and its dislike of multiple tentative definitions is not yet very common (a Fedora phenomenon at this stage). But it is just a matter of time to become the standard.
+
+The only changes in the R code of the package are as follows:
+
+- The dynamic library is unloaded when the package is unloaded. This is good practice and it was overdue to adopt it.
+- CQP is initialized by default upon loading the package.  Among others, this should make it easier to implement a failsafe functionality in the cwbtools package for test loading CWB corpora.
+
+See the NEWS.md file for further minor updates and modifications in the package, such as compiler warnings that have been addressed.
+
+Admittedly, CRAN pushed me forcefully to implement the changes I have sketched quickly and to remove remaining "bashisms". But it is well taken that if we want your package to be on CRAN, portability and quality are standards CRAN rightfully enforces. Checking the package across systems with different configurations is not really the fun part of developing a package. The hardest part is to ensure the portability for Solaris. I am quite sure I am not the only one who thinks it is tricky and mind wrecking work.
+
+Because some aspects of preparing this release have been a nightmare and because I just saw that the package check status for Solaris is "OK", I named this release "Sunrise".
+
+If there is something that does not work, that needs improvement or that is in need of better documentation, please use the [GitHub issues of the RcppCWB package](https://github.com/PolMine/RcppCWB/issues).

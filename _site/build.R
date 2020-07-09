@@ -6,6 +6,9 @@ knitr::render_jekyll()
 
 # input/output filenames are passed as two additional arguments to Rscript
 a = commandArgs(TRUE)
+print(a)
+file.exists(a[1])
+file.exists(a[2])
 d = gsub('^_|[.][a-zA-Z]+$', '', a[1])
 # cat(d)
 knitr::opts_chunk$set(
