@@ -1,0 +1,38 @@
+---
+layout: post
+title:  "cwbtools v0.3.0 'Apple Picker' Released"
+date:   2020-07-10
+author: Andreas Blätte
+output: 
+  md_document:
+    preserve_yaml: true
+categories: Posts
+tags: news
+---
+  
+# cwbtools v0.3.0 'Apple Picker' Released
+
+A new version of [cwbtools](https://CRAN.R-project.org/package=cwbtools) (v0.3.0) is available via CRAN and I do not want to miss explaining what is new. 
+
+First of all, the major *new* feature is that it is now possible to download the tarball with a CWB indexed corpora from a server and to install corpus files to the general corpus storage. The whereabouts of a corpus can also be stated via a Document Object Identifier (DOI), i.e. there is a new argument `doi` for the `corpus_install()` function. 
+
+At this stage, resolving the DOI to get the URL of the corpus tarball is implemented for DOIs issued by [Zenodo](https://zenodo.org/) (using the [zen4R](https://CRAN.R-project.org/package=zen4R) package, which is a new dependency). Zenodo is an open science repository hosted by CERN. Several corpora prepared in the PolMine Project have been published with Zenodo recently. As a result, it has never been easier and more reliable to install corpora. 
+
+For instance, to install [the United Nations General Assembly (UNGA) corpus](https://zenodo.org/record/3831472#.XxFLfB1CRZ0), use this function call:
+
+```{r download_and_install_unga, eval = FALSE}
+install.packages("cwbtools") # cwbtools v0.3.0 required
+corpus_install(doi = "10.5281/zenodo.3831472")
+```
+
+At this stage, further corpora that have been prepared in the PolMine Project available at Zenodo are [GermaParl](https://zenodo.org/record/3742113#.XxFLnR1CRZ0), [ParisParl](https://zenodo.org/record/3819374#.XxFLrx1CRZ0), [AustroParl](https://zenodo.org/record/3819505#.XxFLwR1CRZ0),  [RegioParl](https://zenodo.org/record/3835540#.XxFL2x1CRZ0) and [MigParl](https://zenodo.org/record/3872263#.XxFL7x1CRZ0). 
+
+The usability of Zenodo for depositing data is outstanding. As a DOI is issued upon uploading data, the service is comfortable and appropriate for scientific data at the same time. So we think that Zenodo is a very good option to establish the accessibility of corpora (in line with FAIR principles). It is perfectly open for anybody who wants to publish data. The `cwbtools::corpus_install()` will work to download *any* tarball with a CWB indexed corpus from Zenodo. Preparing and uploading the tarballs is not difficult at all.
+
+Concerning usability, user dialogues in the cwbtools package have been reworked thoroughly. We started to use the [cli](https://CRAN.R-project.org/package=cli) package to create a better command line interface. Beyond a nicer appearance and more informative messages, user dialogues that will guide a user through the installation of a corpus have been rewritten and extended. 
+
+There is a new strong support to store corpora in the system corpus storage. If the respective directory structure is not yet present, the user will be guided through the process of creating all directories that are needed. Last but not least, defining the `CORPUS_REGISTRY` variable in the `.Renviron` file is supported by a user dialogue, so that corpora are available across sessions without further ado.
+
+It is quite some work that has gone into the new release of cwbtools. But I am quite confident that the user experience may be much better than before. As always, we will be happy to learn about your experiences and suggestions.
+
+One final remark. Why is this release called "Apple Picker"? cwbtools v0.3.0 is about making downloading and installing corpora as comfortable as possible. I thought that an apple picker was a nice metaphor for that.
