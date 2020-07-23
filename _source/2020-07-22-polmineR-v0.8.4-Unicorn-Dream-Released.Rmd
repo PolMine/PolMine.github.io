@@ -1,0 +1,26 @@
+---
+layout: post
+title:  "polminR v0.8.4 'Unicorn Dream' Released"
+date:   2020-07-10
+author: Andreas Blätte
+output: 
+  md_document:
+    preserve_yaml: true
+categories: Posts
+tags: news
+---
+  
+# polmineR v0.8.4 'Unicorn Dream' Released
+
+A new version of [polmineR](https://CRAN.R-project.org/package=polmineR) (v0.8.3) is available at CRAN. Why do I call this release "Unicorn Dream"? A unicorn dream is much better than a Unicode nightmare...
+
+The predominant focus of the new release is portability. CRAN checks for Solaris reported an issue on Solaris that resulted from Unicode characters in the package documentation. Removing Unicode characters from all documentation objects shall solve this issue. Indeed, I am really glad to see that [CRAN check results](https://cloud.r-project.org/web/checks/check_results_polmineR.html) report that polmineR can now be installed on Solaris without any warnings.
+
+A second encoding issue caused an ERROR on CRAN check machines. There is a Debian check machine with a UTF-8859-15 encoding. Yet handling encodings by polmineR had been based on the premise that Windows installations will have a latin-1 encoding, and that macOS and Linux distributions will have a UTF-8 encoding. This assumption was too strong and resulted in the aforementioned error. The new polmineR version is more liberal: Linux users are not confined to use UTF-8 any more. So if you have a taste for ISO-8859-1 ... go for it.
+
+A third issue with portability and CRAN checks was that building the package vignette required pandoc to be installed. But it isn't on the CRAN machines for macOS and Solaris, resulting in a warning. The `knit_print()` method that usually returns a `htmlwidget` will now return a `data.table`, if pandoc is missing. Building and re-building package vignettes will not yield a warning if pandoc is not present and still result in a telling vignette.
+
+So my big hope is that polmineR v0.8.4 is the most portable version of the package. I hope we will see an agreeable "OK" for all CRAN check machines when all tests have been performed! 
+
+Although I do not really believe that I will never have a nightshift again caused by encoding issues and problems to handle Unicode, baptising the new polmineR release "Unicorn Dream" expresses my (naive) hopes for a bright future and that encoding issues were ghosts haunting me only in the past.
+
