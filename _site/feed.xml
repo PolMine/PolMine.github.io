@@ -5,9 +5,108 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 23 Jul 2020 14:33:49 +0200</pubDate>
-    <lastBuildDate>Thu, 23 Jul 2020 14:33:49 +0200</lastBuildDate>
+    <pubDate>Mon, 25 Jan 2021 11:23:44 +0100</pubDate>
+    <lastBuildDate>Mon, 25 Jan 2021 11:23:44 +0100</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
+    
+      <item>
+        <title>GermaParl v1.5.1 'Drunken Sailor' Released</title>
+        <description>&lt;h1 id=&quot;germaparl-v151-drunken-sailor-released&quot;&gt;GermaParl v1.5.1 ‘Drunken Sailor’ Released&lt;/h1&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://CRAN.R-project.org/package=GermaParl&quot;&gt;GermaParl&lt;/a&gt; package is
+back at CRAN. The most recent version (v1.5.1) that has just been
+released is the first one I expect to pass all checks on all systems. If
+nothing goes wrong, it will be the first fully portable version of the
+GermaParl R package.&lt;/p&gt;
+
+&lt;p&gt;Following the formular ‘less is more’ has been a precondition for that.
+I guess the song &lt;a href=&quot;https://en.wikipedia.org/wiki/Drunken_Sailor&quot;&gt;“What Shall We Do with the Drunken
+Sailor”&lt;/a&gt; is widely known:
+How do you get somebody, who has enjoyed too much previously sober
+again? Metaphorically, this is what GermaParl has gone through now.
+Functions to add further annotation layers were actually quite generic
+have been removed from the GermaParl package, they have been moved to
+the (GitHub-only) package
+&lt;a href=&quot;https://github.com/PolMine/polmineR.misc&quot;&gt;polmineR.misc&lt;/a&gt;. Remaining
+dependencies on the data.table and the RcppCWB package have also been
+removed.&lt;/p&gt;
+
+&lt;p&gt;The GermaParl package still offers the documentation of the data and a
+very convenient download mechanism for the full GermaParl corpus. That’s
+one rationale for the CRAN release. But more importantly from a
+technical point of view, it includes some sample data. A next step will
+be to use the sample data included in the GermaParl package in the
+polmineR package, which can thus be turned a leaner package.&lt;/p&gt;
+
+&lt;p&gt;And GermaParl is a much leaner package now, too. GermaParl is not a
+drunken sailor any more with a terrible hangover (superfluous functions
+and dependencies). As I believe, the package is quite sober now. Enjoy!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 28 Jul 2020 00:00:00 +0200</pubDate>
+        <link>http://localhost:4000/posts/2020/07/28/GermaParl-v1.5.1-Drunken-Sailor-Released.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2020/07/28/GermaParl-v1.5.1-Drunken-Sailor-Released.html</guid>
+        
+        <category>news</category>
+        
+        
+        <category>Posts</category>
+        
+      </item>
+    
+      <item>
+        <title>polmineR v0.8.4 'Unicorn Dream' Released</title>
+        <description>&lt;h1 id=&quot;polminer-v084-unicorn-dream-released&quot;&gt;polmineR v0.8.4 ‘Unicorn Dream’ Released&lt;/h1&gt;
+
+&lt;p&gt;A new version of &lt;a href=&quot;https://CRAN.R-project.org/package=polmineR&quot;&gt;polmineR&lt;/a&gt;
+(v0.8.4) is available at CRAN. Why do I call this release “Unicorn
+Dream”? A unicorn dream is much better than a Unicode nightmare…&lt;/p&gt;
+
+&lt;p&gt;The predominant focus of the new release is portability. CRAN checks for
+Solaris reported an issue on Solaris that resulted from Unicode
+characters in the package documentation. Removing Unicode characters
+from all documentation objects shall solve this issue. Indeed, I am
+really glad to see that &lt;a href=&quot;https://cloud.r-project.org/web/checks/check_results_polmineR.html&quot;&gt;CRAN check
+results&lt;/a&gt;
+report that polmineR can now be installed on Solaris without any
+warnings.&lt;/p&gt;
+
+&lt;p&gt;A second encoding issue caused an ERROR on CRAN check machines. There is
+a Debian check machine with a UTF-8859-15 encoding. Yet handling
+encodings by polmineR had been based on the premise that Windows
+installations will have a latin-1 encoding, and that macOS and Linux
+distributions will have a UTF-8 encoding. This assumption was too strong
+and resulted in the aforementioned error. The new polmineR version is
+more liberal: Linux users are not confined to use UTF-8 any more. So if
+you have a taste for ISO-8859-1 … go for it.&lt;/p&gt;
+
+&lt;p&gt;A third issue with portability and CRAN checks was that building the
+package vignette required pandoc to be installed. But it isn’t on the
+CRAN machines for macOS and Solaris, resulting in a warning. The
+&lt;code class=&quot;highlighter-rouge&quot;&gt;knit_print()&lt;/code&gt; method that usually returns a &lt;code class=&quot;highlighter-rouge&quot;&gt;htmlwidget&lt;/code&gt; will now
+return a &lt;code class=&quot;highlighter-rouge&quot;&gt;data.table&lt;/code&gt;, if pandoc is missing. Building and re-building
+package vignettes will not yield a warning if pandoc is not present and
+still result in a telling vignette.&lt;/p&gt;
+
+&lt;p&gt;So my big hope is that polmineR v0.8.4 is the most portable version of
+the package. I hope we will see an agreeable “OK” for all CRAN check
+machines when all tests have been performed!&lt;/p&gt;
+
+&lt;p&gt;Although I do not really believe that I will never have a nightshift
+again caused by encoding issues and problems to handle Unicode, naming
+the new polmineR release “Unicorn Dream” expresses my (naive) hopes for
+a bright future and that encoding issues were ghosts haunting me only in
+the past.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 22 Jul 2020 00:00:00 +0200</pubDate>
+        <link>http://localhost:4000/posts/2020/07/22/polmineR-v0.8.4-Unicorn-Dream-Released.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2020/07/22/polmineR-v0.8.4-Unicorn-Dream-Released.html</guid>
+        
+        <category>news</category>
+        
+        
+        <category>Posts</category>
+        
+      </item>
     
       <item>
         <title>cwbtools v0.3.1 'Straight No Chaser' Released</title>
@@ -45,7 +144,7 @@ the sample data within the package shall be very useful to make polmineR
 a leaner package that can rely on the GermaParl package for sample data.&lt;/p&gt;
 
 &lt;p&gt;The structure of dependencies we aim at will then be: polmineR depends
-on GermaParl and cwbtools, GermaParl depends on cwbtools and cwbtools
+on GermaParl and cwbtools, GermaParl depends on cwbtools, and cwbtools
 (as well as polmineR) depends on RcppCWB. So this will be a structure
 without any circularity. The current cwbtools release v0.3.1 “Straight
 No Chaser” has prepared exactly that.&lt;/p&gt;
@@ -53,61 +152,6 @@ No Chaser” has prepared exactly that.&lt;/p&gt;
         <pubDate>Tue, 21 Jul 2020 00:00:00 +0200</pubDate>
         <link>http://localhost:4000/posts/2020/07/21/cwbtools-v0.3.1-Straight-No-Chaser-Released.html</link>
         <guid isPermaLink="true">http://localhost:4000/posts/2020/07/21/cwbtools-v0.3.1-Straight-No-Chaser-Released.html</guid>
-        
-        <category>news</category>
-        
-        
-        <category>Posts</category>
-        
-      </item>
-    
-      <item>
-        <title>polminR v0.8.4 'Unicorn Dream' Released</title>
-        <description>&lt;h1 id=&quot;polminer-v084-unicorn-dream-released&quot;&gt;polmineR v0.8.4 ‘Unicorn Dream’ Released&lt;/h1&gt;
-
-&lt;p&gt;A new version of &lt;a href=&quot;https://CRAN.R-project.org/package=polmineR&quot;&gt;polmineR&lt;/a&gt;
-(v0.8.3) is available at CRAN. Why do I call this release “Unicorn
-Dream”? A unicorn dream is much better than a Unicode nightmare…&lt;/p&gt;
-
-&lt;p&gt;The predominant focus of the new release is portability. CRAN checks for
-Solaris reported an issue on Solaris that resulted from Unicode
-characters in the package documentation. Removing Unicode characters
-from all documentation objects shall solve this issue. Indeed, I am
-really glad to see that &lt;a href=&quot;https://cloud.r-project.org/web/checks/check_results_polmineR.html&quot;&gt;CRAN check
-results&lt;/a&gt;
-report that polmineR can now be installed on Solaris without any
-warnings.&lt;/p&gt;
-
-&lt;p&gt;A second encoding issue caused an ERROR on CRAN check machines. There is
-a Debian check machine with a UTF-8859-15 encoding. Yet handling
-encodings by polmineR had been based on the premise that Windows
-installations will have a latin-1 encoding, and that macOS and Linux
-distributions will have a UTF-8 encoding. This assumption was too strong
-and resulted in the aforementioned error. The new polmineR version is
-more liberal: Linux users are not confined to use UTF-8 any more. So if
-you have a taste for ISO-8859-1 … go for it.&lt;/p&gt;
-
-&lt;p&gt;A third issue with portability and CRAN checks was that building the
-package vignette required pandoc to be installed. But it isn’t on the
-CRAN machines for macOS and Solaris, resulting in a warning. The
-&lt;code class=&quot;highlighter-rouge&quot;&gt;knit_print()&lt;/code&gt; method that usually returns a &lt;code class=&quot;highlighter-rouge&quot;&gt;htmlwidget&lt;/code&gt; will now
-return a &lt;code class=&quot;highlighter-rouge&quot;&gt;data.table&lt;/code&gt;, if pandoc is missing. Building and re-building
-package vignettes will not yield a warning if pandoc is not present and
-still result in a telling vignette.&lt;/p&gt;
-
-&lt;p&gt;So my big hope is that polmineR v0.8.4 is the most portable version of
-the package. I hope we will see an agreeable “OK” for all CRAN check
-machines when all tests have been performed!&lt;/p&gt;
-
-&lt;p&gt;Although I do not really believe that I will never have a nightshift
-again caused by encoding issues and problems to handle Unicode,
-baptising the new polmineR release “Unicorn Dream” expresses my (naive)
-hopes for a bright future and that encoding issues were ghosts haunting
-me only in the past.&lt;/p&gt;
-</description>
-        <pubDate>Fri, 10 Jul 2020 00:00:00 +0200</pubDate>
-        <link>http://localhost:4000/posts/2020/07/10/polmineR-v0.8.4-Unicorn-Dream-Released.html</link>
-        <guid isPermaLink="true">http://localhost:4000/posts/2020/07/10/polmineR-v0.8.4-Unicorn-Dream-Released.html</guid>
         
         <category>news</category>
         
@@ -653,37 +697,6 @@ that.&lt;/p&gt;
         <pubDate>Mon, 01 Oct 2018 00:00:00 +0200</pubDate>
         <link>http://localhost:4000/posts/2018/10/01/Release-of-polmineR-v0.7.10.html</link>
         <guid isPermaLink="true">http://localhost:4000/posts/2018/10/01/Release-of-polmineR-v0.7.10.html</guid>
-        
-        <category>news</category>
-        
-        
-        <category>Posts</category>
-        
-      </item>
-    
-      <item>
-        <title>New RcppCWB version 0.2.5 at CRAN</title>
-        <description>&lt;h1 id=&quot;new-rcppcwb-version-v025-released&quot;&gt;New RcppCWB version v0.2.5 released.&lt;/h1&gt;
-
-&lt;p&gt;The new RcppCWB version v0.2.5 is a maintanence release with an update of Windows configuration scripts to meet requirements of an upcoming version of Rtools. A big thanks to Jeroen Ooms for his great support!&lt;/p&gt;
-
-&lt;p&gt;On this occassion, some more words on the package: We have not yet announced the initial release of the RcppCWB package at this blog! The package name is awkward and technical at the same time. Yet it is telling what the package is about: It is a wrapper for the &lt;a href=&quot;http://cwb.sourceforge.net&quot;&gt;Corpus Workbench (CWB)&lt;/a&gt; using the &lt;a href=&quot;https://cran.r-project.org/package=Rcpp&quot;&gt;Rcpp&lt;/a&gt; package.&lt;/p&gt;
-
-&lt;p&gt;The claim of Rcpp is that it offers “a seamless integration of R and C++”. This is perfectly true. Still, developing RcppCWB has been a fairly demanding package-building exercise, because it was my first leap into the world of C and C++. I am very happy that it worked out and that we have a package now exposing CWB functionality from R.&lt;/p&gt;
-
-&lt;p&gt;Originally, the intention was to simply have a portable follow-up, installable on Windows, to the pioneering rcqp package. The rcqp package was perfect for Linux and macOS users, but due to its design, it would not compile on Windows. In June 2018, rcqp was moved to the CRAN archives. Due to the importance of an CWB interface for the polmineR package, I am extremely happy that I had started to invest time and energy in the RcppCWB package earlier on.&lt;/p&gt;
-
-&lt;p&gt;Why do I keep relying on the CWB? The CWB is a classical tool for corpus analysis which has inspired a set of developments. A persisting advantage of the CWB is its mature, open source code base that is actively maintained by a community of developers. It is used as a robust and efficient backend for widely used tools such as &lt;a href=&quot;http://textometrie.ens-lyon.fr&quot;&gt;TXM&lt;/a&gt; or &lt;a href=&quot;http://cwb.sourceforge.net/cqpweb.php&quot;&gt;CQPweb&lt;/a&gt;. Its uncompromising C implementation guarantees speed and makes it well suited to be integrated with R at the same time.&lt;/p&gt;
-
-&lt;p&gt;RcppCWB makes CWB functionality accessible in two steps. First, static libraries for the genuine CWB code are compiled for Linux and macOS; for building RcppCWB on Windows, cross-compiled binaries of these libraries are downloaded from the PolMine presence at GitHub. Second, a set of C++/RcppCWB wrapper functions expose the CWB functionality. Working with these two layers keeps the code that has to be maintained manageable, and makes the whole package portable. So this pushes the door open for the Windows community of potential polmineR users: You can simply download RcppCWB binaries from CRAN: No complicated installation, very easy indeed.&lt;/p&gt;
-
-&lt;p&gt;If you want to learn more, please consult the &lt;a href=&quot;https://github.com/PolMine/RcppCWB&quot;&gt;README&lt;/a&gt; explaining the RcppCWB package at GitHub. The package manual offers an introduction, see the &lt;a href=&quot;https://cran.r-project.org/web/packages/RcppCWB/RcppCWB.pdf&quot;&gt;pdf manual at CRAN&lt;/a&gt;, or the &lt;a href=&quot;https://polmine.github.io/RcppCWB/&quot;&gt;GitHub pages website of RcppCWB&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Using RcppCWB for a couple of months now in our project, we think it is stable. However, if you have any kind of feedback, please use GitHub issues, or get in touch directly.&lt;/p&gt;
-</description>
-        <pubDate>Fri, 10 Aug 2018 00:00:00 +0200</pubDate>
-        <link>http://localhost:4000/posts/2018/08/10/RcppCWB-v0.2.5-released-at-CRAN.html</link>
-        <guid isPermaLink="true">http://localhost:4000/posts/2018/08/10/RcppCWB-v0.2.5-released-at-CRAN.html</guid>
         
         <category>news</category>
         

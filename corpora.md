@@ -61,3 +61,74 @@ use("UNGA")
 corpus() # you should see UNGA in the output table
 ```
 
+---
+
+<span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">Development version of corpora</span>
+
+We use [Amazon S3](https://aws.amazon.com/s3/) as a cloud storage solution for development versions of corpora that have not yet been published. In this case, data access is restricted and credentials will be required for downloading data. This is a brief explanation how to use credentials for AWS S3 that are issued by the PolMine Project on demand.
+
+For R users, we recommend to use packages developed in the [cloudyr project](https://cloudyr.github.io/) ([aws.signature](https://CRAN.R-project.org/package=aws.signature) and [aws.s3](https://CRAN.R-project.org/package=aws.s3)) for managing credentials and downloading data from S3. 
+
+Please note that putting hard-coded credentials into an R or Rmd file with your analysis is bad practice. Credentials needed for data access should be put into the default file applicable for your system:
+
+  - `~/.aws/credentials` (Linux, macOS)
+  - `C:\Users\USERNAME\.aws\credentials` (Windows)
+
+The content of the file should look as follows (for further explanation see [this AWS Security Blog](https://aws.amazon.com/de/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/)):
+
+```sh
+[default]
+aws_access_key_id = ABCDEFGHIJKLMNOPQRSTUVZ
+aws_secret_access_key = 12345667890
+```
+
+The directory for the credentials file does not necessarily exist. Use the following code to create it if necessary and use RStudio (by calling `rstudioapi::navigateToFile()` to edit the file.
+
+```r
+library(aws.signature)
+credentials_file <- aws.signature::default_credentials_file()
+if (!dir.exists(dirname(credentials_file))){
+  dir.create(dirname(credentials_file))
+}
+if (!file.exists("~/.aws/credentials")){
+  writeLines("[default]", con = "~/.aws/credentials")
+}
+rstudioapi::navigateToFile(credentials_file)
+```
+
+Save the result and close the file when you are finished. To check that credentials are present and can be processed, run the following line of code:
+
+```{r}
+aws.signature::read_credentials()
+```
+
+Given that credentials are available, the following code will download and install the GermaParlRegio corpora on your system using functionality of the [cwbtools]() package. Note that it may involve creating the necessary directory structure for CWB corpora. A user dialogue will guide you through this process.
+
+```r
+library(aws.s3)
+library(cwbtools)
+
+corpus <- "anycorpus"
+version <- "0.0.1"
+corpus_tarball <- sprintf("%s_%s.tar.gz", corpus, version)
+corpus_tarball_local_tmp <- file.path(tempdir(), tarball)
+
+save_object(
+  object = file.path("corpora/cwb", corpus, corpus_tarball),
+  file = corpus_tarball_local_tmp,
+  bucket = "polmine",
+  region = "eu-central-1",
+  show_progress = TRUE
+)
+
+cwbtools::corpus_install(tarball = corpus_tarball_local_tmp)
+```
+
+To check that the newly installed corpus is present, check whether it shows up in the list of corpora that you will see when running the following two commands.
+
+```r
+library(polmineR)
+corpus()
+```
+
+For beta versions of corpora, your feedback is even more important than for more mature and released data. Thanks for helping to improve data quality!

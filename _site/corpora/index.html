@@ -10,7 +10,7 @@
   <meta name="description" content="Website of the PolMine Project">
   
   <meta name="author" content="Andreas Blaette">
-  <meta name="copyright" content="&copy; Andreas Blaette 2020">
+  <meta name="copyright" content="&copy; Andreas Blaette 2021">
   
 
   <!-- External libraries -->
@@ -204,6 +204,74 @@ GermaParl, a corpus of debates in the German Bundestag, is the flagship corpus o
 </span><span class="n">corpus</span><span class="p">()</span><span class="w"> </span><span class="c1"># you should see UNGA in the output table</span><span class="w">
 </span></code></pre></div></div>
 
+<hr />
+
+<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">Development version of corpora</span></p>
+
+<p>We use <a href="https://aws.amazon.com/s3/">Amazon S3</a> as a cloud storage solution for development versions of corpora that have not yet been published. In this case, data access is restricted and credentials will be required for downloading data. This is a brief explanation how to use credentials for AWS S3 that are issued by the PolMine Project on demand.</p>
+
+<p>For R users, we recommend to use packages developed in the <a href="https://cloudyr.github.io/">cloudyr project</a> (<a href="https://CRAN.R-project.org/package=aws.signature">aws.signature</a> and <a href="https://CRAN.R-project.org/package=aws.s3">aws.s3</a>) for managing credentials and downloading data from S3.</p>
+
+<p>Please note that putting hard-coded credentials into an R or Rmd file with your analysis is bad practice. Credentials needed for data access should be put into the default file applicable for your system:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">~/.aws/credentials</code> (Linux, macOS)</li>
+  <li><code class="highlighter-rouge">C:\Users\USERNAME\.aws\credentials</code> (Windows)</li>
+</ul>
+
+<p>The content of the file should look as follows (for further explanation see <a href="https://aws.amazon.com/de/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/">this AWS Security Blog</a>):</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>default]
+aws_access_key_id <span class="o">=</span> ABCDEFGHIJKLMNOPQRSTUVZ
+aws_secret_access_key <span class="o">=</span> 12345667890
+</code></pre></div></div>
+
+<p>The directory for the credentials file does not necessarily exist. Use the following code to create it if necessary and use RStudio (by calling <code class="highlighter-rouge">rstudioapi::navigateToFile()</code> to edit the file.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">aws.signature</span><span class="p">)</span><span class="w">
+</span><span class="n">credentials_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">aws.signature</span><span class="o">::</span><span class="n">default_credentials_file</span><span class="p">()</span><span class="w">
+</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">dir.exists</span><span class="p">(</span><span class="n">dirname</span><span class="p">(</span><span class="n">credentials_file</span><span class="p">))){</span><span class="w">
+  </span><span class="n">dir.create</span><span class="p">(</span><span class="n">dirname</span><span class="p">(</span><span class="n">credentials_file</span><span class="p">))</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file.exists</span><span class="p">(</span><span class="s2">"~/.aws/credentials"</span><span class="p">)){</span><span class="w">
+  </span><span class="n">writeLines</span><span class="p">(</span><span class="s2">"[default]"</span><span class="p">,</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.aws/credentials"</span><span class="p">)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">rstudioapi</span><span class="o">::</span><span class="n">navigateToFile</span><span class="p">(</span><span class="n">credentials_file</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Save the result and close the file when you are finished. To check that credentials are present and can be processed, run the following line of code:</p>
+
+<pre><code class="language-{r}">aws.signature::read_credentials()
+</code></pre>
+
+<p>Given that credentials are available, the following code will download and install the GermaParlRegio corpora on your system using functionality of the <a href="">cwbtools</a> package. Note that it may involve creating the necessary directory structure for CWB corpora. A user dialogue will guide you through this process.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">aws.s3</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">cwbtools</span><span class="p">)</span><span class="w">
+
+</span><span class="n">corpus</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"anycorpus"</span><span class="w">
+</span><span class="n">version</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"0.0.1"</span><span class="w">
+</span><span class="n">corpus_tarball</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sprintf</span><span class="p">(</span><span class="s2">"%s_%s.tar.gz"</span><span class="p">,</span><span class="w"> </span><span class="n">corpus</span><span class="p">,</span><span class="w"> </span><span class="n">version</span><span class="p">)</span><span class="w">
+</span><span class="n">corpus_tarball_local_tmp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">file.path</span><span class="p">(</span><span class="n">tempdir</span><span class="p">(),</span><span class="w"> </span><span class="n">tarball</span><span class="p">)</span><span class="w">
+
+</span><span class="n">save_object</span><span class="p">(</span><span class="w">
+  </span><span class="n">object</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file.path</span><span class="p">(</span><span class="s2">"corpora/cwb"</span><span class="p">,</span><span class="w"> </span><span class="n">corpus</span><span class="p">,</span><span class="w"> </span><span class="n">corpus_tarball</span><span class="p">),</span><span class="w">
+  </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">corpus_tarball_local_tmp</span><span class="p">,</span><span class="w">
+  </span><span class="n">bucket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"polmine"</span><span class="p">,</span><span class="w">
+  </span><span class="n">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"eu-central-1"</span><span class="p">,</span><span class="w">
+  </span><span class="n">show_progress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="w">
+</span><span class="p">)</span><span class="w">
+
+</span><span class="n">cwbtools</span><span class="o">::</span><span class="n">corpus_install</span><span class="p">(</span><span class="n">tarball</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">corpus_tarball_local_tmp</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>To check that the newly installed corpus is present, check whether it shows up in the list of corpora that you will see when running the following two commands.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">polmineR</span><span class="p">)</span><span class="w">
+</span><span class="n">corpus</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>For beta versions of corpora, your feedback is even more important than for more mature and released data. Thanks for helping to improve data quality!</p>
 
   </article>
 
