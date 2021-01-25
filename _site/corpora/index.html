@@ -206,9 +206,9 @@ GermaParl, a corpus of debates in the German Bundestag, is the flagship corpus o
 
 <hr />
 
-<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">Development version of corpora</span></p>
+<p><span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">Installing development versions of corpora</span></p>
 
-<p>We use <a href="https://aws.amazon.com/s3/">Amazon S3</a> as a cloud storage solution for development versions of corpora that have not yet been published. In this case, data access is restricted and credentials will be required for downloading data. This is a brief explanation how to use credentials for AWS S3 that are issued by the PolMine Project on demand.</p>
+<p>We use <a href="https://aws.amazon.com/s3/">Amazon S3</a> as a cloud storage solution for development versions of corpora that have not yet been published. In this case, data access is restricted and credentials will be required for downloading data. This is a brief explanation how to use credentials for S3 that are issued by the PolMine Project on demand.</p>
 
 <p>For R users, we recommend to use packages developed in the <a href="https://cloudyr.github.io/">cloudyr project</a> (<a href="https://CRAN.R-project.org/package=aws.signature">aws.signature</a> and <a href="https://CRAN.R-project.org/package=aws.s3">aws.s3</a>) for managing credentials and downloading data from S3.</p>
 
@@ -219,14 +219,14 @@ GermaParl, a corpus of debates in the German Bundestag, is the flagship corpus o
   <li><code class="highlighter-rouge">C:\Users\USERNAME\.aws\credentials</code> (Windows)</li>
 </ul>
 
-<p>The content of the file should look as follows (for further explanation see <a href="https://aws.amazon.com/de/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/">this AWS Security Blog</a>):</p>
+<p>The content of the file should look as follows (for further explanations, see <a href="https://aws.amazon.com/de/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/">this AWS Security Blog</a>):</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>default]
 aws_access_key_id <span class="o">=</span> ABCDEFGHIJKLMNOPQRSTUVZ
 aws_secret_access_key <span class="o">=</span> 12345667890
 </code></pre></div></div>
 
-<p>The directory for the credentials file does not necessarily exist. Use the following code to create it if necessary and use RStudio (by calling <code class="highlighter-rouge">rstudioapi::navigateToFile()</code> to edit the file.</p>
+<p>The directory for the credentials file does not exist by default. Use the following code to create the <code class="highlighter-rouge">.aws</code> directory and the <code class="highlighter-rouge">credentials</code> file if necessary.</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">aws.signature</span><span class="p">)</span><span class="w">
 </span><span class="n">credentials_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">aws.signature</span><span class="o">::</span><span class="n">default_credentials_file</span><span class="p">()</span><span class="w">
@@ -236,15 +236,19 @@ aws_secret_access_key <span class="o">=</span> 12345667890
 </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file.exists</span><span class="p">(</span><span class="s2">"~/.aws/credentials"</span><span class="p">)){</span><span class="w">
   </span><span class="n">writeLines</span><span class="p">(</span><span class="s2">"[default]"</span><span class="p">,</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.aws/credentials"</span><span class="p">)</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span><span class="n">rstudioapi</span><span class="o">::</span><span class="n">navigateToFile</span><span class="p">(</span><span class="n">credentials_file</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p>Save the result and close the file when you are finished. To check that credentials are present and can be processed, run the following line of code:</p>
+<p>Note that directories starting with a dot (“.”) are not visible by default. So you do not necessarily see the <code class="highlighter-rouge">.aws</code> directory in the  file browser of your default text editor. We recommend to open the credentials file in RStudio by calling <code class="highlighter-rouge">rstudioapi::navigateToFile()</code>.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rstudioapi</span><span class="o">::</span><span class="n">navigateToFile</span><span class="p">(</span><span class="n">credentials_file</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Edit the file, save the result and close the file when you are finished. To check that credentials are present and can be processed, run the following line of code:</p>
 
 <pre><code class="language-{r}">aws.signature::read_credentials()
 </code></pre>
 
-<p>Given that credentials are available, the following code will download and install the GermaParlRegio corpora on your system using functionality of the <a href="">cwbtools</a> package. Note that it may involve creating the necessary directory structure for CWB corpora. A user dialogue will guide you through this process.</p>
+<p>Given that credentials are available, the following code will download and install a corpus on your system using functionality of the <a href="https://cran.r-project.org/web/packages/cwbtools/index.html">cwbtools</a> package. Note that it may involve creating the necessary directory structure for CWB corpora. A user dialogue will assist you to do this. Make sure you insert the correct corpus ID and version number in the code.</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">aws.s3</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">cwbtools</span><span class="p">)</span><span class="w">

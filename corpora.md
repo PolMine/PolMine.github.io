@@ -63,9 +63,9 @@ corpus() # you should see UNGA in the output table
 
 ---
 
-<span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">Development version of corpora</span>
+<span style="font-size: 20px;display: inline !important;vertical-align: bottom; padding-right: 1em; font-weight: bold;">Installing development versions of corpora</span>
 
-We use [Amazon S3](https://aws.amazon.com/s3/) as a cloud storage solution for development versions of corpora that have not yet been published. In this case, data access is restricted and credentials will be required for downloading data. This is a brief explanation how to use credentials for AWS S3 that are issued by the PolMine Project on demand.
+We use [Amazon S3](https://aws.amazon.com/s3/) as a cloud storage solution for development versions of corpora that have not yet been published. In this case, data access is restricted and credentials will be required for downloading data. This is a brief explanation how to use credentials for S3 that are issued by the PolMine Project on demand.
 
 For R users, we recommend to use packages developed in the [cloudyr project](https://cloudyr.github.io/) ([aws.signature](https://CRAN.R-project.org/package=aws.signature) and [aws.s3](https://CRAN.R-project.org/package=aws.s3)) for managing credentials and downloading data from S3. 
 
@@ -74,7 +74,7 @@ Please note that putting hard-coded credentials into an R or Rmd file with your 
   - `~/.aws/credentials` (Linux, macOS)
   - `C:\Users\USERNAME\.aws\credentials` (Windows)
 
-The content of the file should look as follows (for further explanation see [this AWS Security Blog](https://aws.amazon.com/de/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/)):
+The content of the file should look as follows (for further explanations, see [this AWS Security Blog](https://aws.amazon.com/de/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/)):
 
 ```sh
 [default]
@@ -82,7 +82,7 @@ aws_access_key_id = ABCDEFGHIJKLMNOPQRSTUVZ
 aws_secret_access_key = 12345667890
 ```
 
-The directory for the credentials file does not necessarily exist. Use the following code to create it if necessary and use RStudio (by calling `rstudioapi::navigateToFile()` to edit the file.
+The directory for the credentials file does not exist by default. Use the following code to create the `.aws` directory and the `credentials` file if necessary.
 
 ```r
 library(aws.signature)
@@ -93,16 +93,21 @@ if (!dir.exists(dirname(credentials_file))){
 if (!file.exists("~/.aws/credentials")){
   writeLines("[default]", con = "~/.aws/credentials")
 }
+```
+
+Note that directories starting with a dot (".") are not visible by default. So you do not necessarily see the `.aws` directory in the  file browser of your default text editor. We recommend to open the credentials file in RStudio by calling `rstudioapi::navigateToFile()`.
+
+```r
 rstudioapi::navigateToFile(credentials_file)
 ```
 
-Save the result and close the file when you are finished. To check that credentials are present and can be processed, run the following line of code:
+Edit the file, save the result and close the file when you are finished. To check that credentials are present and can be processed, run the following line of code:
 
 ```{r}
 aws.signature::read_credentials()
 ```
 
-Given that credentials are available, the following code will download and install the GermaParlRegio corpora on your system using functionality of the [cwbtools]() package. Note that it may involve creating the necessary directory structure for CWB corpora. A user dialogue will guide you through this process.
+Given that credentials are available, the following code will download and install a corpus on your system using functionality of the [cwbtools](https://cran.r-project.org/web/packages/cwbtools/index.html) package. Note that it may involve creating the necessary directory structure for CWB corpora. A user dialogue will assist you to do this. Make sure you insert the correct corpus ID and version number in the code.
 
 ```r
 library(aws.s3)
