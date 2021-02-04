@@ -113,9 +113,8 @@ Given that credentials are available, the following code will download and insta
 library(aws.s3)
 library(cwbtools)
 
-corpus <- "anycorpus"
-version <- "0.0.1"
-corpus_tarball <- sprintf("%s_%s.tar.gz", corpus, version)
+superdir <- "any"
+corpus <- "anycorpus_0.0.1"
 corpus_tarball_local_tmp <- file.path(tempdir(), tarball)
 
 save_object(

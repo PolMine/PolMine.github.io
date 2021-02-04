@@ -253,9 +253,8 @@ aws_secret_access_key <span class="o">=</span> 12345667890
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">aws.s3</span><span class="p">)</span><span class="w">
 </span><span class="n">library</span><span class="p">(</span><span class="n">cwbtools</span><span class="p">)</span><span class="w">
 
-</span><span class="n">corpus</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"anycorpus"</span><span class="w">
-</span><span class="n">version</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"0.0.1"</span><span class="w">
-</span><span class="n">corpus_tarball</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sprintf</span><span class="p">(</span><span class="s2">"%s_%s.tar.gz"</span><span class="p">,</span><span class="w"> </span><span class="n">corpus</span><span class="p">,</span><span class="w"> </span><span class="n">version</span><span class="p">)</span><span class="w">
+</span><span class="n">superdir</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"any"</span><span class="w">
+</span><span class="n">corpus</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"anycorpus_0.0.1"</span><span class="w">
 </span><span class="n">corpus_tarball_local_tmp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">file.path</span><span class="p">(</span><span class="n">tempdir</span><span class="p">(),</span><span class="w"> </span><span class="n">tarball</span><span class="p">)</span><span class="w">
 
 </span><span class="n">save_object</span><span class="p">(</span><span class="w">

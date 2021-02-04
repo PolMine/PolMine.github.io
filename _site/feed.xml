@@ -5,9 +5,38 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 25 Jan 2021 13:09:56 +0100</pubDate>
-    <lastBuildDate>Mon, 25 Jan 2021 13:09:56 +0100</lastBuildDate>
+    <pubDate>Thu, 04 Feb 2021 16:00:46 +0100</pubDate>
+    <lastBuildDate>Thu, 04 Feb 2021 16:00:46 +0100</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
+    
+      <item>
+        <title>RcppCWB v0.3.2 'Dune Ride' ensures Apple Silicon compatibility. </title>
+        <description>&lt;h1 id=&quot;rcppcwb-v032-dune-ride-ensures-apple-silicon-compatibility&quot;&gt;RcppCWB v0.3.2 ‘Dune Ride’ ensures Apple Silicon compatibility.&lt;/h1&gt;
+
+&lt;p&gt;Apple’s new M1 chip has deservedly raised significant attention. The new Mac minis and 13 inch Macbook Pros running on “Apple Silicon” are fast, energy-saving and affordable at the same time. No doubt an increasing number of polmineR users will work on an M1 machine. So we need to take care that everything works with the new generation of processors.&lt;/p&gt;
+
+&lt;p&gt;Technically, everything hinges on the &lt;a href=&quot;https://polmine.github.io/RcppCWB/&quot;&gt;RcppCWB&lt;/a&gt; package. The C code of the &lt;a href=&quot;http://cwb.sourceforge.net/&quot;&gt;Corpus Workbench (CWB)&lt;/a&gt; included in the RcppCWB package and the C++ wrappers exposing CWB performance are the basis for everything that makes analysing corpora with polmineR fast. So the crucial question was whether RcppCWB would compile on M1 machines?&lt;/p&gt;
+
+&lt;p&gt;If you run R with the &lt;a href=&quot;https://en.wikipedia.org/wiki/Rosetta_(software)&quot;&gt;Rosetta&lt;/a&gt; emulator, everything is fine. But one issue arising with native M1 compiled code required our attention: If &lt;a href=&quot;https://developer.gnome.org/glib/&quot;&gt;GLib-2.0&lt;/a&gt;, a dependency of the CWB, is not yet present, it would be downloaded from the &lt;a href=&quot;https://github.com/PolMine/libglib/&quot;&gt;libglib&lt;/a&gt; repository we host with GitHub. And GLib binaries for the new processor architecture were not there yet. And RcppCWB, which had been developed assuming that every Mac has Intel inside, would not look for M1-compatible dependencies either.&lt;/p&gt;
+
+&lt;p&gt;This is solved with &lt;a href=&quot;https://CRAN.R-project.org/package=RcppCWB&quot;&gt;RcppCWB v0.3.2&lt;/a&gt; which has just made its way to CRAN. The functionality of the package remains unchanged. Working on the configure script anyway, I tried to make it more robust and verbose so that users could get a better idea what is wrong when facing an issue when compiling the package. For instance, there is now a warning when &lt;a href=&quot;https://www.pcre.org/&quot;&gt;PCRE&lt;/a&gt; is present but has been compiled without Unicode support. Yet the primary focus of the new release is to ensure that RcppCWB (and polmineR, cwbtools etc) work seamlessly on the new Apple machines with M1 chips inside.&lt;/p&gt;
+
+&lt;p&gt;This has been achieved. Because it is just not possible to get one of the new machines really quickly (delivery takes a few weeks), we used a cloud solution offered by MacStadium to be able to adjust things and run tests now. This worked nicely, no complaints. Nevertheless, making the adjustments required some attention. This is why this release if RcppCWB is called “Dune Ride”.&lt;/p&gt;
+
+&lt;p&gt;You need further explanation? Dunes are made of sand, and processors are made of silicon, and silicon is made of sand, and so is the M1 chip, I guess, so rodeo with M1 is a dune ride, metaphorically.&lt;/p&gt;
+
+&lt;p&gt;If you face issues running RcppCWB/polmineR/cwbtools on M1, please use &lt;a href=&quot;https://github.com/PolMine/RcppCWB/issues&quot;&gt;RcppCWB issues&lt;/a&gt; to let us know!&lt;/p&gt;
+</description>
+        <pubDate>Thu, 04 Feb 2021 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/posts/2021/02/04/RcppCWB-v0.3.2-Dune-Ride-Ensures-Apple-Silicon-Compatibility.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2021/02/04/RcppCWB-v0.3.2-Dune-Ride-Ensures-Apple-Silicon-Compatibility.html</guid>
+        
+        <category>news</category>
+        
+        
+        <category>Posts</category>
+        
+      </item>
     
       <item>
         <title>GermaParl v1.5.1 'Drunken Sailor' Released</title>
@@ -625,78 +654,6 @@ that.&lt;/p&gt;
         <pubDate>Thu, 25 Oct 2018 00:00:00 +0200</pubDate>
         <link>http://localhost:4000/posts/2018/10/25/RcppCWB_v0.2.6_at_CRAN.html</link>
         <guid isPermaLink="true">http://localhost:4000/posts/2018/10/25/RcppCWB_v0.2.6_at_CRAN.html</guid>
-        
-        <category>news</category>
-        
-        
-        <category>Posts</category>
-        
-      </item>
-    
-      <item>
-        <title>polmineR version 0.7.10 at CRAN</title>
-        <description>&lt;script&gt;
-  function resizeIframe(obj) {
-    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
-  }
-&lt;/script&gt;
-
-&lt;h1 id=&quot;new-polminer-version-v0710-at-cran&quot;&gt;New polmineR version v0.7.10 at CRAN.&lt;/h1&gt;
-
-&lt;p&gt;A few days ago (on September 18, to be exact), a new version of &lt;em&gt;polmineR&lt;/em&gt; made it to &lt;a href=&quot;https://CRAN.R-project.org/package=polmineR&quot;&gt;CRAN&lt;/a&gt;. See the &lt;a href=&quot;https://github.com/PolMine/polmineR/blob/master/NEWS.md&quot;&gt;NEWS file&lt;/a&gt; for a full report on what is new. In this post, I want to highlight what I see as the most important set of changes: With polmineR v0.7.10, it is much more convenient than before to include &lt;a href=&quot;https://www.htmlwidgets.org/&quot;&gt;htmlwidgets&lt;/a&gt; in Rmarkdown documents that are derived from the analysis of keywords-in-context, or cooccurrences.&lt;/p&gt;
-
-&lt;p&gt;To grasp the added value of being able to include htmlwidgets in Rmarkdown documents, you might want to have a look at the (updated) vignette of the polmineR package. If you have already installed polmineR version 0.7.10 (&lt;code class=&quot;highlighter-rouge&quot;&gt;install.packages(&quot;polmineR&quot;)&lt;/code&gt;), proceed as follows.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;vignette&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;topic&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;vignette&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;package&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;polmineR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Alternatively, the vignette is online at the &lt;a href=&quot;https://polmine.github.io/polmineR/&quot;&gt;polmineR documentation website&lt;/a&gt; generated using &lt;a href=&quot;https://CRAN.R-project.org/package=pkgdown&quot;&gt;pkgdown&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;When scrolling through the document, you will see several interactive tables. A first set shows the results of calling the &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic()&lt;/code&gt;-method. Then you have a table with the results of the &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences()&lt;/code&gt;-method. Technically, these tables use the &lt;a href=&quot;https://datatables.net/&quot;&gt;DataTables JavaScript library&lt;/a&gt;. Earlier versions of polmineR had already generated this output format in an interactive R session. This is not difficult, using the &lt;code class=&quot;highlighter-rouge&quot;&gt;datatable()&lt;/code&gt; function of the &lt;a href=&quot;https://rstudio.github.io/DT/&quot;&gt;DT package&lt;/a&gt;. Yet the advantage of including this output in html documents may be considerable: Very often, the tables resulting from text analysis have many, many rows and are far too big to be included in a research report. If you have a browsable table with pagination, making your research transperant and reproducible is much easier, be it in a final research report, or in some intermediary document.&lt;/p&gt;
-
-&lt;p&gt;In the polmineR package, you now get a htmlwidget when the &lt;code class=&quot;highlighter-rouge&quot;&gt;show()&lt;/code&gt;-method is invoked on a &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt;-object, or a &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences&lt;/code&gt;-object. For the sake of keeping the explanation simple, it is as simple as follows to include an htmlwidget resulting from calling the &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic()&lt;/code&gt;-method.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polmineR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;iframe title=&quot;KWIC htmlwidget&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_1.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
-
-&lt;p&gt;The only small technicality required is to include &lt;code class=&quot;highlighter-rouge&quot;&gt;render = polmineR::knit_print&lt;/code&gt; in the chunk options. Having implemented the &lt;code class=&quot;highlighter-rouge&quot;&gt;knit_print()&lt;/code&gt;-method is the basis for the convenient inclusion of htmlwidgets in Rmarkdown documents using polmineR. The same works when calling the &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences()&lt;/code&gt;-method.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;cooccurrences&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;iframe title=&quot;KWIC htmlwidget&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/cooccurrences_widget.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
-
-&lt;p&gt;The standard number of rows for the &lt;code class=&quot;highlighter-rouge&quot;&gt;datatables&lt;/code&gt;-htmlwidget is to display 10 rows. Sometimes this may be too much, particularly when you want to include the table in a set of slides. You can adjust the number of rows shown by setting the &lt;code class=&quot;highlighter-rouge&quot;&gt;polmineR.pagelength&lt;/code&gt; option. See the following example&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;polmineR.pagelength&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;3L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;iframe title=&quot;KWIC htmlwidget&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_2.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
-
-&lt;p&gt;There is one more thing. In addition to the enhanced functionality to include htmlwidgets in Rmarkdown documents, the &lt;code class=&quot;highlighter-rouge&quot;&gt;highlight()&lt;/code&gt;-method and the &lt;code class=&quot;highlighter-rouge&quot;&gt;tooltips()&lt;/code&gt;-method have been implemented for &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt;-objects.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;magrittr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dictionary&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;crude&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;barrel&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;company&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;product&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;weights&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;REUTERS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;oil&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;highlight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yellow&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dictionary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tooltips&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setNames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dictionary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;iframe title=&quot;KWIC htmlwidget&quot; width=&quot;100%&quot; src=&quot;../../../../assets/2018-10-01-Release-of-polmineR-v0.7.10/kwic_widget_3.html&quot; frameborder=&quot;0&quot; scrolling=&quot;no&quot; onload=&quot;resizeIframe(this)&quot; padding=&quot;0em !important&quot; margin-left=&quot;0 !important&quot;&gt;&lt;/iframe&gt;
-
-&lt;p&gt;Apart from highlighting the terms in our &lt;code class=&quot;highlighter-rouge&quot;&gt;dictionary&lt;/code&gt;-character vector, we have also added tooltips to these terms. Obviously, the example chosen in is not substantively interesting. But being able to highlight terms and to inspect tooltips with term weights offers a simple yet effective way to validate how a dictionary may work. Think about a dictionary with term weights  as it is often used for sentiment analysis, for instance.&lt;/p&gt;
-
-&lt;p&gt;Another post should explain how this works. To conclude this post, I would like to thank the participants of the ‘methods training’-course I taught in the political science BA at the University of Duisburg-Essen in the academic year 2017/18. Many improvements of the polmineR package have resulted from their feedback. They helped me to make substantial progress towards a robust installation mechanism, and they inspired me to develop slides with a certain level of interactivity: This is why polmineR v0.7.10 is called “Bachelor’s Delight”. (Oops, by accident, there is a historic ship called such, see the &lt;a href=&quot;https://en.wikipedia.org/wiki/Edward_Davis_(buccaneer)&quot;&gt;respective article on Wikipedia&lt;/a&gt;.)&lt;/p&gt;
-
-&lt;p&gt;So thanks to my students of their endurance when being exposed to my experiments!&lt;/p&gt;
-</description>
-        <pubDate>Mon, 01 Oct 2018 00:00:00 +0200</pubDate>
-        <link>http://localhost:4000/posts/2018/10/01/Release-of-polmineR-v0.7.10.html</link>
-        <guid isPermaLink="true">http://localhost:4000/posts/2018/10/01/Release-of-polmineR-v0.7.10.html</guid>
         
         <category>news</category>
         
