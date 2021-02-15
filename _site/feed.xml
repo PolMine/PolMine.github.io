@@ -5,8 +5,8 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 04 Feb 2021 16:00:46 +0100</pubDate>
-    <lastBuildDate>Thu, 04 Feb 2021 16:00:46 +0100</lastBuildDate>
+    <pubDate>Mon, 15 Feb 2021 23:19:26 +0100</pubDate>
+    <lastBuildDate>Mon, 15 Feb 2021 23:19:26 +0100</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
     
       <item>
@@ -21,7 +21,7 @@
 
 &lt;p&gt;This is solved with &lt;a href=&quot;https://CRAN.R-project.org/package=RcppCWB&quot;&gt;RcppCWB v0.3.2&lt;/a&gt; which has just made its way to CRAN. The functionality of the package remains unchanged. Working on the configure script anyway, I tried to make it more robust and verbose so that users could get a better idea what is wrong when facing an issue when compiling the package. For instance, there is now a warning when &lt;a href=&quot;https://www.pcre.org/&quot;&gt;PCRE&lt;/a&gt; is present but has been compiled without Unicode support. Yet the primary focus of the new release is to ensure that RcppCWB (and polmineR, cwbtools etc) work seamlessly on the new Apple machines with M1 chips inside.&lt;/p&gt;
 
-&lt;p&gt;This has been achieved. Because it is just not possible to get one of the new machines really quickly (delivery takes a few weeks), we used a cloud solution offered by MacStadium to be able to adjust things and run tests now. This worked nicely, no complaints. Nevertheless, making the adjustments required some attention. This is why this release if RcppCWB is called “Dune Ride”.&lt;/p&gt;
+&lt;p&gt;This has been achieved. Because it is just not possible to get one of the new machines really quickly (delivery takes a few weeks), we used a cloud solution offered by MacStadium to be able to adjust things and run tests now. This worked nicely, no complaints. Nevertheless, making the adjustments required some attention. This is why this release of RcppCWB is called “Dune Ride”.&lt;/p&gt;
 
 &lt;p&gt;You need further explanation? Dunes are made of sand, and processors are made of silicon, and silicon is made of sand, and so is the M1 chip, I guess, so rodeo with M1 is a dune ride, metaphorically.&lt;/p&gt;
 
