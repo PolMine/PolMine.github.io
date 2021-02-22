@@ -5,9 +5,39 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 15 Feb 2021 23:19:26 +0100</pubDate>
-    <lastBuildDate>Mon, 15 Feb 2021 23:19:26 +0100</lastBuildDate>
+    <pubDate>Mon, 22 Feb 2021 15:22:33 +0100</pubDate>
+    <lastBuildDate>Mon, 22 Feb 2021 15:22:33 +0100</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
+    
+      <item>
+        <title>cwbtools v0.3.2 'Il Postino' solidifies corpus download. </title>
+        <description>&lt;h1 id=&quot;rcppcwb-v032-il-postino-solidifies-corpus-download&quot;&gt;RcppCWB v0.3.2 ‘Il Postino’ solidifies corpus download.&lt;/h1&gt;
+
+&lt;p&gt;A new, previously unknown bug users reported when trying to use the &lt;a href=&quot;https://CRAN.R-project.org/package=GermaParl&quot;&gt;GermaParl&lt;/a&gt; package to download and install the GermaParl corpus (function &lt;code class=&quot;highlighter-rouge&quot;&gt;germaparl_install_corpus()&lt;/code&gt;) generated some urgency to release of a new version of the cwbtools R package: We suddenly saw errors (false positives!) when checking whether GermaParl can be downloaded from Zenodo. A switch from &lt;code class=&quot;highlighter-rouge&quot;&gt;RCurl::url.exists()&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;httr::http_error()&lt;/code&gt; solves this small yet nasty problem.&lt;/p&gt;
+
+&lt;p&gt;A second important bug fix is that it is now possible to encode more than one positional attribute at a time – without hacks. We are relieved that this limitation of the usefulness of cwbtools is overcome.&lt;/p&gt;
+
+&lt;p&gt;But cwbtools v0.3.2 also brings new features:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;When a corpus is downloaded from Zenodo, the md5 checksum is checked to ensure the integrity of the data.&lt;/li&gt;
+  &lt;li&gt;It is now possible to download corpora from Amazon S3. This may be very useful for projects that cannot yet publish data publicly.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So data delivery is more robust and more comprehensive. This is why the release is labelled ‘Il Postino’. To learn more about cwbtools v0.3.2 ‘Il Postino’, please consult the &lt;a href=&quot;https://polmine.github.io/cwbtools/news/index.html&quot;&gt;package changelog&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Many thanks to the users who reported the issue that downloading GermaParl did not work, temporarily! Good news: Downloading GermaParl from Zenodo works again the way it should.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 17 Feb 2021 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/posts/2021/02/17/cwbtools-v0.3.2-Il-Postino-solidifies-and-expands-corpus-download.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2021/02/17/cwbtools-v0.3.2-Il-Postino-solidifies-and-expands-corpus-download.html</guid>
+        
+        <category>news</category>
+        
+        
+        <category>Posts</category>
+        
+      </item>
     
       <item>
         <title>RcppCWB v0.3.2 'Dune Ride' ensures Apple Silicon compatibility. </title>
@@ -618,42 +648,6 @@ that.&lt;/p&gt;
         <pubDate>Fri, 17 May 2019 00:00:00 +0200</pubDate>
         <link>http://localhost:4000/posts/2019/05/17/Towards-polmineR-v0.8.0-A-new-annotation-workflow.html</link>
         <guid isPermaLink="true">http://localhost:4000/posts/2019/05/17/Towards-polmineR-v0.8.0-A-new-annotation-workflow.html</guid>
-        
-        <category>news</category>
-        
-        
-        <category>Posts</category>
-        
-      </item>
-    
-      <item>
-        <title>RcppCWB v0.2.6 at CRAN: Towards publishing cwbtools</title>
-        <description>&lt;script&gt;
-  function resizeIframe(obj) {
-    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
-  }
-&lt;/script&gt;
-
-&lt;h1 id=&quot;rcppcwb-v026-at-cran-towards-publishing-cwbtools&quot;&gt;RcppCWB v0.2.6 at CRAN: Towards publishing cwbtools&lt;/h1&gt;
-
-&lt;p&gt;This week, a new version of &lt;em&gt;RcppCWB&lt;/em&gt; made it to &lt;a href=&quot;https://CRAN.R-project.org/package=RcppCWB&quot;&gt;CRAN&lt;/a&gt;. The package exposes the functionality of the Corpus Worbench, adding a limited number of performance-critical functions written in Rcpp/C++. Packages such as &lt;em&gt;polmineR&lt;/em&gt; are built on top of &lt;em&gt;RcppCWB&lt;/em&gt; and serve as a much more comfortable “front-end”.&lt;/p&gt;
-
-&lt;p&gt;The new RcppCWB version exposes two new functions:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;The &lt;em&gt;cl_charset_name()&lt;/em&gt;-function is about performance and efficiency. It gives access to the information on the encoding of a corpus kept in memory after the registry file describing the corpus has been parsed. Now, to check the encoding, the registry files needs not be read and parsed again and again, resulting in a performance gain. The new function is a model for further similar functions that will replace inefficient functionality to read and parse registry files in the &lt;em&gt;polmineR&lt;/em&gt; package.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The &lt;em&gt;cl_delete_corpus()&lt;/em&gt; is at least as important. It is all about flexibility. With this function, the parsed information from a registry file can be removed from memory, so that the registry file is parsed afresh upon using a corpus the next time. The scenario for this function is that we want changes we made for a corpus to become effective. Particularly when we add new structural attributes to a corpus, we now do not have to restart our R session to make the changed attribute available. This is really important to see indexed corpora not only as efficient data, but as reasonably flexible data too.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The &lt;em&gt;cl_delete_corpus()&lt;/em&gt; function is part of a development to make further use of &lt;em&gt;RcppCWB&lt;/em&gt; as a backend for the &lt;em&gt;cwbtools&lt;/em&gt; package, available only at &lt;a href=&quot;https://www.github.com/PolMine/cwbtools&quot;&gt;GitHub&lt;/a&gt; at this stage. The package is not yet mature, but is intended to supplement &lt;em&gt;Rcpp&lt;/em&gt; and &lt;em&gt;polmineR&lt;/em&gt; to have a seamless interface between R and the Corpus Workbench, and to be move beyond a static view of indexed corpora, i.e. to turn them into a much more flexbile resource than they are so far. Adding usability and flexibility to efficiency will be the purpose of &lt;em&gt;cwbtools&lt;/em&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Thu, 25 Oct 2018 00:00:00 +0200</pubDate>
-        <link>http://localhost:4000/posts/2018/10/25/RcppCWB_v0.2.6_at_CRAN.html</link>
-        <guid isPermaLink="true">http://localhost:4000/posts/2018/10/25/RcppCWB_v0.2.6_at_CRAN.html</guid>
         
         <category>news</category>
         

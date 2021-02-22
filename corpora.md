@@ -4,7 +4,7 @@ title: Corpora
 permalink: /corpora/
 ---
 
-The PolMine Project has two related foci to prepare and share textual data:
+The PolMine Project has two related key activity areas to prepare and share textual data:
 
 - Corpora of plenary protocols;
 - Corpora and further language resources for migration and integration research.
@@ -15,7 +15,7 @@ Based on an initial "XMLification" of raw data (pdf, html, txt documents), we pr
 
 To offer access to corpora with restricted access, we host them on an OpenCPU server. At this stage, this is relevant for the MigPress corpus of migration- and integration-related newspaper reports.
 
-For publicly available corpora, R users can use a convenient installation mechanism included in the [cwbtools](https://cran.r-project.org/web/packages/cwbtools/index.html) package, which is available at CRAN. We recommend to use the [polmineR](https://CRAN.R-project.org/package=polmineR) R package for working with CWB indexed corpora. The polmineR package also includes functionality for remote access of restricted-access corpora.
+For publicly available corpora, R users can use a convenient installation mechanism included in the [cwbtools](https://cran.r-project.org/web/packages/cwbtools/index.html) package, which is available at CRAN. We recommend to use the [polmineR](https://CRAN.R-project.org/package=polmineR) R package for working with CWB indexed corpora. The polmineR package also includes functionality for remote access to restricted-access corpora.
 
 
 ---
