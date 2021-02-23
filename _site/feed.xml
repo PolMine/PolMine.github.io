@@ -5,9 +5,44 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 22 Feb 2021 15:37:08 +0100</pubDate>
-    <lastBuildDate>Mon, 22 Feb 2021 15:37:08 +0100</lastBuildDate>
+    <pubDate>Tue, 23 Feb 2021 22:58:33 +0100</pubDate>
+    <lastBuildDate>Tue, 23 Feb 2021 22:58:33 +0100</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
+    
+      <item>
+        <title>cwbtools v0.3.3 'Hemicycle' brings Europarl closer. </title>
+        <description>&lt;h1 id=&quot;cwbtools-v033-hemicycle-brings-europarl-closer&quot;&gt;cwbtools v0.3.3 ‘Hemicycle’ brings Europarl closer.&lt;/h1&gt;
+
+&lt;p&gt;As an immediate follow-up to cwbtools v0.3.2 “Il Postino”, a new cwbtools version (v0.3.3, “Hemicycle”) just made it to CRAN. This has become necessary to fix errors with the Solaris and Fedora test environments of CRAN that occurred becaus v0.3.2 expanded test coverage.&lt;/p&gt;
+
+&lt;p&gt;Changes to meet CRAN requirements will not be relevant for most users. So why bother to install the new release? There is one nice new feature: Assumptions made by by &lt;code class=&quot;highlighter-rouge&quot;&gt;corpus_install()&lt;/code&gt;, the mechanism for installing corpora, have been relaxed as follows: The binary data directory in a corpus tarball may now also be named “data” (not only “indexed_corpora”) and binary files need not reside in a subdirectory named after the corpus. They can be in the data directory directly.&lt;/p&gt;
+
+&lt;p&gt;Access to two classic corpora - the Europarl corpus with debates in the European parliament and the Dickens corpus with Charles Dickens’ novels - is super-easy now: Simply use the following code to download and install both corpora.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cwbtoos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dickens&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;http://cwb.sourceforge.net/temp/Dickens-1.0.tar.gz&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corpus_install&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tarball&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dickens&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ep&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;http://corpora.linguistik.uni-erlangen.de/demos/download/Europarl3-CWB-2010-02-28.tar.gz&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corpus_install&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tarball&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;A second note on this release: The functionality that has evolved to install corpora from Web storage, from a repository such as Zenodo and from Amazon S3 supersedes previous ideas to ship (large) corpora in R data packages. The big disadvantage of using R data packages for data dissemination is the need to re-install corpora every time there is a major R update. So cwbtools v0.3.3 makes initial steps to declare functionality as deprecated that assists users to wrap corpora in packages. In this vein, the previous &lt;em&gt;Europarl&lt;/em&gt;-vignette that explained how to wrap the Europarl corpus into an R data package has been dropped.&lt;/p&gt;
+
+&lt;p&gt;But functionality to download and install Europarl from the Web is there! A nice thing about Europarl is that it is a multilingual ressource, making it relevant for many international users. As a tribute to the European Parliament (EP), this release is labelled “Hemicycle”: This is how the plenary chamber of the EP at Strasbourg is called, following a tradition to arrange seats and parliamentary groups in a circular shape.&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 23 Feb 2021 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/posts/2021/02/23/cwbtools-v0.3.3-Hemicycle-install-Europarl-at-ease.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2021/02/23/cwbtools-v0.3.3-Hemicycle-install-Europarl-at-ease.html</guid>
+        
+        <category>news</category>
+        
+        
+        <category>Posts</category>
+        
+      </item>
     
       <item>
         <title>cwbtools v0.3.2 'Il Postino' solidifies corpus download. </title>
@@ -567,87 +602,6 @@ that.&lt;/p&gt;
         <pubDate>Thu, 06 Jun 2019 00:00:00 +0200</pubDate>
         <link>http://localhost:4000/posts/2019/06/06/Towards-polmineR-v0.8.0-Pipes-ahead.html</link>
         <guid isPermaLink="true">http://localhost:4000/posts/2019/06/06/Towards-polmineR-v0.8.0-Pipes-ahead.html</guid>
-        
-        <category>news</category>
-        
-        
-        <category>Posts</category>
-        
-      </item>
-    
-      <item>
-        <title>Towards polmineR v0.8.0: An annotation workflow </title>
-        <description>&lt;h1 id=&quot;towards-polminer-v080-a-new-annotation-workflow&quot;&gt;Towards polmineR v0.8.0: A new annotation workflow&lt;/h1&gt;
-
-&lt;p&gt;The polmineR package strives to offer a basic programming vocabulary to implement workflows for complex text analytical tasks, including annotation. The basic requirements for this, i.e. the ability to reconstruct (passages of) full text at any time has always been there, but the annotation functionality has been an unfullfilled promised. As we are approaching v0.8.0, the idea to realize an annotation workflow shall finally materialize.&lt;/p&gt;
-
-&lt;p&gt;In this blog post, I would like to introduce a new workflow to annotate classes inheriting from the &lt;code class=&quot;highlighter-rouge&quot;&gt;textstat&lt;/code&gt; class, such as an analysis for keywords-in-context (&lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt;) or of &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences&lt;/code&gt;. It is available in its current form starting from polmineR version 0.7.11.9023, available on the development branch of polmineR at GitHub. It can be installed as follows (if you have the devtools package installed):&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;devtools&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;install_github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;PolMine/polmineR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The impetus for developing the functionality came from using a dictionary to score the degree of populism in  parliamentary speeches. But using dictionaries comes with a risk. The validity of measurements using dictionaries can not always be taken for granted, given the ambiguity of terms. This is the idea that suggests itself: For annotation and disambiguation, it would be nice to have a simple and efficient “pure R” workflow, i.e. we do not want to leave the R session we are using for the rest of our analysis of corpora and further data.&lt;/p&gt;
-
-&lt;p&gt;To keep things simple, the scenario I use here is a simple effort to disambiguate (the German word) “Integration”. Fairly often, it is used to refer to the integration of immigrants into society. But there are other relevant contexts with a different meaning. You can also talk about the integration of unemployer persons into the labour market, or of handicapped persons into society. Thus, let us assume we want to count the number of occurrences of “Integration” in the context of migration and integration affairs and that we want to avoid counting the occurrence of “Integration” in other contexts.&lt;/p&gt;
-
-&lt;p&gt;This disambiguation might also be achieved through a rule-based procedure (i.e. a dictionary of words required to occurr in the neighborhood of our match, and/or a dictionary preventing a match to be counted), or a procedure based on training data. But to develop either approach, manual inspection and annotation may be necessary as a first step anyway. So this is why we need a workflow for manual annotation. Once we have it at hand, we can also use it for a brute-force manual annotation from dusk till dawn for all matches without further sophistication. At times, this appraoch may not be the worst one from the “know your data” and validity point of view.&lt;/p&gt;
-
-&lt;p&gt;The solution polmineR is now able to offer is a &lt;a href=&quot;https://www.rstudio.com/resources/webinars/shiny-gadgets-interactive-tools/&quot;&gt;shiny gadget&lt;/a&gt; that uses the &lt;a href=&quot;https://handsontable.com/&quot;&gt;Handsontable&lt;/a&gt; JavaScript library which is exposed through the &lt;a href=&quot;https://jrowen.github.io/rhandsontable/&quot;&gt;rhandsontable&lt;/a&gt; package. When you start the gadget in an RStudio session, it will be shown in the Viewer pane of RStudio, and you will have the results of your annotation exercise in the R sessions right away, without having to export data and switching applications. The following animated gif may convey the essence and the look and feel of this new feature.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;
-&lt;img src=&quot;/assets/2019-05-17-Towards-polmineR-v0.8.0/annotation_demo.gif&quot; alt=&quot;fff&quot; /&gt;
-&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now for the more verbose explanation how to use the new functionality, including the code. We start by loading polmineR and activating the GERMAPARL corpus of parliamentary debates in the German Bundestag.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polmineR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;GermaParl&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# activate GERMAPARL corpus&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Then we generagte a &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt; object using the &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic()&lt;/code&gt;-method. Pursuing the scenario introduced before, we look up matches for “Integration” in the GERMAPARL corpus.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;GERMAPARL&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Integration&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The resulting object &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt; has used the default left and right context of 5 tokens. Often, we will find that we may want to see more words to solidify our annotation decisions. For this, we use a new argument of the &lt;code class=&quot;highlighter-rouge&quot;&gt;enrich()&lt;/code&gt;-method to get us an extra 5 words to the left and to the right of our search windows.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enrich&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extra&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;When &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt; objects are generated and enriched, a &lt;code class=&quot;highlighter-rouge&quot;&gt;data.table&lt;/code&gt; in the slot &lt;code class=&quot;highlighter-rouge&quot;&gt;stat&lt;/code&gt; of the object is filled with the concordance lines. This table can be augmented with a new column as follows. In our example, we add a (logical) column called “mi” (for migration and integration) to indicate whether our match for “Integration” occurrs in a migration and integration context.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;mi&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;what&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Note that you can also add columns with a character vector, or a factor. Assigning a factor can be a good choice, when you want to offer users or yourself a limited set of choices. One of the beauties of basing the shiny widget on the &lt;code class=&quot;highlighter-rouge&quot;&gt;Handsontable&lt;/code&gt; library for html spreadsheets is that for factor columns, a drop down menu is used for data input by default. See the examples for the annotation functionality (&lt;code class=&quot;highlighter-rouge&quot;&gt;?annotations&lt;/code&gt;) to see an example.&lt;/p&gt;
-
-&lt;p&gt;Now we have a kwic object with the annotation layer we just added. We can use the &lt;code class=&quot;highlighter-rouge&quot;&gt;edit()&lt;/code&gt; method to call the shiny gadget we have been talking about and that you could see in the initial animated image.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;edit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Once you call the &lt;code class=&quot;highlighter-rouge&quot;&gt;edit()&lt;/code&gt;-method, the gadget pops up in the RStudio Viewer pane, and you can edit the annotations (here: the “mi”-column) as you wish, in a manner you would know from a conventional spreadsheet program such as Excel.&lt;/p&gt;
-
-&lt;p&gt;Once you finished editing annotations, click the “Done”-button, and the results of the annotation effort are available in the R session. You can get the &lt;code class=&quot;highlighter-rouge&quot;&gt;data.table&lt;/code&gt; with the annotations by calling the &lt;code class=&quot;highlighter-rouge&quot;&gt;annotations()&lt;/code&gt;-method on the annotated object.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And of course, you can aggregate the result. For instance, to count the number of TRUE/FALSE classifications, use the notation of the &lt;code class=&quot;highlighter-rouge&quot;&gt;data.table&lt;/code&gt;-package to aggregate results for the column “mi”.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;.N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;by&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Having gone through our &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt; object, the real work in our analysis to obtain a substantive result will usually only start. For instance, if the aim was just do get rid of false matches, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;subset()&lt;/code&gt;-method on the &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt; object to discard the matches we have annotated with FALSE.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;x_min&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mi&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x_min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# see the length of the shortened object&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Quite obviously, it may be tedious to go through concordances if we have a large number of matches. It may be very attractive to use a limited set of annotated lines as training data. For most ML exercises, we will need a Document-Term-Matrix. You get it as follows…&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;dtm&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as.DocumentTermMatrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p_attribute&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;word&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And we have the labels for the algorithm at hand, recall that we can get it by calling &lt;code class=&quot;highlighter-rouge&quot;&gt;annotations()&lt;/code&gt;. But explaining how to do the machine learning part goes beyond this post: The aim here has been to introduce the new annotation workflow of the polmineR package.&lt;/p&gt;
-
-&lt;p&gt;Just a final remark: You can annotate and edit any object that inherits from the &lt;code class=&quot;highlighter-rouge&quot;&gt;textstat&lt;/code&gt;-class. Apart from annotating &lt;code class=&quot;highlighter-rouge&quot;&gt;kwic&lt;/code&gt;-objects, annotating &lt;code class=&quot;highlighter-rouge&quot;&gt;cooccurrences&lt;/code&gt; may be an important use case.&lt;/p&gt;
-
-&lt;p&gt;I hope you find the new annotation functionality useful. Feedback is welcome!&lt;/p&gt;
-</description>
-        <pubDate>Fri, 17 May 2019 00:00:00 +0200</pubDate>
-        <link>http://localhost:4000/posts/2019/05/17/Towards-polmineR-v0.8.0-A-new-annotation-workflow.html</link>
-        <guid isPermaLink="true">http://localhost:4000/posts/2019/05/17/Towards-polmineR-v0.8.0-A-new-annotation-workflow.html</guid>
         
         <category>news</category>
         
