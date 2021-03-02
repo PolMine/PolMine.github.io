@@ -128,6 +128,8 @@ permalink: /who/
 <li>Simon Gehlhar (Research Assistant MIDEM Project)</li>
 <li>Florian Gilberg (Student Assistant, PopParl Project)</li>
 <li>Kevin Glock (Student Assistant, MigTex Project)</li>
+<li>Pawel Szczerbak (Research Assistent, Project 'Arenas of Interest Intermediation')</li>
+<li>Silvia Berenz (Student Assistant, Cooperation with IDS)</li>
 </ul>
 
 #### Affiliation

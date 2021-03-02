@@ -34,11 +34,12 @@ The aim of the "MigTex"" project is to identify language resources that are rele
 
 <hr/>
 
-## Earlier Projects
+### Earlier Projects
 
-In a CLARIN-funded cooperation project with the [Institut für maschinelle Textverarbeitung Stuttgart](http://www.ims.uni-stuttgart.de/), we developed manual "gold standard" annotations of topics in parliamentary debates using an adapted coding scheme from the Comparative Policy Agendas Project.
+<ul>
+<li>In a CLARIN-funded cooperation project with the [Institut für maschinelle Textverarbeitung Stuttgart](http://www.ims.uni-stuttgart.de/), we developed manual "gold standard" annotations of topics in parliamentary debates using an adapted coding scheme from the Comparative Policy Agendas Project.</li>
 
-The project "Arenas of Political Interest Intermediation", funded by MERCUR, had a focus on the comparative analysis of the migration and integration policy domain, environmental policy, and social policy, and of the visiblity of interest groups in newspaper reports.
+<li>The project "Arenas of Political Interest Intermediation", funded by MERCUR, had a focus on the comparative analysis of the migration and integration policy domain, environmental policy, and social policy, and of the visiblity of interest groups in newspaper reports.</li>
 
-In the context of a cooperation with the [Institut für Deutsche Sprache (IDS)](http://www1.ids-mannheim.de/), we prepared and shared a first version of the parliamentary debates in Germany's regional parliaments. This corpus is part of DeReKo (Deutsches Referenzkorpus).
-
+<li>In the context of a cooperation with the [Institut für Deutsche Sprache (IDS)](http://www1.ids-mannheim.de/), we prepared and shared a first version of the parliamentary debates in Germany's regional parliaments. This corpus is part of DeReKo (Deutsches Referenzkorpus).</li>
+</ul>
