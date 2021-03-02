@@ -5,17 +5,17 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 23 Feb 2021 22:58:33 +0100</pubDate>
-    <lastBuildDate>Tue, 23 Feb 2021 22:58:33 +0100</lastBuildDate>
+    <pubDate>Tue, 02 Mar 2021 21:31:01 +0100</pubDate>
+    <lastBuildDate>Tue, 02 Mar 2021 21:31:01 +0100</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
     
       <item>
         <title>cwbtools v0.3.3 'Hemicycle' brings Europarl closer. </title>
         <description>&lt;h1 id=&quot;cwbtools-v033-hemicycle-brings-europarl-closer&quot;&gt;cwbtools v0.3.3 ‘Hemicycle’ brings Europarl closer.&lt;/h1&gt;
 
-&lt;p&gt;As an immediate follow-up to cwbtools v0.3.2 “Il Postino”, a new cwbtools version (v0.3.3, “Hemicycle”) just made it to CRAN. This has become necessary to fix errors with the Solaris and Fedora test environments of CRAN that occurred becaus v0.3.2 expanded test coverage.&lt;/p&gt;
+&lt;p&gt;As an immediate follow-up to cwbtools v0.3.2 “Il Postino”, a new cwbtools version (v0.3.3, “Hemicycle”) just made it to CRAN. This has become necessary to fix errors with the Solaris and Fedora test environments of CRAN that occurred because v0.3.2 expanded test coverage.&lt;/p&gt;
 
-&lt;p&gt;Changes to meet CRAN requirements will not be relevant for most users. So why bother to install the new release? There is one nice new feature: Assumptions made by by &lt;code class=&quot;highlighter-rouge&quot;&gt;corpus_install()&lt;/code&gt;, the mechanism for installing corpora, have been relaxed as follows: The binary data directory in a corpus tarball may now also be named “data” (not only “indexed_corpora”) and binary files need not reside in a subdirectory named after the corpus. They can be in the data directory directly.&lt;/p&gt;
+&lt;p&gt;Changes to meet CRAN requirements will not be relevant for most users. So why bother to install the new release? There is one nice new feature: Assumptions made by &lt;code class=&quot;highlighter-rouge&quot;&gt;corpus_install()&lt;/code&gt;, the mechanism for installing corpora, have been relaxed as follows: The binary data directory in a corpus tarball may now also be named “data” (not only “indexed_corpora”) and binary files need not reside in a subdirectory named after the corpus. They can be in the data directory directly.&lt;/p&gt;
 
 &lt;p&gt;Access to two classic corpora - the Europarl corpus with debates in the European parliament and the Dickens corpus with Charles Dickens’ novels - is super-easy now: Simply use the following code to download and install both corpora.&lt;/p&gt;
 

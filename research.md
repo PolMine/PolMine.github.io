@@ -11,6 +11,15 @@ The code and the resources we share emerge from our substantive research. The fo
 
 <hr/>
 
+#### Linking Textual Data 
+*Funding: German Research Foundation / DFG (2020-2025)*
+
+Corpora have become an important data type in the social sciences. Methods for analysing text are developing rapidly. A crucial aspect of the huge potential of large-scale corpora for the social sciences are capabilities to link the analysis of text and other data types, such as surveys. Yet the barriers to data linkage are still high. In the project “Linking Textual Data”, we develop tools for linking different data types in order to open up new avenues for research. 
+
+This project is a measure within [KonsortSWD](https://www.konsortswd.de/en/) (*Consortium for the Social, Behavioral, Educational and Economic Sciences*), which is part of the [National Research Data Infrastructure](https://www.nfdi.de/en-gb) (NFDI) that is established in Germany. The NFDI attempts to make research data available to the scientific community, guided by the [FAIR principles](https://www.nfdi.de/en-gb). KonsortSWD is a consortium within the NFDI and expands NFDI services in the social, educational, behavioural and economic sciences. 
+
+<hr/>
+
 #### The Populist Challenge in Parliament
 *Funding: German Research Foundation / DFG (2018-2021)*
 
