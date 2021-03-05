@@ -3,8 +3,9 @@ layout: default
 title: Archive
 ---
 
-<!-- Begin List Posts
-================================================== -->
+<div class="wrapper">
+<div class="page">
+
 <section class="recent-posts">
 <div class="section-title mt-2">
     <h2>{{ page.title }}</span></h2>
@@ -13,10 +14,16 @@ title: Archive
 
 {% for post in site.posts %}
 {% if post.categories contains page.category or post.category == page.category %}
-    {% include postbox.html %}
+     <li>
+      <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
+      <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    </li>
 {% endif %}    
 
 {% endfor %}
 
 </div>
 </section>
+
+</div>
+</div>
