@@ -1,8 +1,9 @@
 ---
 layout: post
 title:  "New Project 'Linking Textual Data' started. "
-date:   2021-01-06
+date:   2021-03-01
 author: Andreas Blätte
+sticky: true
 output: 
   md_document:
     preserve_yaml: true

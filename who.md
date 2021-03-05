@@ -4,104 +4,123 @@ title: Who
 permalink: /who/
 ---
 
-<div style="display: flex;">
+<div style="display: flex; margin-bottom: 6px; ;">
 
-  <div lang="en" style="flex: 67%; text-align: left; background-color: #ffffff; padding-left: 0em; padding-right: 1em; border-radius: 5px; margin-right: 3px">
+  <div lang="en" style="flex: 75%; text-align: left; background-color: #ffffff; padding-left: 0em; padding-right: 1em; border-radius: 5px; margin-right: 3px">
   <div style="display:flex;">
   The PolMine Project is an initiative of Andreas Blätte, Professor of Public Policy and Regional Politics at the University of Duisburg-Essen. The members of the PolMine Research Group contribute to the project either by creating code and data, dissemination or by contributing to the project in a collaborative setting.
 <br/>
   </div>
   </div>
-
   
-  <div lang="en" style="flex: 33%; text-align: justify; background-color: #dfe4f2; padding: 1em; padding-right: 0em; border-radius: 5px; margin-right: 3px">
+  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 0.8em; padding-right: 0em; border-radius: 5px; margin-left: 3px">
     <div style="display:flex;">
       <img src="{{ "/assets/img/team/andreas_blaette.png" | prepend: site.baseurl }}" style="align:right; vertical-align: bottom; height: 75px; width: 75px;border-radius: 50%"/>
     </div>
-    <p style="font-size: smaller; after: unset; line-height: 1.4;  margin-top: 1em; margin-bottom: 0px;">
+    <p style="font-size: smaller; after: unset; line-height: 1.4;  margin-top: 1em; margin-bottom: 0px;  text-align: left;">
     <b>Andreas Blaette</b><br/>
-    Head of the Group<br/>
+    <i>Head of the Group</i><br/>
     Professor of Public Policy
     </p>
   </div>
 
 </div>
 
-<br/>
-
-
-<div style="display: flex;">
+<div style="display: flex; margin-bottom: 6px;">
   
-  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 1em; border-radius: 5px; margin-left: 3px; margin-right: 3px;">
+  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 0.8em; border-radius: 5px; margin-right: 3px;">
     <div style="display:flex;">
       <img src="{{ "/assets/img/team/christoph_leonhardt.png" | prepend: site.baseurl }}" style="align:right; vertical-align: bottom; height: 75px; width: 75px;border-radius: 50%"/>
     </div>
-    <p style="font-size:smaller; line-height: 1.4; margin-top: 1em;  margin-bottom: 0px;">
+    <p style="font-size:smaller; line-height: 1.4; margin-top: 1em;  margin-bottom: 0px;  text-align: left; vertical-align: bottom;">
     <b>Christoph Leonhardt</b><br/>
-    Research Assistant<br/>
-    NFDI Project Linking Textual Data & <br/>
+    <i>Research Assistant</i><br/>
+    Project Linking Textual Data &
     PopParl Project
     </p>
   </div>
                       
-  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 1em; border-radius: 5px; margin-left: 3px; margin-right: 3px;">
+  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 0.8em; border-radius: 5px; margin-left: 3px; margin-right: 3px;">
     <div style="display:flex;">
       <img src="{{ "/assets/img/team/julia_rakers.png" | prepend: site.baseurl }}" style="align:right; vertical-align: bottom; height: 75px; width: 75px;border-radius: 50%"/>
     </div>
-    <p style="font-size: smaller;  line-height: 1.4;  margin-top: 1em;  margin-bottom: 0px;">
+    <p style="font-size: smaller;  line-height: 1.4;  margin-top: 1em;  margin-bottom: 0px;  text-align: left; vertical-align: bottom; ">
     <b>Julia Rakers</b><br/>
-    Research Assistant<br/>
-    NFDI Project Linking Textual Data
+    <i>Research Assistant</i><br/>
+    Project Linking Textual Data
     </p>
   </div>
   
-  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 1em; border-radius: 5px; margin-left: 3px;">
+  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 0.8em; border-radius: 5px; margin-left: 3px; margin-right: 3px;">
     <div style="display:flex;">
       <img src="{{ "/assets/img/team/merve_schmitz-vardar.png" | prepend: site.baseurl }}" style="align:right; vertical-align: bottom; height: 75px; width: 75px;border-radius: 50%"/>
     </div>
-    <p style="font-size:smaller;  line-height: 1.4; margin-top: 1em;  margin-bottom: 0px;">
+    <p style="font-size:smaller;  line-height: 1.4; margin-top: 1em;  margin-bottom: 0px; text-align: left;">
     <b>Merve Schmitz-Vardar</b><br/>
-    Research Assistant<br/>
-    Professorship Public Policy and Regional Politics
+    <i>Research Assistant</i><br/>
+    MigTex Project
     </p>
   </div>
+
+  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 0.8em; border-radius: 5px; margin-left: 3px; margin-right: 3px;">
+    <div style="display:flex;">
+      <img src="{{ "/assets/img/team/marius_bertram.png" | prepend: site.baseurl }}" style="align:right; vertical-align: bottom; height: 75px; width: 75px;border-radius: 50%"/>
+    </div>
+    <p style="font-size:smaller; line-height: 1.4; margin-top: 1em;  margin-bottom: 0px;  text-align: left;">
+    <b>Marius Bertram</b><br/>
+    <i>Data Steward</i><br/>
+    Faculty of Social Sciences
+    </p>
+  </div>
+
 
         
 </div>
 
 <!-- -->
-<br/>
-<div style="display: flex;">
+<div style="display: flex; margin-top: 3px;">
   
-  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 1em; padding-right: 0em; border-radius: 5px; margin-right: 3px">
+  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 0.8em; padding-right: 0em; border-radius: 5px; margin-right: 3px;">
     <div style="display:flex;">
       <img src="{{ "/assets/img/team/laura_dinnebier.png" | prepend: site.baseurl }}" style="align:right; vertical-align: bottom; height: 75px; width: 75px;border-radius: 50%"/>
     </div>
-    <p style="font-size: smaller; after: unset; line-height: 1.4;  margin-top: 1em; margin-bottom: 0px;">
+    <p style="font-size: smaller; after: unset; line-height: 1.4;  margin-top: 1em; margin-bottom: 0px;  text-align: left;">
     <b>Laura Dinnebier</b><br/>
-    Research Assistant<br/>
+    <i>Research Assistant</i><br/>
     MigRep Project
     </p>
   </div>
 
-  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 1em; border-radius: 5px; margin-left: 3px; margin-right: 3px;">
+  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 0.8em; padding-right: 0em; border-radius: 5px; margin-right: 3px; margin-left: 3px">
+    <div style="display:flex;">
+      <img src="{{ "/assets/img/team/sarata_diane.png" | prepend: site.baseurl }}" style="align:right; vertical-align: bottom; height: 75px; width: 75px;border-radius: 50%"/>
+    </div>
+    <p style="font-size: smaller; after: unset; line-height: 1.4;  margin-top: 1em; margin-bottom: 0px;  text-align: left;">
+    <b>Sarata Diane</b><br/>
+    <i>Student Assistant</i><br/>
+    MigRep Project
+    </p>
+  </div>
+
+
+  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 0.8em; border-radius: 5px; margin-left: 3px; margin-right: 3px;">
     <div style="display:flex;">
       <img src="{{ "/assets/img/team/silvia_mommertz.png" | prepend: site.baseurl }}" style="align:right; vertical-align: bottom; height: 75px; width: 75px;border-radius: 50%"/>
     </div>
-    <p style="font-size:smaller; line-height: 1.4; margin-top: 1em;  margin-bottom: 0px;">
+    <p style="font-size:smaller; line-height: 1.4; margin-top: 1em;  margin-bottom: 0px;  text-align: left;">
     <b>Silvia Mommertz</b><br/>
-    Student Assistant<br/>
-    Professorship of Public Policy and Regional Politics
+    <i>Student Assistant</i><br/>
+    Professorship of Public Policy
     </p>
   </div>
                       
-  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 1em; border-radius: 5px; margin-left: 3px; margin-right: 3px;">
+  <div lang="en" style="flex: 25%; text-align: justify; background-color: #dfe4f2; padding: 0.8em; border-radius: 5px; margin-left: 3px; margin-right: 3px;">
     <div style="display:flex;">
       <img src="{{ "/assets/img/team/alexandra_naumann.png" | prepend: site.baseurl }}" style="align:right; vertical-align: bottom; height: 75px; width: 75px;border-radius: 50%"/>
     </div>
-    <p style="font-size: smaller;  line-height: 1.4;  margin-top: 1em;  margin-bottom: 0px;">
+    <p style="font-size: smaller;  line-height: 1.4;  margin-top: 1em;  margin-bottom: 0px;  text-align: left;">
     <b>Alexandra Naumann</b><br/>
-    Student Assistant<br/>
+    <i>Student Assistant</i><br/>
     PopParl Project
     </p>
   </div>
@@ -128,13 +147,13 @@ permalink: /who/
 <li>Simon Gehlhar (Research Assistant MIDEM Project)</li>
 <li>Florian Gilberg (Student Assistant, PopParl Project)</li>
 <li>Kevin Glock (Student Assistant, MigTex Project)</li>
-<li>Pawel Szczerbak (Research Assistent, Project 'Arenas of Interest Intermediation')</li>
+<li>Pawel Szczerbak (Research Assistant, Project 'Arenas of Interest Intermediation')</li>
 <li>Silvia Berenz (Student Assistant, Cooperation with IDS)</li>
 </ul>
 
 #### Affiliation
 
-PolMine is affiliated with the [NRW School of Governance](https://www.nrwschool.de) at the [Institute of Political Science](https://www.uni-due.de/politik/) ([Department of the Social Sciences](https://www.uni-due.de/gesellschaftswissenschaften/), [University of Duisburg-Essen](https://www.uni-due.de)). A **special thanks** goes to the IT of the Department of Social Sciences. We are grateful for the outstanding and unfailing support of Anita Born, Marius Bertram and Florian Böhm!
+PolMine is affiliated with the [NRW School of Governance](https://www.nrwschool.de) at the [Institute of Political Science](https://www.uni-due.de/politik/) ([Department of the Social Sciences](https://www.uni-due.de/gesellschaftswissenschaften/), [University of Duisburg-Essen](https://www.uni-due.de)). A *special thanks* goes to the IT of the Department of Social Sciences. We are grateful for the outstanding and unfailing support of Anita Born, Marius Bertram and Florian Böhm!
 
 #### Network
 

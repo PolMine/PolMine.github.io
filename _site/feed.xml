@@ -5,9 +5,35 @@
     <description>Website of the PolMine Project</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 02 Mar 2021 23:48:55 +0100</pubDate>
-    <lastBuildDate>Tue, 02 Mar 2021 23:48:55 +0100</lastBuildDate>
+    <pubDate>Fri, 05 Mar 2021 05:35:13 +0100</pubDate>
+    <lastBuildDate>Fri, 05 Mar 2021 05:35:13 +0100</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
+    
+      <item>
+        <title>New Project 'Linking Textual Data' started. </title>
+        <description>&lt;h1 id=&quot;new-project-linking-textual-data-started&quot;&gt;New Project ‘Linking Textual Data’ started.&lt;/h1&gt;
+
+&lt;p&gt;Our newest project “Linking Textual Data” is part of the &lt;em&gt;Consortium for the Social, Behavioral, Educational and Economic Sciences&lt;/em&gt; (&lt;a href=&quot;https://www.konsortswd.de/en/&quot;&gt;KonsortSWD&lt;/a&gt;) and contributes to the &lt;em&gt;National Research Data Infrastructure&lt;/em&gt; (&lt;a href=&quot;https://www.nfdi.de/en-gb&quot;&gt;NFDI&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;In this new project that has officially started on Januar 1st 2021, we develop tools for linking different data types in order to open up new avenues for research. Corpora have become an important data type in the social sciences. Methods for analysing text are developing rapidly. A crucial aspect of the huge potential of large-scale corpora for the social sciences are capabilities to link the analysis of text and other data types, such as surveys. Yet the barriers to data linkage are still high. The tools and workflows we will develop and share shall improve our abilities to gain new insights through the combination of different data types. Not surprisingly, corpora play a central role in our plans.&lt;/p&gt;
+
+&lt;p&gt;The NFDI is the broader context of our endeavour. It aims to secure and utilize research data in a systematic and sustainable way. To reach this goal, the NFDI plans to establish the management of research data according to the “FAIR” principles. These principles mandate that research data are findable, accessible, interoperable and reusable for and by the scientific community. Furthermore, the NFDI aims to connect to international initiatives with similar aims such as the &lt;em&gt;European Open Science Cloud&lt;/em&gt; (&lt;a href=&quot;https://eosc-portal.eu&quot;&gt;EOSC&lt;/a&gt;). The efforts of the NFDI are not limited to particular disciplines, they include consortia as diverse as chemistry, culture, health, engineering and many more.&lt;/p&gt;
+
+&lt;p&gt;Within the NFDI, the social sciences are represented through KonsortSWD. Specifically, KonsortSWD strengthens, widens and deepens a research data infrastructure for the social, educational, behavioural and economic sciences. Again, the FAIR principles offer guidance: KonsortSWD wants to provide the community (including research data centres) with adequate tools to share and manage data accordingly. Apart from community engagement, data access, ethics and technical solutions, another important task concerns the production of data. This is where our project is located. More specifically, our aim is to contribute to new insights by developing tools for data linkage.&lt;/p&gt;
+
+&lt;p&gt;All efforts to utilize research data need to serve the community! Are there any best practices, opportunities and limits? What does the community need from such an infrastructure to be able to use it and profit from it? Community involvement is thus the key to successful data management. If you have any ideas or input how your projects could profit from “Linking Textual Data”, feel free to reach out to us.&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 01 Mar 2021 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/posts/2021/03/01/Linking-Textual-Data.html</link>
+        <guid isPermaLink="true">http://localhost:4000/posts/2021/03/01/Linking-Textual-Data.html</guid>
+        
+        <category>news</category>
+        
+        
+        <category>Posts</category>
+        
+      </item>
     
       <item>
         <title>cwbtools v0.3.3 'Hemicycle' brings Europarl closer. </title>
@@ -95,32 +121,6 @@
         <pubDate>Thu, 04 Feb 2021 00:00:00 +0100</pubDate>
         <link>http://localhost:4000/posts/2021/02/04/RcppCWB-v0.3.2-Dune-Ride-Ensures-Apple-Silicon-Compatibility.html</link>
         <guid isPermaLink="true">http://localhost:4000/posts/2021/02/04/RcppCWB-v0.3.2-Dune-Ride-Ensures-Apple-Silicon-Compatibility.html</guid>
-        
-        <category>news</category>
-        
-        
-        <category>Posts</category>
-        
-      </item>
-    
-      <item>
-        <title>New Project 'Linking Textual Data' started. </title>
-        <description>&lt;h1 id=&quot;new-project-linking-textual-data-started&quot;&gt;New Project ‘Linking Textual Data’ started.&lt;/h1&gt;
-
-&lt;p&gt;Our newest project “Linking Textual Data” is part of the &lt;em&gt;Consortium for the Social, Behavioral, Educational and Economic Sciences&lt;/em&gt; (&lt;a href=&quot;https://www.konsortswd.de/en/&quot;&gt;KonsortSWD&lt;/a&gt;) and contributes to the &lt;em&gt;National Research Data Infrastructure&lt;/em&gt; (&lt;a href=&quot;https://www.nfdi.de/en-gb&quot;&gt;NFDI&lt;/a&gt;).&lt;/p&gt;
-
-&lt;p&gt;In this new project that has officially started on Januar 1st 2021, we develop tools for linking different data types in order to open up new avenues for research. Corpora have become an important data type in the social sciences. Methods for analysing text are developing rapidly. A crucial aspect of the huge potential of large-scale corpora for the social sciences are capabilities to link the analysis of text and other data types, such as surveys. Yet the barriers to data linkage are still high. The tools and workflows we will develop and share shall improve our abilities to gain new insights through the combination of different data types. Not surprisingly, corpora play a central role in our plans.&lt;/p&gt;
-
-&lt;p&gt;The NFDI is the broader context of our endeavour. It aims to secure and utilize research data in a systematic and sustainable way. To reach this goal, the NFDI plans to establish the management of research data according to the “FAIR” principles. These principles mandate that research data are findable, accessible, interoperable and reusable for and by the scientific community. Furthermore, the NFDI aims to connect to international initiatives with similar aims such as the &lt;em&gt;European Open Science Cloud&lt;/em&gt; (&lt;a href=&quot;https://eosc-portal.eu&quot;&gt;EOSC&lt;/a&gt;). The efforts of the NFDI are not limited to particular disciplines, they include consortia as diverse as chemistry, culture, health, engineering and many more.&lt;/p&gt;
-
-&lt;p&gt;Within the NFDI, the social sciences are represented through KonsortSWD. Specifically, KonsortSWD strengthens, widens and deepens a research data infrastructure for the social, educational, behavioural and economic sciences. Again, the FAIR principles offer guidance: KonsortSWD wants to provide the community (including research data centres) with adequate tools to share and manage data accordingly. Apart from community engagement, data access, ethics and technical solutions, another important task concerns the production of data. This is where our project is located. More specifically, our aim is to contribute to new insights by developing tools for data linkage.&lt;/p&gt;
-
-&lt;p&gt;All efforts to utilize research data need to serve the community! Are there any best practices, opportunities and limits? What does the community need from such an infrastructure to be able to use it and profit from it? Community involvement is thus the key to successful data management. If you have any ideas or input how your projects could profit from “Linking Textual Data”, feel free to reach out to us.&lt;/p&gt;
-
-</description>
-        <pubDate>Wed, 06 Jan 2021 00:00:00 +0100</pubDate>
-        <link>http://localhost:4000/posts/2021/01/06/Linking-Textual-Data.html</link>
-        <guid isPermaLink="true">http://localhost:4000/posts/2021/01/06/Linking-Textual-Data.html</guid>
         
         <category>news</category>
         
