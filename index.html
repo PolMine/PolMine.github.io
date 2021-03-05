@@ -14,7 +14,7 @@ layout: default
 
 <div class="wrapper">
 <ul class="post-list">
-  {% for post in site.posts %}
+  {% for post in paginator.posts %}
   {% if post.sticky %}
   <span class="sticky"><i class="fa fa-thumb-tack" aria-hidden="true" style="margin-right: 7px;"></i></span>
     <h2 style="display:inline;">
@@ -41,7 +41,7 @@ layout: default
   {% endif %}
   {% endfor %}
   
-  {% for post in site.posts %}
+  {% for post in paginator.posts %}
   {% unless post.sticky %}
     <h2 style="display:inline;">
       <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
