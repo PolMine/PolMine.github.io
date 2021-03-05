@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "New Project 'Linking Textual Data' started. "
-date:   2021-03-01
+date:   2021-01-06
 author: Andreas Blätte
 sticky: true
 output: 

@@ -14,7 +14,11 @@ layout: default
 
 <div class="wrapper">
 <ul class="post-list">
-  {% for post in paginator.posts %}
+  {% assign sorted = paginator.posts | sort: "stickiness" %}
+  {% for post in sorted %}
+  {% if post.sticky %}
+  <h2> sticky </h2>
+  {% endif %}
   <li>
     <h2>
       <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
